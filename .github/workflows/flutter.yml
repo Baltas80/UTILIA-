@@ -29,6 +29,8 @@ jobs:
         with:
           channel: stable
           cache: true
+      - name: Bootstrap Android project
+        run: flutter create . --platforms=android --project-name utilia --org com.utilia.app
       - run: flutter pub get
       - run: flutter build apk --debug
       - run: flutter build appbundle --debug
