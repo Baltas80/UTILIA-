@@ -32,12 +32,14 @@ jobs:
       - name: Bootstrap Android project
         run: flutter create . --platforms=android --project-name utilia --org com.utilia.app
       - run: flutter pub get
-      - run: flutter build apk --debug
-      - run: flutter build appbundle --debug
-      - name: Upload Android artifacts
+      - name: Build release APK
+        run: flutter build apk --release
+      - name: Build release App Bundle
+        run: flutter build appbundle --release
+      - name: Upload Android release artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: utilia-android-builds
+          name: utilia-release-builds
           path: |
-            build/app/outputs/flutter-apk/app-debug.apk
-            build/app/outputs/bundle/debug/app-debug.aab
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
