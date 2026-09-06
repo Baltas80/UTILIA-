@@ -6,6 +6,7 @@ class UtiliaStorage {
   static const _favoritesKey = 'favorites';
   static const _historyKey = 'history';
   static const _darkModeKey = 'dark_mode';
+  static const _languageKey = 'language';
 
   Future<SharedPreferences> get _prefs => SharedPreferences.getInstance();
 
@@ -23,11 +24,8 @@ class UtiliaStorage {
     final prefs = await _prefs;
     final raw = prefs.getStringList(_historyKey) ?? <String>[];
     return raw.map((item) {
-      try {
-        return Map<String, dynamic>.from(jsonDecode(item) as Map);
-      } catch (_) {
-        return <String, dynamic>{};
-      }
+      try { return Map<String, dynamic>.from(jsonDecode(item) as Map); }
+      catch (_) { return <String, dynamic>{}; }
     }).where((item) => item.isNotEmpty).toList();
   }
 
@@ -52,5 +50,15 @@ class UtiliaStorage {
   Future<void> saveDarkMode(bool enabled) async {
     final prefs = await _prefs;
     await prefs.setBool(_darkModeKey, enabled);
+  }
+
+  Future<String> loadLanguage() async {
+    final prefs = await _prefs;
+    return prefs.getString(_languageKey) ?? 'system';
+  }
+
+  Future<void> saveLanguage(String language) async {
+    final prefs = await _prefs;
+    await prefs.setString(_languageKey, language);
   }
 }
