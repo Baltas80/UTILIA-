@@ -1,5 +1,5 @@
 name: utilia
-version: 0.3.0+3
+version: 0.3.1+4
 description: UTILIA - Pequeñas herramientas. Grandes soluciones.
 publish_to: 'none'
 
@@ -8,6 +8,8 @@ environment:
 
 dependencies:
   flutter:
+    sdk: flutter
+  flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.8
   shared_preferences: ^2.5.3
