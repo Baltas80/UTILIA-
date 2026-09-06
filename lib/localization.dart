@@ -134,14 +134,17 @@ class UtiliaStrings {
       'fr': ['Montant','Pourcentage (%)','Prix (€)','Réduction (%)','Prix (€)','TVA (%)','Addition (€)','Pourboire (%)','Personnes','Capital (€)','Taux annuel (%)','Mois','Années','Date de naissance (jj/mm/aaaa)','Date de début (jj/mm/aaaa)','Date de fin (jj/mm/aaaa)','Heure de début (ex. 8,5)','Heure de fin (ex. 17)','Pause (min)','Heures','Minutes','Secondes','Longueur (m)','Largeur (m)','Surface (m²)','Rendement (m²/L)','Puissance (W)','Heures/jour','Jours','Distance (km)','Consommation (L/100 km)','Prix €/L','Coût total (€)','Kilomètres','Valeur','Unité source (mm/cm/m/km/in/ft/yd/mi)','Unité cible','Poids (kg)','Taille (cm)','Notes séparées par des virgules','A','B','C'],
       'de': ['Betrag','Prozentsatz (%)','Preis (€)','Rabatt (%)','Preis (€)','MwSt. (%)','Rechnung (€)','Trinkgeld (%)','Personen','Kapital (€)','Jahreszins (%)','Monate','Jahre','Geburtsdatum (TT.MM.JJJJ)','Startdatum (TT.MM.JJJJ)','Enddatum (TT.MM.JJJJ)','Startzeit (z. B. 8,5)','Endzeit (z. B. 17)','Pause (Min.)','Stunden','Minuten','Sekunden','Länge (m)','Breite (m)','Fläche (m²)','Reichweite (m²/L)','Leistung (W)','Stunden/Tag','Tage','Entfernung (km)','Verbrauch (L/100 km)','Preis €/L','Gesamtkosten (€)','Kilometer','Wert','Ausgangseinheit (mm/cm/m/km/in/ft/yd/mi)','Zieleinheit','Gewicht (kg)','Größe (cm)','Noten durch Kommas getrennt','A','B','C'],
       'it': ['Importo','Percentuale (%)','Prezzo (€)','Sconto (%)','Prezzo (€)','IVA (%)','Conto (€)','Mancia (%)','Persone','Capitale (€)','Interesse annuo (%)','Mesi','Anni','Data di nascita (gg/mm/aaaa)','Data iniziale (gg/mm/aaaa)','Data finale (gg/mm/aaaa)','Ora iniziale (es. 8,5)','Ora finale (es. 17)','Pausa (min)','Ore','Minuti','Secondi','Lunghezza (m)','Larghezza (m)','Superficie (m²)','Copertura (m²/L)','Potenza (W)','Ore/giorno','Giorni','Distanza (km)','Consumo (L/100 km)','Prezzo €/L','Costo totale (€)','Chilometri','Valore','Unità origine (mm/cm/m/km/in/ft/yd/mi)','Unità destinazione','Peso (kg)','Altezza (cm)','Voti separati da virgole','A','B','C'],
-      'pt': ['Valor','Percentagem (%)','Preço (€)','Desconto (%)','Conta (€)','IVA (%)','Pessoas','Gorjeta (%)','Pessoas','Capital (€)','Juro anual (%)','Meses','Anos','Data de nascimento (dd/mm/aaaa)','Data inicial (dd/mm/aaaa)','Data final (dd/mm/aaaa)','Hora inicial (ex. 8,5)','Hora final (ex. 17)','Pausa (min)','Horas','Minutos','Segundos','Comprimento (m)','Largura (m)','Superfície (m²)','Cobertura (m²/L)','Potência (W)','Horas/dia','Dias','Distância (km)','Consumo (L/100 km)','Preço €/L','Custo total (€)','Quilómetros','Valor','Unidade de origem (mm/cm/m/km/in/ft/yd/mi)','Unidade de destino','Peso (kg)','Altura (cm)','Notas separadas por vírgulas','A','B','C'],
+      'pt': ['Valor','Percentagem (%)','Preço (€)','Desconto (%)','Preço (€)','IVA (%)','Conta (€)','Gorjeta (%)','Pessoas','Capital (€)','Juro anual (%)','Meses','Anos','Data de nascimento (dd/mm/aaaa)','Data inicial (dd/mm/aaaa)','Data final (dd/mm/aaaa)','Hora inicial (ex. 8,5)','Hora final (ex. 17)','Pausa (min)','Horas','Minutos','Segundos','Comprimento (m)','Largura (m)','Superfície (m²)','Cobertura (m²/L)','Potência (W)','Horas/dia','Dias','Distância (km)','Consumo (L/100 km)','Preço €/L','Custo total (€)','Quilómetros','Valor','Unidade de origem (mm/cm/m/km/in/ft/yd/mi)','Unidade de destino','Peso (kg)','Altura (cm)','Notas separadas por vírgulas','A','B','C'],
     };
     if (selectedLanguage == UtiliaLanguage.es || selectedLanguage == UtiliaLanguage.system) return index < es.length ? es[index] : '';
     final list = translations[code(selectedLanguage)]!;
-    // Explicit maps keep labels aligned with each tool rather than exposing English fallbacks.
-    final ids = <String>['percentage','discount','iva','tip','loan','compoundInterest','age','dateDifference','workHours','countdown','area','paint','electricity','fuel','costPerKm','length','weight','bmi','gradeAverage','ruleOfThree'];
     final ranges = <String, List<int>>{
-      'percentage':[0,2],'discount':[2,4],'iva':[4,6],'tip':[6,9],'loan':[9,12],'compoundInterest':[9,13],'age':[13,14],'dateDifference':[14,16],'workHours':[16,19],'countdown':[19,22],'area':[22,24],'paint':[24,26],'electricity':[26,29],'fuel':[29,32],'costPerKm':[32,34],'length':[34,37],'weight':[37,39],'bmi':[38,40],'gradeAverage':[40,41],'ruleOfThree':[41,44]
+      'percentage':[0,2], 'discount':[2,4], 'iva':[4,6], 'tip':[6,9],
+      'loan':[9,12], 'compoundInterest':[12,15], 'age':[15,16],
+      'dateDifference':[16,18], 'workHours':[18,21], 'countdown':[21,24],
+      'area':[24,26], 'paint':[26,28], 'electricity':[28,31], 'fuel':[31,34],
+      'costPerKm':[34,36], 'length':[36,39], 'weight':[39,41], 'bmi':[39,41],
+      'gradeAverage':[41,42], 'ruleOfThree':[42,45]
     };
     final range = ranges[id] ?? const [0,0];
     final pos = range[0] + index;
@@ -149,6 +152,7 @@ class UtiliaStrings {
   }
 
   String get invalidDate => _t('Fecha no válida. Usa dd/mm/aaaa.', 'Invalid date. Use dd/mm/yyyy.', 'Date invalide. Utilisez jj/mm/aaaa.', 'Ungültiges Datum. TT.MM.JJJJ verwenden.', 'Data non valida. Usa gg/mm/aaaa.', 'Data inválida. Use dd/mm/aaaa.');
+
   String category(String id) {
     final d = <String, List<String>>{
       'Dinero':['Dinero','Money','Argent','Geld','Denaro','Dinheiro'],
