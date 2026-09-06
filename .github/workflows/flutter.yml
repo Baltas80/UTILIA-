@@ -19,3 +19,23 @@ jobs:
       - run: dart format --output=none --set-exit-if-changed lib test
       - run: flutter analyze
       - run: flutter test
+
+  android-build:
+    needs: analyze-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter build apk --debug
+      - run: flutter build appbundle --debug
+      - name: Upload Android artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: utilia-android-builds
+          path: |
+            build/app/outputs/flutter-apk/app-debug.apk
+            build/app/outputs/bundle/debug/app-debug.aab
