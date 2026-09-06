@@ -8,7 +8,12 @@ import 'localization.dart';
 import 'storage.dart';
 
 class CalculatorSuitePage extends StatefulWidget {
-  const CalculatorSuitePage({super.key, this.scientific = false, required this.storage, required this.s});
+  const CalculatorSuitePage({
+    super.key,
+    this.scientific = false,
+    required this.storage,
+    required this.s,
+  });
   final bool scientific;
   final UtiliaStorage storage;
   final UtiliaStrings s;
@@ -24,7 +29,8 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
   bool degrees = true;
   final List<String> recent = [];
 
-  String t(String es, String en, String fr, String de, String it, String pt) => switch (widget.s.selectedLanguage) {
+  String t(String es, String en, String fr, String de, String it, String pt) =>
+      switch (widget.s.selectedLanguage) {
         UtiliaLanguage.en => en,
         UtiliaLanguage.fr => fr,
         UtiliaLanguage.de => de,
@@ -46,14 +52,22 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
     setState(() {
       recent
         ..clear()
-        ..addAll(h.where((e) => e['type'] == 'calculator').map((e) => '${e['expression'] ?? ''} = ${e['result'] ?? ''}').take(8));
+        ..addAll(h
+            .where((e) => e['type'] == 'calculator')
+            .map((e) => '${e['expression'] ?? ''} = ${e['result'] ?? ''}')
+            .take(8));
     });
   }
 
   Future<void> _saveResult() async {
     final entry = {
       'type': 'calculator',
-      'tool': scientific ? t('Calculadora científica', 'Scientific calculator', 'Calculatrice scientifique', 'Wissenschaftlicher Rechner', 'Calcolatrice scientifica', 'Calculadora científica') : t('Calculadora', 'Calculator', 'Calculatrice', 'Rechner', 'Calcolatrice', 'Calculadora'),
+      'tool': scientific
+          ? t('Calculadora científica', 'Scientific calculator',
+              'Calculatrice scientifique', 'Wissenschaftlicher Rechner',
+              'Calcolatrice scientifica', 'Calculadora científica')
+          : t('Calculadora', 'Calculator', 'Calculatrice', 'Rechner',
+              'Calcolatrice', 'Calculadora'),
       'expression': expression,
       'result': result,
       'timestamp': DateTime.now().toIso8601String(),
@@ -68,16 +82,21 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
         expression = '';
         result = '0';
       } else if (v == '⌫') {
-        if (expression.isNotEmpty) expression = expression.substring(0, expression.length - 1);
+        if (expression.isNotEmpty) {
+          expression = expression.substring(0, expression.length - 1);
+        }
       } else if (v == '=') {
         try {
-          result = _format(CalculatorParser(expression, degrees: degrees).parse());
+          result = _format(
+              CalculatorParser(expression, degrees: degrees).parse());
           _saveResult();
         } catch (_) {
           result = t('Error', 'Error', 'Erreur', 'Fehler', 'Errore', 'Erro');
         }
       } else if (v == '±') {
-        expression = expression.startsWith('-') ? expression.substring(1) : '-$expression';
+        expression = expression.startsWith('-')
+            ? expression.substring(1)
+            : '-$expression';
       } else if (v == 'x²') {
         expression += '^2';
       } else if (v == '1/x') {
@@ -91,16 +110,25 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
   String _format(double x) {
     if (!x.isFinite) return 'Error';
     if ((x - x.roundToDouble()).abs() < 1e-10) return x.round().toString();
-    return x.toStringAsPrecision(12).replaceFirst(RegExp(r'0+$'), '').replaceFirst(RegExp(r'\.$'), '');
+    return x
+        .toStringAsPrecision(12)
+        .replaceFirst(RegExp(r'0+$'), '')
+        .replaceFirst(RegExp(r'\.$'), '');
   }
 
   Future<void> _copy() async {
     await Clipboard.setData(ClipboardData(text: '$expression = $result'));
-    if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(t('Resultado copiado', 'Result copied', 'Résultat copié', 'Ergebnis kopiert', 'Risultato copiato', 'Resultado copiado'))));
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(t('Resultado copiado', 'Result copied',
+              'Résultat copié', 'Ergebnis kopiert', 'Risultato copiato',
+              'Resultado copiado'))));
+    }
   }
 
   Future<void> _share() async {
-    await SharePlus.instance.share(ShareParams(text: '$expression = $result', subject: 'UTILIA'));
+    await SharePlus.instance
+        .share(ShareParams(text: '$expression = $result', subject: 'UTILIA'));
   }
 
   void _reuse(String item) {
@@ -112,64 +140,291 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text(t('Calculadora', 'Calculator', 'Calculatrice', 'Rechner', 'Calcolatrice', 'Calculadora'), style: const TextStyle(fontWeight: FontWeight.w900)),
-          actions: [
-            IconButton(tooltip: t('Copiar', 'Copy', 'Copier', 'Kopieren', 'Copia', 'Copiar'), onPressed: _copy, icon: const Icon(Icons.copy_outlined)),
-            IconButton(tooltip: t('Compartir', 'Share', 'Partager', 'Teilen', 'Condividi', 'Partilhar'), onPressed: _share, icon: const Icon(Icons.share_outlined)),
-            IconButton(tooltip: t('Cambiar calculadora', 'Switch calculator', 'Changer de calculatrice', 'Rechner wechseln', 'Cambia calcolatrice', 'Mudar calculadora'), onPressed: () => setState(() => scientific = !scientific), icon: Icon(scientific ? Icons.calculate : Icons.functions)),
-          ],
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 56,
+        title: Text(
+          scientific
+              ? t('Calculadora científica', 'Scientific calculator',
+                  'Calculatrice scientifique', 'Wissenschaftlicher Rechner',
+                  'Calcolatrice scientifica', 'Calculadora científica')
+              : t('Calculadora', 'Calculator', 'Calculatrice', 'Rechner',
+                  'Calcolatrice', 'Calculadora'),
+          style: const TextStyle(fontWeight: FontWeight.w900),
         ),
-        body: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  SingleChildScrollView(scrollDirection: Axis.horizontal, reverse: true, child: Text(expression.isEmpty ? '0' : expression, style: const TextStyle(fontSize: 22))),
-                  const SizedBox(height: 8),
-                  SingleChildScrollView(scrollDirection: Axis.horizontal, reverse: true, child: Text(result, style: const TextStyle(fontSize: 38, fontWeight: FontWeight.w900))),
-                  const SizedBox(height: 10),
-                  Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    OutlinedButton.icon(onPressed: _copy, icon: const Icon(Icons.copy, size: 18), label: Text(t('Copiar', 'Copy', 'Copier', 'Kopieren', 'Copia', 'Copiar'))),
-                    const SizedBox(width: 8),
-                    OutlinedButton.icon(onPressed: _share, icon: const Icon(Icons.share, size: 18), label: Text(t('Compartir', 'Share', 'Partager', 'Teilen', 'Condividi', 'Partilhar'))),
-                  ]),
+        actions: [
+          IconButton(
+            tooltip: t('Copiar', 'Copy', 'Copier', 'Kopieren', 'Copia', 'Copiar'),
+            onPressed: _copy,
+            icon: const Icon(Icons.copy_outlined),
+          ),
+          IconButton(
+            tooltip: t('Compartir', 'Share', 'Partager', 'Teilen', 'Condividi',
+                'Partilhar'),
+            onPressed: _share,
+            icon: const Icon(Icons.share_outlined),
+          ),
+          IconButton(
+            tooltip: t('Cambiar calculadora', 'Switch calculator',
+                'Changer de calculatrice', 'Rechner wechseln',
+                'Cambia calcolatrice', 'Mudar calculadora'),
+            onPressed: () => setState(() => scientific = !scientific),
+            icon: Icon(scientific ? Icons.calculate : Icons.functions),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final compact = constraints.maxHeight < 700;
+            final displayHeight = compact ? 92.0 : 122.0;
+            final actionHeight = compact ? 42.0 : 48.0;
+            final scientificHeight = compact ? 42.0 : 48.0;
+            final recentHeight = compact ? 46.0 : 52.0;
+
+            return Column(
+              children: [
+                SizedBox(
+                  height: displayHeight,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        compact ? 14 : 20, compact ? 8 : 14, compact ? 14 : 20, 4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              reverse: true,
+                              child: Text(
+                                expression.isEmpty ? '0' : expression,
+                                style: TextStyle(fontSize: compact ? 18 : 21),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          reverse: true,
+                          child: Text(
+                            result,
+                            style: TextStyle(
+                              fontSize: compact ? 30 : 36,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: actionHeight,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: _copy,
+                            icon: const Icon(Icons.copy, size: 18),
+                            label: Text(t('Copiar', 'Copy', 'Copier', 'Kopieren',
+                                'Copia', 'Copiar')),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: _share,
+                            icon: const Icon(Icons.share, size: 18),
+                            label: Text(t('Compartir', 'Share', 'Partager',
+                                'Teilen', 'Condividi', 'Partilhar')),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                if (scientific) ...[
+                  SizedBox(height: 4),
+                  SizedBox(
+                    height: scientificHeight,
+                    child: _scientificRow([
+                      _small('sin(', 'sin('),
+                      _small('cos(', 'cos('),
+                      _small('tan(', 'tan('),
+                      _small('ln(', 'ln('),
+                      _small('log(', 'log('),
+                    ]),
+                  ),
+                  SizedBox(
+                    height: scientificHeight,
+                    child: _scientificRow([
+                      _small('√', '√('),
+                      _small('x²', 'x²'),
+                      _small('^', '^'),
+                      _small('1/x', '1/x'),
+                      _small('!', '!'),
+                      _small(degrees ? 'DEG' : 'RAD', 'mode'),
+                    ]),
+                  ),
                 ],
-              ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 6, 10, 4),
+                    child: scientific
+                        ? _scientificKeypad(compact)
+                        : _standardKeypad(compact),
+                  ),
+                ),
+                SizedBox(
+                  height: recentHeight,
+                  child: recent.isEmpty
+                      ? ListTile(
+                          dense: true,
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 16),
+                          leading: const Icon(Icons.history, size: 21),
+                          title: Text(t('Cálculos recientes', 'Recent calculations',
+                              'Calculs récents', 'Letzte Berechnungen',
+                              'Calcoli recenti', 'Cálculos recentes')),
+                        )
+                      : ExpansionTile(
+                          tilePadding:
+                              const EdgeInsets.symmetric(horizontal: 16),
+                          childrenPadding: EdgeInsets.zero,
+                          initiallyExpanded: false,
+                          leading: const Icon(Icons.history, size: 21),
+                          title: Text(t('Cálculos recientes', 'Recent calculations',
+                              'Calculs récents', 'Letzte Berechnungen',
+                              'Calcoli recenti', 'Cálculos recentes')),
+                          children: recent
+                              .map((item) => ListTile(
+                                    dense: true,
+                                    title: Text(item),
+                                    trailing: IconButton(
+                                      icon: const Icon(Icons.replay),
+                                      tooltip: t('Repetir', 'Repeat', 'Répéter',
+                                          'Wiederholen', 'Ripeti', 'Repetir'),
+                                      onPressed: () => _reuse(item),
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _scientificRow(List<Widget> children) => Row(children: children);
+
+  Widget _small(String label, String value) => Expanded(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+          child: OutlinedButton(
+            onPressed: () => value == 'mode'
+                ? setState(() => degrees = !degrees)
+                : key(value),
+            style: OutlinedButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: const Size(0, 0),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
             ),
-            if (scientific) ...[
-              _scientificRow([_small('sin(', 'sin'), _small('cos(', 'cos'), _small('tan(', 'tan'), _small('ln(', 'ln'), _small('log(', 'log'), _small('√(', '√'), _small('π', 'π')]),
-              _scientificRow([_small('x²', 'x²'), _small('^', '^'), _small('1/x', '1/x'), _small('!', '!'), _small('e', 'e'), _small(degrees ? 'DEG' : 'RAD', 'mode')]),
-            ],
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 4,
-                padding: const EdgeInsets.all(10),
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                children: ['C', '⌫', '(', ')', '7', '8', '9', '÷', '4', '5', '6', '×', '1', '2', '3', '−', '±', '0', ',', '+', '='].map(_key).toList(),
-              ),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(label,
+                  style: const TextStyle(fontWeight: FontWeight.w700)),
             ),
-            if (recent.isNotEmpty) _recentPanel(),
-          ],
+          ),
         ),
       );
 
-  Widget _scientificRow(List<Widget> children) => Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: Row(children: children));
+  Widget _standardKeypad(bool compact) {
+    const rows = [
+      ['C', '⌫', '(', ')'],
+      ['7', '8', '9', '÷'],
+      ['4', '5', '6', '×'],
+      ['1', '2', '3', '−'],
+      ['±', '0', ',', '+'],
+    ];
+    return Column(
+      children: [
+        for (final row in rows)
+          Expanded(
+            child: Row(
+              children: [
+                for (final value in row)
+                  Expanded(child: _key(value, compact)),
+              ],
+            ),
+          ),
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(child: _key('=', compact, primary: true)),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 
-  Widget _small(String label, String value) => Expanded(child: Padding(padding: const EdgeInsets.all(3), child: OutlinedButton(onPressed: () => value == 'mode' ? setState(() => degrees = !degrees) : key(value), child: FittedBox(child: Text(label)))));
+  Widget _scientificKeypad(bool compact) {
+    const rows = [
+      ['C', '⌫', '(', ')'],
+      ['7', '8', '9', '÷'],
+      ['4', '5', '6', '×'],
+      ['1', '2', '3', '−'],
+      ['±', '0', ',', '+'],
+      ['=',],
+    ];
+    return Column(
+      children: [
+        for (final row in rows)
+          Expanded(
+            child: Row(
+              children: [
+                for (final value in row)
+                  Expanded(child: _key(value, compact, primary: value == '=')),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
 
-  Widget _key(String value) => FilledButton(onPressed: () => key(value), style: FilledButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))), child: Text(value, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700)));
-
-  Widget _recentPanel() => ExpansionTile(
-        initiallyExpanded: false,
-        leading: const Icon(Icons.history),
-        title: Text(t('Cálculos recientes', 'Recent calculations', 'Calculs récents', 'Letzte Berechnungen', 'Calcoli recenti', 'Cálculos recentes')),
-        children: recent.map((item) => ListTile(title: Text(item), trailing: IconButton(icon: const Icon(Icons.replay), tooltip: t('Repetir', 'Repeat', 'Répéter', 'Wiederholen', 'Ripeti', 'Repetir'), onPressed: () => _reuse(item),))).toList(),
+  Widget _key(String value, bool compact, {bool primary = false}) =>
+      Padding(
+        padding: const EdgeInsets.all(3),
+        child: FilledButton(
+          onPressed: () => key(value),
+          style: FilledButton.styleFrom(
+            padding: EdgeInsets.zero,
+            minimumSize: const Size(0, 0),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(compact ? 12 : 15)),
+          ),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: compact ? 20 : 23,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ),
       );
 }
 
@@ -187,16 +442,65 @@ class CalculatorParser {
     return v;
   }
 
-  void _skip() { while (p < s.length && s[p] == ' ') p++; }
-  bool _eat(String x) { _skip(); if (s.startsWith(x, p)) { p += x.length; return true; } return false; }
-  double _expr() { var v = _term(); while (true) { if (_eat('+')) v += _term(); else if (_eat('−') || _eat('-')) v -= _term(); else return v; } }
-  double _term() { var v = _power(); while (true) { if (_eat('×') || _eat('*')) v *= _power(); else if (_eat('÷') || _eat('/')) v /= _power(); else return v; } }
-  double _power() { var v = _unary(); if (_eat('^')) v = math.pow(v, _power()).toDouble(); return v; }
-  double _unary() { _skip(); if (_eat('±')) return -_unary(); if (_eat('-')) return -_unary(); return _primary(); }
+  void _skip() {
+    while (p < s.length && s[p] == ' ') p++;
+  }
+
+  bool _eat(String x) {
+    _skip();
+    if (s.startsWith(x, p)) {
+      p += x.length;
+      return true;
+    }
+    return false;
+  }
+
+  double _expr() {
+    var v = _term();
+    while (true) {
+      if (_eat('+')) {
+        v += _term();
+      } else if (_eat('−') || _eat('-')) {
+        v -= _term();
+      } else {
+        return v;
+      }
+    }
+  }
+
+  double _term() {
+    var v = _power();
+    while (true) {
+      if (_eat('×') || _eat('*')) {
+        v *= _power();
+      } else if (_eat('÷') || _eat('/')) {
+        v /= _power();
+      } else {
+        return v;
+      }
+    }
+  }
+
+  double _power() {
+    var v = _unary();
+    if (_eat('^')) v = math.pow(v, _power()).toDouble();
+    return v;
+  }
+
+  double _unary() {
+    _skip();
+    if (_eat('±')) return -_unary();
+    if (_eat('-')) return -_unary();
+    return _primary();
+  }
 
   double _primary() {
     _skip();
-    if (_eat('(')) { final v = _expr(); if (!_eat(')')) throw const FormatException(')'); return v; }
+    if (_eat('(')) {
+      final v = _expr();
+      if (!_eat(')')) throw const FormatException(')');
+      return v;
+    }
     for (final f in ['sin(', 'cos(', 'tan(', 'ln(', 'log(', '√(']) {
       if (_eat(f)) {
         final x = _expr();
@@ -224,7 +528,9 @@ class CalculatorParser {
       };
 
   double _fact(double x) {
-    if (x < 0 || x > 170 || x != x.roundToDouble()) throw const FormatException('factorial');
+    if (x < 0 || x > 170 || x != x.roundToDouble()) {
+      throw const FormatException('factorial');
+    }
     var r = 1.0;
     for (var i = 2; i <= x; i++) r *= i;
     return r;
