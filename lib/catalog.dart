@@ -35,4 +35,6 @@ const tools = <UtiliaTool>[
   UtiliaTool(name: 'IMC', description: 'Calcula el índice de masa corporal.', category: 'Salud', icon: Icons.monitor_weight_outlined, tint: Color(0xFFE53935), type: ToolType.bmi),
   UtiliaTool(name: 'Media de notas', description: 'Calcula la media de varias notas.', category: 'Estudio', icon: Icons.school_outlined, tint: Color(0xFF6D4C41), type: ToolType.gradeAverage),
   UtiliaTool(name: 'Regla de tres', description: 'Resuelve una regla de tres simple.', category: 'Varios', icon: Icons.calculate_outlined, tint: Color(0xFF546E7A), type: ToolType.ruleOfThree),
+  UtiliaTool(name: 'Calculadora', description: 'Operaciones básicas con teclado numérico grande.', category: 'Varios', icon: Icons.calculate, tint: Color(0xFF546E7A), type: ToolType.calculator),
+  UtiliaTool(name: 'Calculadora científica', description: 'Funciones trigonométricas, logaritmos, potencias y más.', category: 'Varios', icon: Icons.functions, tint: Color(0xFF546E7A), type: ToolType.scientificCalculator),
 ];
