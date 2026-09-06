@@ -5,85 +5,30 @@ enum UtiliaLanguage { system, es, en, fr, de, it, pt }
 class UtiliaStrings {
   const UtiliaStrings(this.language);
   final UtiliaLanguage language;
-
-  static UtiliaLanguage fromCode(String? code) {
-    switch (code) {
-      case 'en': return UtiliaLanguage.en;
-      case 'fr': return UtiliaLanguage.fr;
-      case 'de': return UtiliaLanguage.de;
-      case 'it': return UtiliaLanguage.it;
-      case 'pt': return UtiliaLanguage.pt;
-      case 'es': return UtiliaLanguage.es;
-      default: return UtiliaLanguage.system;
-    }
-  }
-
-  static String code(UtiliaLanguage value) => switch (value) {
-    UtiliaLanguage.system => 'system', UtiliaLanguage.es => 'es',
-    UtiliaLanguage.en => 'en', UtiliaLanguage.fr => 'fr',
-    UtiliaLanguage.de => 'de', UtiliaLanguage.it => 'it', UtiliaLanguage.pt => 'pt',
-  };
-
-  static Locale? locale(UtiliaLanguage value) => value == UtiliaLanguage.system
-      ? null : Locale(code(value));
-
-  static UtiliaLanguage effective(UtiliaLanguage selected, Locale platform) {
-    if (selected != UtiliaLanguage.system) return selected;
-    return fromCode(platform.languageCode);
-  }
-
-  String get languageName => switch (language) {
-    UtiliaLanguage.system => 'Automático', UtiliaLanguage.es => 'Español',
-    UtiliaLanguage.en => 'English', UtiliaLanguage.fr => 'Français',
-    UtiliaLanguage.de => 'Deutsch', UtiliaLanguage.it => 'Italiano',
-    UtiliaLanguage.pt => 'Português',
-  };
-
-  String get appName => 'UTILIA';
-  String get slogan => switch (language) { UtiliaLanguage.en => 'Small tools.\nBig solutions.', UtiliaLanguage.fr => 'Petits outils.\nGrandes solutions.', UtiliaLanguage.de => 'Kleine Werkzeuge.\nGroße Lösungen.', UtiliaLanguage.it => 'Piccoli strumenti.\nGrandi soluzioni.', UtiliaLanguage.pt => 'Pequenas ferramentas.\nGrandes soluções.', _ => 'Pequeñas herramientas.\nGrandes soluciones.' };
-  String get search => switch (language) { UtiliaLanguage.en => 'Search tools...', UtiliaLanguage.fr => 'Rechercher des outils...', UtiliaLanguage.de => 'Werkzeuge suchen...', UtiliaLanguage.it => 'Cerca strumenti...', UtiliaLanguage.pt => 'Pesquisar ferramentas...', _ => 'Buscar herramientas...' };
-  String get categories => switch (language) { UtiliaLanguage.en => 'Categories', UtiliaLanguage.fr => 'Catégories', UtiliaLanguage.de => 'Kategorien', UtiliaLanguage.it => 'Categorie', UtiliaLanguage.pt => 'Categorias', _ => 'Categorías' };
-  String get results => switch (language) { UtiliaLanguage.en => 'Results', UtiliaLanguage.fr => 'Résultats', UtiliaLanguage.de => 'Ergebnisse', UtiliaLanguage.it => 'Risultati', UtiliaLanguage.pt => 'Resultados', _ => 'Resultados' };
-  String get home => switch (language) { UtiliaLanguage.en => 'Home', UtiliaLanguage.fr => 'Accueil', UtiliaLanguage.de => 'Start', UtiliaLanguage.it => 'Home', UtiliaLanguage.pt => 'Início', _ => 'Inicio' };
-  String get favorites => switch (language) { UtiliaLanguage.en => 'Favorites', UtiliaLanguage.fr => 'Favoris', UtiliaLanguage.de => 'Favoriten', UtiliaLanguage.it => 'Preferiti', UtiliaLanguage.pt => 'Favoritos', _ => 'Favoritos' };
-  String get history => switch (language) { UtiliaLanguage.en => 'History', UtiliaLanguage.fr => 'Historique', UtiliaLanguage.de => 'Verlauf', UtiliaLanguage.it => 'Cronologia', UtiliaLanguage.pt => 'Histórico', _ => 'Historial' };
-  String get more => switch (language) { UtiliaLanguage.en => 'More', UtiliaLanguage.fr => 'Plus', UtiliaLanguage.de => 'Mehr', UtiliaLanguage.it => 'Altro', UtiliaLanguage.pt => 'Mais', _ => 'Más' };
-  String get preferences => switch (language) { UtiliaLanguage.en => 'Preferences', UtiliaLanguage.fr => 'Préférences', UtiliaLanguage.de => 'Einstellungen', UtiliaLanguage.it => 'Preferenze', UtiliaLanguage.pt => 'Preferências', _ => 'Preferencias' };
-  String get darkMode => switch (language) { UtiliaLanguage.en => 'Dark mode', UtiliaLanguage.fr => 'Mode sombre', UtiliaLanguage.de => 'Dunkelmodus', UtiliaLanguage.it => 'Modalità scura', UtiliaLanguage.pt => 'Modo escuro', _ => 'Modo oscuro' };
-  String get savedDevice => switch (language) { UtiliaLanguage.en => 'Save preference on this device', UtiliaLanguage.fr => 'Enregistrer sur cet appareil', UtiliaLanguage.de => 'Auf diesem Gerät speichern', UtiliaLanguage.it => 'Salva sul dispositivo', UtiliaLanguage.pt => 'Guardar no dispositivo', _ => 'Guardar preferencia en el dispositivo' };
-  String get language => switch (this.language) { UtiliaLanguage.system => 'Idioma', _ => switch (this.language) { UtiliaLanguage.en => 'Language', UtiliaLanguage.fr => 'Langue', UtiliaLanguage.de => 'Sprache', UtiliaLanguage.it => 'Lingua', UtiliaLanguage.pt => 'Idioma', _ => 'Idioma' } };
-  String get calculate => switch (language) { UtiliaLanguage.en => 'Calculate', UtiliaLanguage.fr => 'Calculer', UtiliaLanguage.de => 'Berechnen', UtiliaLanguage.it => 'Calcola', UtiliaLanguage.pt => 'Calcular', _ => 'Calcular' };
-  String get result => switch (language) { UtiliaLanguage.en => 'Result', UtiliaLanguage.fr => 'Résultat', UtiliaLanguage.de => 'Ergebnis', UtiliaLanguage.it => 'Risultato', UtiliaLanguage.pt => 'Resultado', _ => 'Resultado' };
-  String get clearHistory => switch (language) { UtiliaLanguage.en => 'Clear history', UtiliaLanguage.fr => 'Effacer l’historique', UtiliaLanguage.de => 'Verlauf löschen', UtiliaLanguage.it => 'Cancella cronologia', UtiliaLanguage.pt => 'Apagar histórico', _ => 'Borrar historial' };
-  String get emptyFavorites => switch (language) { UtiliaLanguage.en => 'Favorites\nLong-press a tool to add it.', UtiliaLanguage.fr => 'Favoris\nMaintenez un outil pour l’ajouter.', UtiliaLanguage.de => 'Favoriten\nWerkzeug gedrückt halten zum Hinzufügen.', UtiliaLanguage.it => 'Preferiti\nTieni premuto uno strumento per aggiungerlo.', UtiliaLanguage.pt => 'Favoritos\nMantenha uma ferramenta pressionada para adicionar.', _ => 'Favoritos\nMantén pulsada una herramienta para añadirla.' };
-  String get emptyHistory => switch (language) { UtiliaLanguage.en => 'History\nYour calculations will appear here.', UtiliaLanguage.fr => 'Historique\nVos calculs apparaîtront ici.', UtiliaLanguage.de => 'Verlauf\nIhre Berechnungen erscheinen hier.', UtiliaLanguage.it => 'Cronologia\nI tuoi calcoli appariranno qui.', UtiliaLanguage.pt => 'Histórico\nOs seus cálculos aparecerão aqui.', _ => 'Historial\nTus cálculos aparecerán aquí.' };
-  String toolsCount(int n) => switch (language) { UtiliaLanguage.en => '$n tools', UtiliaLanguage.fr => '$n outils', UtiliaLanguage.de => '$n Werkzeuge', UtiliaLanguage.it => '$n strumenti', UtiliaLanguage.pt => '$n ferramentas', _ => '$n herramientas' };
-
-  String toolName(String id, String fallback) => _tool(id, fallback, 0);
-  String toolDescription(String id, String fallback) => _tool(id, fallback, 1);
-  String category(String id) => _cat(id);
-
-  String _tool(String id, String fallback, int field) {
-    final data = <String, List<String>>{
-      'percentage': ['Percentage', 'Calculate a percentage of a value'], 'discount': ['Discounts', 'Calculate the final price after a discount'],
-      'iva': ['VAT', 'Add VAT to a price'], 'tip': ['Tips', 'Calculate a tip and split the total'], 'loan': ['Loans', 'Calculate a monthly loan payment'],
-      'compoundInterest': ['Compound interest', 'Calculate growth with compound interest'], 'age': ['Age', 'Calculate age from a birth date'],
-      'dateDifference': ['Date difference', 'Calculate the days between two dates'], 'workHours': ['Work hours', 'Calculate worked hours after breaks'],
-      'countdown': ['Countdown', 'Convert hours, minutes and seconds to total seconds'], 'area': ['Area', 'Calculate rectangular surface area'],
-      'paint': ['Paint', 'Estimate litres of paint needed'], 'electricity': ['Electricity', 'Estimate electricity cost'], 'fuel': ['Fuel', 'Calculate fuel cost for a trip'],
-      'costPerKm': ['Cost per km', 'Calculate cost per kilometre'], 'length': ['Length converter', 'Convert between length units'], 'weight': ['Weight converter', 'Convert between weight units'],
-      'bmi': ['BMI', 'Calculate body mass index'], 'gradeAverage': ['Grade average', 'Calculate the average of several grades'], 'ruleOfThree': ['Rule of three', 'Solve a proportional calculation'],
-    };
-    return data[id]?[field] ?? fallback;
-  }
-  String _cat(String id) {
-    final data = <String, List<String>>{
-      'Dinero': ['Money','Argent','Geld','Denaro','Dinheiro'], 'Tiempo': ['Time','Temps','Zeit','Tempo','Tempo'],
-      'Casa': ['Home','Maison','Haus','Casa','Casa'], 'Coche': ['Car','Voiture','Auto','Auto','Carro'], 'Conversores': ['Converters','Convertisseurs','Umrechner','Convertitori','Conversores'],
-      'Salud': ['Health','Santé','Gesundheit','Salute','Saúde'], 'Estudio': ['Study','Études','Lernen','Studio','Estudo'], 'Varios': ['Miscellaneous','Divers','Sonstiges','Varie','Vários'],
-    };
-    final v = data[id]; if (v == null) return id; if (language == UtiliaLanguage.en) return v[0]; if (language == UtiliaLanguage.fr) return v[1]; if (language == UtiliaLanguage.de) return v[2]; if (language == UtiliaLanguage.it) return v[3]; if (language == UtiliaLanguage.pt) return v[4]; return id;
-  }
+  static UtiliaLanguage fromCode(String? code)=>switch(code){'en'=>UtiliaLanguage.en,'fr'=>UtiliaLanguage.fr,'de'=>UtiliaLanguage.de,'it'=>UtiliaLanguage.it,'pt'=>UtiliaLanguage.pt,'es'=>UtiliaLanguage.es,_=>UtiliaLanguage.system};
+  static String code(UtiliaLanguage v)=>switch(v){UtiliaLanguage.system=>'system',UtiliaLanguage.es=>'es',UtiliaLanguage.en=>'en',UtiliaLanguage.fr=>'fr',UtiliaLanguage.de=>'de',UtiliaLanguage.it=>'it',UtiliaLanguage.pt=>'pt'};
+  static Locale? locale(UtiliaLanguage v)=>v==UtiliaLanguage.system?null:Locale(code(v));
+  static UtiliaLanguage effective(UtiliaLanguage selected,Locale platform)=>selected==UtiliaLanguage.system?fromCode(platform.languageCode):selected;
+  String get languageName=>switch(language){UtiliaLanguage.system=>'Automático',UtiliaLanguage.es=>'Español',UtiliaLanguage.en=>'English',UtiliaLanguage.fr=>'Français',UtiliaLanguage.de=>'Deutsch',UtiliaLanguage.it=>'Italiano',UtiliaLanguage.pt=>'Português'};
+  String get slogan=>switch(language){UtiliaLanguage.en=>'Small tools.\nBig solutions.',UtiliaLanguage.fr=>'Petits outils.\nGrandes solutions.',UtiliaLanguage.de=>'Kleine Werkzeuge.\nGroße Lösungen.',UtiliaLanguage.it=>'Piccoli strumenti.\nGrandi soluzioni.',UtiliaLanguage.pt=>'Pequenas ferramentas.\nGrandes soluções.',_=>'Pequeñas herramientas.\nGrandes soluciones.'};
+  String get search=>switch(language){UtiliaLanguage.en=>'Search tools...',UtiliaLanguage.fr=>'Rechercher des outils...',UtiliaLanguage.de=>'Werkzeuge suchen...',UtiliaLanguage.it=>'Cerca strumenti...',UtiliaLanguage.pt=>'Pesquisar ferramentas...',_=>'Buscar herramientas...'};
+  String get categories=>switch(language){UtiliaLanguage.en=>'Categories',UtiliaLanguage.fr=>'Catégories',UtiliaLanguage.de=>'Kategorien',UtiliaLanguage.it=>'Categorie',UtiliaLanguage.pt=>'Categorias',_=>'Categorías'};
+  String get results=>switch(language){UtiliaLanguage.en=>'Results',UtiliaLanguage.fr=>'Résultats',UtiliaLanguage.de=>'Ergebnisse',UtiliaLanguage.it=>'Risultati',UtiliaLanguage.pt=>'Resultados',_=>'Resultados'};
+  String get home=>switch(language){UtiliaLanguage.en=>'Home',UtiliaLanguage.fr=>'Accueil',UtiliaLanguage.de=>'Start',UtiliaLanguage.it=>'Home',UtiliaLanguage.pt=>'Início',_=>'Inicio'};
+  String get favorites=>switch(language){UtiliaLanguage.en=>'Favorites',UtiliaLanguage.fr=>'Favoris',UtiliaLanguage.de=>'Favoriten',UtiliaLanguage.it=>'Preferiti',UtiliaLanguage.pt=>'Favoritos',_=>'Favoritos'};
+  String get history=>switch(language){UtiliaLanguage.en=>'History',UtiliaLanguage.fr=>'Historique',UtiliaLanguage.de=>'Verlauf',UtiliaLanguage.it=>'Cronologia',UtiliaLanguage.pt=>'Histórico',_=>'Historial'};
+  String get more=>switch(language){UtiliaLanguage.en=>'More',UtiliaLanguage.fr=>'Plus',UtiliaLanguage.de=>'Mehr',UtiliaLanguage.it=>'Altro',UtiliaLanguage.pt=>'Mais',_=>'Más'};
+  String get preferences=>switch(language){UtiliaLanguage.en=>'Preferences',UtiliaLanguage.fr=>'Préférences',UtiliaLanguage.de=>'Einstellungen',UtiliaLanguage.it=>'Preferenze',UtiliaLanguage.pt=>'Preferências',_=>'Preferencias'};
+  String get darkMode=>switch(language){UtiliaLanguage.en=>'Dark mode',UtiliaLanguage.fr=>'Mode sombre',UtiliaLanguage.de=>'Dunkelmodus',UtiliaLanguage.it=>'Modalità scura',UtiliaLanguage.pt=>'Modo escuro',_=>'Modo oscuro'};
+  String get savedDevice=>switch(language){UtiliaLanguage.en=>'Save preference on this device',UtiliaLanguage.fr=>'Enregistrer sur cet appareil',UtiliaLanguage.de=>'Auf diesem Gerät speichern',UtiliaLanguage.it=>'Salva sul dispositivo',UtiliaLanguage.pt=>'Guardar no dispositivo',_=>'Guardar preferencia en el dispositivo'};
+  String get languageLabel=>switch(language){UtiliaLanguage.en=>'Language',UtiliaLanguage.fr=>'Langue',UtiliaLanguage.de=>'Sprache',UtiliaLanguage.it=>'Lingua',UtiliaLanguage.pt=>'Idioma',_=>'Idioma'};
+  String get calculate=>switch(language){UtiliaLanguage.en=>'Calculate',UtiliaLanguage.fr=>'Calculer',UtiliaLanguage.de=>'Berechnen',UtiliaLanguage.it=>'Calcola',UtiliaLanguage.pt=>'Calcular',_=>'Calcular'};
+  String get result=>switch(language){UtiliaLanguage.en=>'Result',UtiliaLanguage.fr=>'Résultat',UtiliaLanguage.de=>'Ergebnis',UtiliaLanguage.it=>'Risultato',UtiliaLanguage.pt=>'Resultado',_=>'Resultado'};
+  String get clearHistory=>switch(language){UtiliaLanguage.en=>'Clear history',UtiliaLanguage.fr=>'Effacer l’historique',UtiliaLanguage.de=>'Verlauf löschen',UtiliaLanguage.it=>'Cancella cronologia',UtiliaLanguage.pt=>'Apagar histórico',_=>'Borrar historial'};
+  String get emptyFavorites=>switch(language){UtiliaLanguage.en=>'Favorites\nLong-press a tool to add it.',UtiliaLanguage.fr=>'Favoris\nMaintenez un outil pour l’ajouter.',UtiliaLanguage.de=>'Favoriten\nWerkzeug gedrückt halten zum Hinzufügen.',UtiliaLanguage.it=>'Preferiti\nTieni premuto uno strumento per aggiungerlo.',UtiliaLanguage.pt=>'Favoritos\nMantenha uma ferramenta pressionada para adicionar.',_=>'Favoritos\nMantén pulsada una herramienta para añadirla.'};
+  String get emptyHistory=>switch(language){UtiliaLanguage.en=>'History\nYour calculations will appear here.',UtiliaLanguage.fr=>'Historique\nVos calculs apparaîtront ici.',UtiliaLanguage.de=>'Verlauf\nIhre Berechnungen erscheinen hier.',UtiliaLanguage.it=>'Cronologia\nI tuoi calcoli appariranno qui.',UtiliaLanguage.pt=>'Histórico\nOs seus cálculos aparecerão aqui.',_=>'Historial\nTus cálculos aparecerán aquí.'};
+  String toolsCount(int n)=>switch(language){UtiliaLanguage.en=>'$n tools',UtiliaLanguage.fr=>'$n outils',UtiliaLanguage.de=>'$n Werkzeuge',UtiliaLanguage.it=>'$n strumenti',UtiliaLanguage.pt=>'$n ferramentas',_=>'$n herramientas'};
+  String toolName(String id,String fallback)=>_tool(id,fallback,0); String toolDescription(String id,String fallback)=>_tool(id,fallback,1);
+  String _tool(String id,String fallback,int field){final d=<String,List<String>>{'percentage':['Percentage','Calculate a percentage of a value'],'discount':['Discounts','Calculate the final price after a discount'],'iva':['VAT','Add VAT to a price'],'tip':['Tips','Calculate a tip and split the total'],'loan':['Loans','Calculate a monthly loan payment'],'compoundInterest':['Compound interest','Calculate growth with compound interest'],'age':['Age','Calculate age from a birth date'],'dateDifference':['Date difference','Calculate the days between two dates'],'workHours':['Work hours','Calculate worked hours after breaks'],'countdown':['Countdown','Convert hours, minutes and seconds to total seconds'],'area':['Area','Calculate rectangular surface area'],'paint':['Paint','Estimate litres of paint needed'],'electricity':['Electricity','Estimate electricity cost'],'fuel':['Fuel','Calculate fuel cost for a trip'],'costPerKm':['Cost per km','Calculate cost per kilometre'],'length':['Length converter','Convert between length units'],'weight':['Weight converter','Convert between weight units'],'bmi':['BMI','Calculate body mass index'],'gradeAverage':['Grade average','Calculate the average of several grades'],'ruleOfThree':['Rule of three','Solve a proportional calculation']};return d[id]?[field]??fallback;}
+  String category(String id){final d=<String,List<String>>{'Dinero':['Money','Argent','Geld','Denaro','Dinheiro'],'Tiempo':['Time','Temps','Zeit','Tempo','Tempo'],'Casa':['Home','Maison','Haus','Casa','Casa'],'Coche':['Car','Voiture','Auto','Auto','Carro'],'Conversores':['Converters','Convertisseurs','Umrechner','Convertitori','Conversores'],'Salud':['Health','Santé','Gesundheit','Salute','Saúde'],'Estudio':['Study','Études','Lernen','Studio','Estudo'],'Varios':['Miscellaneous','Divers','Sonstiges','Varie','Vários']};final v=d[id];if(v==null)return id;final i=switch(language){UtiliaLanguage.en=>0,UtiliaLanguage.fr=>1,UtiliaLanguage.de=>2,UtiliaLanguage.it=>3,UtiliaLanguage.pt=>4,_=>-1};return i<0?id:v[i];}
 }
-
-extension UtiliaLocalization on BuildContext { UtiliaStrings get s => UtiliaStrings(UtiliaStrings.effective(UtiliaLanguage.system, Localizations.localeOf(this))); }
