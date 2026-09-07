@@ -32,6 +32,7 @@ jobs:
               'lib/tool_calculator_page.dart': [
                   ("import 'catalog.dart';\n", ''),
                   ("widget.s.resultHint", "widget.s.result"),
+                  ("widget.s.result()", "widget.s.result"),
               ],
               'lib/category_page.dart': [
                   ("import 'catalog.dart';\n", ''),
