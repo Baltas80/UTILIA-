@@ -157,7 +157,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
                 _display(compact, dark),
                 if (!scientific) Padding(padding: const EdgeInsets.symmetric(horizontal: 14), child: Row(children: [_action('Copiar', Icons.copy_rounded, _copy), const SizedBox(width: 8), _action('Compartir', Icons.share_rounded, _share)])),
                 if (scientific) ...[
-                  _functionRow([_small('sin(', 'sin('), _small('cos(', 'cos('), _small('tan(', 'tan('), _small('ln(', 'ln('), _small('log(', 'log(')]),
+                  _functionRow([_small('sin', 'sin('), _small('cos', 'cos('), _small('tan', 'tan('), _small('ln', 'ln('), _small('log', 'log(')]),
                   _functionRow([_small('π', 'π'), _small('e', 'e'), _small('x²', 'x²'), _small('xʸ', '^'), _small('√', '√('), _small('!', '!')]),
                 ],
                 Expanded(child: Padding(padding: const EdgeInsets.fromLTRB(11, 7, 11, 5), child: _keypad(compact, dark))),
@@ -175,6 +175,47 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
   Widget _mode(String label, bool selected, VoidCallback onTap) => Expanded(child: GestureDetector(onTap: onTap, child: Container(alignment: Alignment.center, margin: const EdgeInsets.all(2), decoration: BoxDecoration(color: selected ? UtiliaBrand.blue : Colors.transparent, borderRadius: BorderRadius.circular(20)), child: Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 11)))));
 
   Widget _display(bool compact, bool dark) => Container(
+    height: compact ? 112 : 145,
+    margin: const EdgeInsets.fromLTRB(14, 4, 14, 8),
+    padding: const EdgeInsets.fromLTRB(17, 14, 17, 12),
+    decoration: BoxDecoration(
+      color: dark ? const Color(0xFF0F1B2A) : Colors.white,
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              reverse: true,
+              child: Text(
+                expression.isEmpty ? '0' : expression,
+                style: TextStyle(
+                  fontSize: compact ? 18 : 21,
+                  color: dark ? Colors.white70 : Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+          ),
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          reverse: true,
+          child: Text(
+            result,
+            style: TextStyle(
+              fontSize: compact ? 34 : 42,
+              fontWeight: FontWeight.w900,
+              color: dark ? Colors.white : Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
     height: compact ? 112 : 145,
     margin: const EdgeInsets.fromLTRB(14, 4, 14, 8),
     padding: const EdgeInsets.fromLTRB(17, 14, 17, 12),
