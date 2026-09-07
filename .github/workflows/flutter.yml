@@ -10,6 +10,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate-and-build:
     runs-on: ubuntu-latest
@@ -68,35 +72,12 @@ jobs:
       - run: flutter analyze --no-fatal-infos
       - run: flutter test
 
-      - name: Bootstrap Android project
-        run: flutter create . --platforms=android --project-name utilia --org com.utilia.app
-
-      - name: Prepare Android for Google Play
+      - name: Verify Android Play configuration
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path('android/app/build.gradle.kts')
-          if p.exists():
-              text = p.read_text(encoding='utf-8')
-              text = text.replace('compileSdk = flutter.compileSdkVersion', 'compileSdk = 36')
-              text = text.replace('targetSdk = flutter.targetSdkVersion', 'targetSdk = 36')
-              p.write_text(text, encoding='utf-8')
-              print('Android compileSdk/targetSdk locked to API 36.')
-          else:
-              raise SystemExit('android/app/build.gradle.kts was not generated')
-          PY
-
-      - name: Persist Android project in repository
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add android
-          if ! git diff --cached --quiet; then
-            git commit -m "Add Android project for Google Play release"
-            git push
-          else
-            echo "Android project already present and unchanged."
-          fi
+          test -f android/app/build.gradle.kts
+          grep -q 'compileSdk = 36' android/app/build.gradle.kts
+          grep -q 'targetSdk = 36' android/app/build.gradle.kts
+          echo 'Android project present and locked to API 36.'
 
       - run: flutter pub get
 
