@@ -178,6 +178,47 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
     height: compact ? 112 : 145,
     margin: const EdgeInsets.fromLTRB(14, 4, 14, 8),
     padding: const EdgeInsets.fromLTRB(17, 14, 17, 12),
+    decoration: BoxDecoration(
+      color: dark ? const Color(0xFF0F1B2A) : Colors.white,
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              reverse: true,
+              child: Text(
+                expression.isEmpty ? '0' : expression,
+                style: TextStyle(
+                  fontSize: compact ? 18 : 21,
+                  color: dark ? Colors.white70 : Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+          ),
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          reverse: true,
+          child: Text(
+            result,
+            style: TextStyle(
+              fontSize: compact ? 34 : 42,
+              fontWeight: FontWeight.w900,
+              color: dark ? Colors.white : Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+    height: compact ? 112 : 145,
+    margin: const EdgeInsets.fromLTRB(14, 4, 14, 8),
+    padding: const EdgeInsets.fromLTRB(17, 14, 17, 12),
     decoration: BoxDecoration(color: dark ? const Color(0xFF0F1B2A) : Colors.white, borderRadius: BorderRadius.circular(20)),
     child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
       Expanded(child: Align(alignment: Alignment.centerRight, child: SingleChildScrollView(scrollDirection: Axis.horizontal, reverse: true, child: Text(expression.isEmpty ? '0' : expression, style: TextStyle(fontSize: compact ? 18 : 21, color: dark ? Colors.white70 : Theme.of(context).colorScheme.onSurfaceVariant)))),
