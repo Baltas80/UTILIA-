@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'calculator_suite.dart';
-import 'catalog.dart';
 import 'localization.dart';
 import 'models/tool.dart';
 import 'storage.dart';
