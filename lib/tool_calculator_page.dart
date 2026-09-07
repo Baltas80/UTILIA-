@@ -89,9 +89,18 @@ class _CalculatorPageState extends State<CalculatorPage> {
     return true;
   }
 
+  String get _missingFieldsMessage => switch (widget.s.selectedLanguage) {
+        UtiliaLanguage.en => 'Complete all fields.',
+        UtiliaLanguage.fr => 'Remplissez tous les champs.',
+        UtiliaLanguage.de => 'Füllen Sie alle Felder aus.',
+        UtiliaLanguage.it => 'Completa tutti i campi.',
+        UtiliaLanguage.pt => 'Preencha todos os campos.',
+        _ => 'Completa todos los campos.',
+      };
+
   Future<void> calculate() async {
     if (!_hasRequiredInputs()) {
-      _error('Completa todos los campos.');
+      _error(_missingFieldsMessage);
       return;
     }
 
@@ -114,7 +123,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
       case ToolType.fuel: r = fuelCost(x, y, z); u = '€'; break;
       case ToolType.costPerKm: r = costPerKm(x, y); u = '€/km'; break;
       case ToolType.bmi: r = bmi(x, y); break;
-      case ToolType.gradeAverage: r = gradeAverage(controllers[0].text.split(',').map(parseNumber).toList()); break;
+      case ToolType.gradeAverage: r = gradeAverage(controllers[0].text.replaceAll(';', ',').split(',').map(parseNumber).toList()); break;
       case ToolType.ruleOfThree: r = ruleOfThree(x, y, z); break;
       case ToolType.age:
         final d = _date(controllers[0].text);
@@ -142,13 +151,15 @@ class _CalculatorPageState extends State<CalculatorPage> {
   void _error(String m) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(m)));
 
   Future<void> _copy() async {
-    final value = result == null ? '' : '${result!.toStringAsFixed(2).replaceAll('.', ',')} $unit';
+    if (result == null) return;
+    final value = '${result!.toStringAsFixed(2).replaceAll('.', ',')} $unit';
     await Clipboard.setData(ClipboardData(text: '${widget.s.toolName(widget.tool.type.name, widget.tool.name)}: $value'));
     if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(widget.s.copied)));
   }
 
   Future<void> _share() async {
-    final value = result == null ? '' : '${result!.toStringAsFixed(2).replaceAll('.', ',')} $unit';
+    if (result == null) return;
+    final value = '${result!.toStringAsFixed(2).replaceAll('.', ',')} $unit';
     await SharePlus.instance.share(ShareParams(text: '${widget.s.toolName(widget.tool.type.name, widget.tool.name)}: $value', subject: 'UTILIA'));
   }
 
@@ -159,7 +170,11 @@ class _CalculatorPageState extends State<CalculatorPage> {
       appBar: AppBar(
         leading: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_rounded)),
         title: Text(title),
-        actions: [IconButton(onPressed: _copy, icon: const Icon(Icons.copy_rounded)), IconButton(onPressed: _share, icon: const Icon(Icons.share_rounded)), const SizedBox(width: 8)],
+        actions: [
+          IconButton(onPressed: result == null ? null : _copy, icon: const Icon(Icons.copy_rounded)),
+          IconButton(onPressed: result == null ? null : _share, icon: const Icon(Icons.share_rounded)),
+          const SizedBox(width: 8),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
