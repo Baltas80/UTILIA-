@@ -43,9 +43,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
   Future<void> _saveResult() async {
     final entry = {
       'type': 'calculator',
-      'tool': scientific
-          ? t('Calculadora científica', 'Scientific calculator', 'Calculatrice scientifique', 'Wissenschaftlicher Rechner', 'Calcolatrice scientifica', 'Calculadora científica')
-          : t('Calculadora', 'Calculator', 'Calculatrice', 'Rechner', 'Calcolatrice', 'Calculadora'),
+      'tool': scientific ? t('Calculadora científica', 'Scientific calculator', 'Calculatrice scientifique', 'Wissenschaftlicher Rechner', 'Calcolatrice scientifica', 'Calculadora científica') : t('Calculadora', 'Calculator', 'Calculatrice', 'Rechner', 'Calcolatrice', 'Calculadora'),
       'expression': expression, 'result': result, 'timestamp': DateTime.now().toIso8601String(),
     };
     await widget.storage.addHistory(entry);
@@ -124,9 +122,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
               SizedBox(height: scientificHeight, child: _scientificRow([_small('√', '√('), _small('x²', 'x²'), _small('^', '^'), _small('1/x', '1/x'), _small('!', '!'), _small(degrees ? 'DEG' : 'RAD', 'mode')])),
             ],
             Expanded(child: Padding(padding: const EdgeInsets.fromLTRB(10, 6, 10, 4), child: scientific ? _scientificKeypad(compact) : _standardKeypad(compact))),
-            SizedBox(height: recentHeight, child: recent.isEmpty
-              ? ListTile(dense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 16), leading: const Icon(Icons.history, size: 21), title: Text(t('Cálculos recientes', 'Recent calculations', 'Calculs récents', 'Letzte Berechnungen', 'Calcoli recenti', 'Cálculos recentes')))
-              : ExpansionTile(tilePadding: const EdgeInsets.symmetric(horizontal: 16), childrenPadding: EdgeInsets.zero, initiallyExpanded: false, leading: const Icon(Icons.history, size: 21), title: Text(t('Cálculos recientes', 'Recent calculations', 'Calculs récents', 'Letzte Berechnungen', 'Calcoli recenti', 'Cálculos recentes')), children: recent.map((item) => ListTile(dense: true, title: Text(item), trailing: IconButton(icon: const Icon(Icons.replay), tooltip: t('Repetir', 'Repeat', 'Répéter', 'Wiederholen', 'Ripeti', 'Repetir'), onPressed: () => _reuse(item)))).toList())),
+            SizedBox(height: recentHeight, child: recent.isEmpty ? ListTile(dense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 16), leading: const Icon(Icons.history, size: 21), title: Text(t('Cálculos recientes', 'Recent calculations', 'Calculs récents', 'Letzte Berechnungen', 'Calcoli recenti', 'Cálculos recentes'))) : ExpansionTile(tilePadding: const EdgeInsets.symmetric(horizontal: 16), childrenPadding: EdgeInsets.zero, initiallyExpanded: false, leading: const Icon(Icons.history, size: 21), title: Text(t('Cálculos recientes', 'Recent calculations', 'Calculs récents', 'Letzte Berechnungen', 'Calcoli recenti', 'Cálculos recentes')), children: recent.map((item) => ListTile(dense: true, title: Text(item), trailing: IconButton(icon: const Icon(Icons.replay), tooltip: t('Repetir', 'Repeat', 'Répéter', 'Wiederholen', 'Ripeti', 'Repetir'), onPressed: () => _reuse(item)))).toList())),
           ]);
         }),
       ),
@@ -146,15 +142,24 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
     return Column(children: [for (final row in rows) Expanded(child: Row(children: [for (final value in row) Expanded(child: _key(value, compact, primary: value == '='))]))]);
   }
 
-  Widget _key(String value, bool compact, {bool primary = false}) => Padding(
-    padding: const EdgeInsets.all(3),
-    child: Listener(
-      onPointerDown: value == '⌫' ? (_) => _startBackspaceRepeat() : null,
-      onPointerUp: value == '⌫' ? (_) => _stopBackspaceRepeat() : null,
-      onPointerCancel: value == '⌫' ? (_) => _stopBackspaceRepeat() : null,
-      child: FilledButton(onPressed: () => key(value), style: FilledButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(0, 0), tapTargetSize: MaterialTapTargetSize.shrinkWrap, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(compact ? 12 : 15))), child: FittedBox(fit: BoxFit.scaleDown, child: Text(value, style: TextStyle(fontSize: compact ? 20 : 23, fontWeight: FontWeight.w700)))),
-    ),
-  );
+  Widget _key(String value, bool compact, {bool primary = false}) {
+    final scheme = Theme.of(context).colorScheme;
+    final background = primary ? scheme.primary : scheme.surfaceContainerHighest;
+    final foreground = primary ? scheme.onPrimary : scheme.onSurface;
+    return Padding(
+      padding: const EdgeInsets.all(3),
+      child: Listener(
+        onPointerDown: value == '⌫' ? (_) => _startBackspaceRepeat() : null,
+        onPointerUp: value == '⌫' ? (_) => _stopBackspaceRepeat() : null,
+        onPointerCancel: value == '⌫' ? (_) => _stopBackspaceRepeat() : null,
+        child: FilledButton(
+          onPressed: () => key(value),
+          style: FilledButton.styleFrom(backgroundColor: background, foregroundColor: foreground, padding: EdgeInsets.zero, minimumSize: const Size(0, 0), tapTargetSize: MaterialTapTargetSize.shrinkWrap, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(compact ? 12 : 15))),
+          child: FittedBox(fit: BoxFit.scaleDown, child: Text(value, style: TextStyle(fontSize: compact ? 20 : 23, fontWeight: FontWeight.w700))),
+        ),
+      ),
+    );
+  }
 }
 
 class CalculatorParser {
