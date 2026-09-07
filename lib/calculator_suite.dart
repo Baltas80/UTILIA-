@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
   String result = '0';
   bool degrees = true;
   final List<String> recent = [];
+  Timer? _backspaceTimer;
 
   String t(String es, String en, String fr, String de, String it, String pt) =>
       switch (widget.s.selectedLanguage) {
@@ -44,6 +46,12 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
     super.initState();
     scientific = widget.scientific;
     _loadRecent();
+  }
+
+  @override
+  void dispose() {
+    _backspaceTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> _loadRecent() async {
@@ -105,6 +113,22 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
         expression += v;
       }
     });
+  }
+
+  void _startBackspaceRepeat() {
+    _backspaceTimer?.cancel();
+    _backspaceTimer = Timer(const Duration(milliseconds: 420), () {
+      if (!mounted) return;
+      key('⌫');
+      _backspaceTimer = Timer.periodic(const Duration(milliseconds: 75), (_) {
+        if (mounted) key('⌫');
+      });
+    });
+  }
+
+  void _stopBackspaceRepeat() {
+    _backspaceTimer?.cancel();
+    _backspaceTimer = null;
   }
 
   String _format(double x) {
@@ -249,7 +273,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
                   ),
                 ),
                 if (scientific) ...[
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   SizedBox(
                     height: scientificHeight,
                     child: _scientificRow([
@@ -385,7 +409,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
       ['4', '5', '6', '×'],
       ['1', '2', '3', '−'],
       ['±', '0', ',', '+'],
-      ['=',],
+      ['='],
     ];
     return Column(
       children: [
@@ -393,7 +417,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
           Expanded(
             child: Row(
               children: [
-                for (final value in row)
+                for (final value in row]
                   Expanded(child: _key(value, compact, primary: value == '=')),
               ],
             ),
@@ -405,22 +429,27 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
   Widget _key(String value, bool compact, {bool primary = false}) =>
       Padding(
         padding: const EdgeInsets.all(3),
-        child: FilledButton(
-          onPressed: () => key(value),
-          style: FilledButton.styleFrom(
-            padding: EdgeInsets.zero,
-            minimumSize: const Size(0, 0),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(compact ? 12 : 15)),
-          ),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              value,
-              style: TextStyle(
-                fontSize: compact ? 20 : 23,
-                fontWeight: FontWeight.w700,
+        child: Listener(
+          onPointerDown: value == '⌫' ? (_) => _startBackspaceRepeat() : null,
+          onPointerUp: value == '⌫' ? (_) => _stopBackspaceRepeat() : null,
+          onPointerCancel: value == '⌫' ? (_) => _stopBackspaceRepeat() : null,
+          child: FilledButton(
+            onPressed: () => key(value),
+            style: FilledButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: const Size(0, 0),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(compact ? 12 : 15)),
+            ),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                value,
+                style: TextStyle(
+                  fontSize: compact ? 20 : 23,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ),
