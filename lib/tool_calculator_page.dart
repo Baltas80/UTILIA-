@@ -126,6 +126,11 @@ class _CalculatorPageState extends State<CalculatorPage> {
 
   bool _validNumber(String value) => double.tryParse(value.trim().replaceAll(',', '.')) != null;
 
+  bool _validInteger(String value) {
+    final parsed = double.tryParse(value.trim().replaceAll(',', '.'));
+    return parsed != null && parsed.isFinite && parsed == parsed.truncateToDouble();
+  }
+
   bool _validGradeList(String value) {
     final parts = value.replaceAll(';', ',').split(',').map((e) => e.trim()).toList();
     return parts.isNotEmpty && parts.every((part) => part.isNotEmpty && _validNumber(part));
@@ -138,7 +143,16 @@ class _CalculatorPageState extends State<CalculatorPage> {
       if (_isConverter && i > 0) continue;
       if (!_validNumber(controllers[i].text)) return false;
     }
-    return true;
+    switch (widget.tool.type) {
+      case ToolType.tip:
+      case ToolType.loan:
+      case ToolType.compoundInterest:
+        return _validInteger(controllers[2].text);
+      case ToolType.countdown:
+        return _validInteger(controllers[0].text) && _validInteger(controllers[1].text) && _validInteger(controllers[2].text);
+      default:
+        return true;
+    }
   }
 
   bool _validateToolRanges(double x, double y, double z, double price) {
@@ -206,10 +220,19 @@ class _CalculatorPageState extends State<CalculatorPage> {
   String get _invalidValueMessage => switch (widget.s.selectedLanguage) {
         UtiliaLanguage.en => 'Check the values entered.',
         UtiliaLanguage.fr => 'Vérifiez les valeurs saisies.',
-        UtiliaLanguage.de => 'Überprüfen Sie die eingegebenen Werte.',
+        UtiliaLanguage.de => 'Überprüfen Sie die Werte saisies.',
         UtiliaLanguage.it => 'Controlla i valori inseriti.',
         UtiliaLanguage.pt => 'Verifique os valores introduzidos.',
         _ => 'Revisa los valores introducidos.',
+      };
+
+  String get _futureDateMessage => switch (widget.s.selectedLanguage) {
+        UtiliaLanguage.en => 'The date cannot be in the future.',
+        UtiliaLanguage.fr => 'La date ne peut pas être dans le futur.',
+        UtiliaLanguage.de => 'Das Datum darf nicht in der Zukunft liegen.',
+        UtiliaLanguage.it => 'La data non può essere nel futuro.',
+        UtiliaLanguage.pt => 'A data não pode estar no futuro.',
+        _ => 'La fecha no puede ser futura.',
       };
 
   String get _invalidUnitMessage => switch (widget.s.selectedLanguage) {
@@ -258,6 +281,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
       case ToolType.age:
         final d = _date(controllers[0].text);
         if (d == null) { _error(widget.s.invalidDate); return; }
+        if (d.isAfter(DateTime.now())) { _error(_futureDateMessage); return; }
         r = ageInYears(d); u = _unit('años', 'years', 'ans', 'Jahre', 'anni', 'anos'); break;
       case ToolType.dateDifference:
         final a = _date(controllers[0].text);
