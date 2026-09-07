@@ -53,6 +53,9 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
   List<Map<String, dynamic>> history = [];
 
   UtiliaStrings get s => UtiliaStrings(widget.language == UtiliaLanguage.system ? UtiliaStrings.effective(UtiliaLanguage.system, Localizations.localeOf(context)) : widget.language);
+  String get _quickAccess => switch (s.selectedLanguage) { UtiliaLanguage.en => 'Quick access', UtiliaLanguage.fr => 'Accès rapide', UtiliaLanguage.de => 'Schnellzugriff', UtiliaLanguage.it => 'Accesso rapido', UtiliaLanguage.pt => 'Acesso rápido', _ => 'Acceso rápido' };
+  String get _heroEyebrow => switch (s.selectedLanguage) { UtiliaLanguage.en => 'TOOLS FOR EVERYDAY LIFE', UtiliaLanguage.fr => 'DES OUTILS POUR VOTRE QUOTIDIEN', UtiliaLanguage.de => 'WERKZEUGE FÜR DEN ALLTAG', UtiliaLanguage.it => 'STRUMENTI PER LA VITA QUOTIDIANA', UtiliaLanguage.pt => 'FERRAMENTAS PARA O DIA A DIA', _ => 'HERRAMIENTAS PARA TU DÍA A DÍA' };
+  String get _heroSubtitle => switch (s.selectedLanguage) { UtiliaLanguage.en => 'Everything useful, in one place.', UtiliaLanguage.fr => 'Tout ce qui est utile, au même endroit.', UtiliaLanguage.de => 'Alles Nützliche an einem Ort.', UtiliaLanguage.it => 'Tutto ciò che serve, in un unico posto.', UtiliaLanguage.pt => 'Tudo o que é útil, num só lugar.', _ => 'Todo lo útil, en un solo lugar.' };
   @override void initState() { super.initState(); _load(); }
   Future<void> _load() async { final f = await widget.storage.loadFavorites(); final h = await widget.storage.loadHistory(); if (mounted) setState(() { favorites = f.map(_type).whereType<ToolType>().toSet(); history = h; }); }
   ToolType? _type(String value) => ToolType.values.where((t) => t.name == value).cast<ToolType?>().firstWhere((_) => true, orElse: () => null);
@@ -87,7 +90,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
     return ListView(padding: const EdgeInsets.fromLTRB(20, 4, 20, 28), children: [
       _hero(),
       const SizedBox(height: 24),
-      UtiliaSectionTitle(title: 'Acceso rápido', action: TextButton(onPressed: () => setState(() => tab = 1), child: Text(s.favorites))),
+      UtiliaSectionTitle(title: _quickAccess, action: TextButton(onPressed: () => setState(() => tab = 1), child: Text(s.favorites))),
       const SizedBox(height: 12),
       SizedBox(height: 112, child: ListView.separated(scrollDirection: Axis.horizontal, itemCount: quick.length, separatorBuilder: (_, __) => const SizedBox(width: 10), itemBuilder: (_, i) => _quickCard(quick[i]))),
       const SizedBox(height: 28),
@@ -104,7 +107,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
         child: Stack(children: [
           Positioned(right: -32, top: -42, child: _orb(150, .11)),
           Positioned(right: 62, bottom: -82, child: _orb(145, .07)),
-          Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [Text('HERRAMIENTAS PARA TU DÍA A DÍA', style: TextStyle(color: Colors.white.withValues(alpha: .76), fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.5)), const SizedBox(height: 10), Text(s.slogan, style: const TextStyle(color: Colors.white, fontSize: 25, height: 1.05, fontWeight: FontWeight.w900, letterSpacing: -.7)), const SizedBox(height: 11), Text('Todo lo útil, en un solo lugar.', style: TextStyle(color: Colors.white.withValues(alpha: .90), fontSize: 14, fontWeight: FontWeight.w600))]),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [Text(_heroEyebrow, style: TextStyle(color: Colors.white.withValues(alpha: .76), fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.5)), const SizedBox(height: 10), Text(s.slogan, style: const TextStyle(color: Colors.white, fontSize: 25, height: 1.05, fontWeight: FontWeight.w900, letterSpacing: -.7)), const SizedBox(height: 11), Text(_heroSubtitle, style: TextStyle(color: Colors.white.withValues(alpha: .90), fontSize: 14, fontWeight: FontWeight.w600))]),
         ]),
       );
 
