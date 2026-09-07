@@ -331,7 +331,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: DropdownButtonFormField<String>(
-                  value: value,
+                  initialValue: value,
                   decoration: InputDecoration(labelText: labels[i]),
                   items: _unitOptions.entries.map((entry) => DropdownMenuItem<String>(value: entry.key, child: Text(entry.value))).toList(),
                   onChanged: (selected) {
