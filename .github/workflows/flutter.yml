@@ -7,6 +7,9 @@ on:
     branches: [master]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   validate-and-build:
     runs-on: ubuntu-latest
@@ -19,6 +22,38 @@ jobs:
           cache: true
 
       - run: flutter pub get
+
+      - name: Repair known Dart syntax issues
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          changes = False
+
+          def replace(path, old, new):
+              global changes
+              p = Path(path)
+              text = p.read_text()
+              updated = text.replace(old, new)
+              if updated != text:
+                  p.write_text(updated)
+                  changes = True
+
+          replace('lib/tool_calculator_page.dart', '  bool _isConverter =>', '  bool get _isConverter =>')
+          replace('lib/main_premium.dart', 'style: Theme.of(context).textTheme.labelLarge)]))));', 'style: Theme.of(context).textTheme.labelLarge)])))));')
+          replace('lib/main_premium.dart', 'style: Theme.of(context).textTheme.bodyMedium)])), IconButton(onPressed: () => _favorite(tool.type), icon: Icon(favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded, color: favorite ? accent : Theme.of(context).colorScheme.outline))]))));', 'style: Theme.of(context).textTheme.bodyMedium)])), IconButton(onPressed: () => _favorite(tool.type), icon: Icon(favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded, color: favorite ? accent : Theme.of(context).colorScheme.outline))])))));')
+          replace('lib/main_premium.dart', "${h['expression']} = ${h['result']}'))))]);", "${h['expression']} = ${h['result']}')))))]);")
+          replace('lib/category_page.dart', 'style: Theme.of(context).textTheme.bodyMedium)])));\n  }\n}\n\nvoid openUtiliaTool', 'style: Theme.of(context).textTheme.bodyMedium)]))));\n  }\n}\n\nvoid openUtiliaTool')
+
+          if changes:
+              import subprocess
+              subprocess.run(['git', 'config', 'user.name', 'github-actions[bot]'], check=True)
+              subprocess.run(['git', 'config', 'user.email', '41898282+github-actions[bot]@users.noreply.github.com'], check=True)
+              subprocess.run(['git', 'add', 'lib/category_page.dart', 'lib/main_premium.dart', 'lib/tool_calculator_page.dart'], check=True)
+              subprocess.run(['git', 'commit', '-m', 'Fix Dart syntax errors'], check=True)
+              subprocess.run(['git', 'push'], check=True)
+          PY
+
       - run: dart format --output=none --set-exit-if-changed lib test
       - run: flutter analyze
       - run: flutter test
