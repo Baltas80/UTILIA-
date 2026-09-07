@@ -7,12 +7,14 @@ import 'package:share_plus/share_plus.dart';
 
 import 'localization.dart';
 import 'storage.dart';
+import 'utilia_design.dart';
 
 class CalculatorSuitePage extends StatefulWidget {
-  const CalculatorSuitePage({super.key, this.scientific = false, required this.storage, required this.s});
+  const CalculatorSuitePage({super.key, this.scientific = false, required this.storage, required this.s, this.onHistory});
   final bool scientific;
   final UtiliaStorage storage;
   final UtiliaStrings s;
+  final Future<void> Function()? onHistory;
   @override State<CalculatorSuitePage> createState() => _CalculatorSuitePageState();
 }
 
@@ -25,8 +27,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
   Timer? _backspaceTimer;
 
   String t(String es, String en, String fr, String de, String it, String pt) => switch (widget.s.selectedLanguage) {
-    UtiliaLanguage.en => en, UtiliaLanguage.fr => fr, UtiliaLanguage.de => de,
-    UtiliaLanguage.it => it, UtiliaLanguage.pt => pt, _ => es,
+    UtiliaLanguage.en => en, UtiliaLanguage.fr => fr, UtiliaLanguage.de => de, UtiliaLanguage.it => it, UtiliaLanguage.pt => pt, _ => es,
   };
 
   @override void initState() { super.initState(); scientific = widget.scientific; _loadRecent(); }
@@ -35,138 +36,83 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
   Future<void> _loadRecent() async {
     final h = await widget.storage.loadHistory();
     if (!mounted) return;
-    setState(() {
-      recent..clear()..addAll(h.where((e) => e['type'] == 'calculator').map((e) => '${e['expression'] ?? ''} = ${e['result'] ?? ''}').take(8));
-    });
+    setState(() => recent..clear()..addAll(h.where((e) => e['type'] == 'calculator').map((e) => '${e['expression'] ?? ''} = ${e['result'] ?? ''}').take(8)));
   }
 
   Future<void> _saveResult() async {
-    final entry = {
-      'type': 'calculator',
-      'tool': scientific ? t('Calculadora científica', 'Scientific calculator', 'Calculatrice scientifique', 'Wissenschaftlicher Rechner', 'Calcolatrice scientifica', 'Calculadora científica') : t('Calculadora', 'Calculator', 'Calculatrice', 'Rechner', 'Calcolatrice', 'Calculadora'),
-      'expression': expression, 'result': result, 'timestamp': DateTime.now().toIso8601String(),
-    };
-    await widget.storage.addHistory(entry);
+    await widget.storage.addHistory({'type': 'calculator', 'tool': scientific ? t('Calculadora científica', 'Scientific calculator', 'Calculatrice scientifique', 'Wissenschaftlicher Rechner', 'Calcolatrice scientifica', 'Calculadora científica') : t('Calculadora', 'Calculator', 'Calculatrice', 'Rechner', 'Calcolatrice', 'Calculadora'), 'expression': expression, 'result': result, 'timestamp': DateTime.now().toIso8601String()});
     await _loadRecent();
+    await widget.onHistory?.call();
   }
 
   void key(String v) {
     setState(() {
       if (v == 'C') { expression = ''; result = '0'; }
       else if (v == '⌫') { if (expression.isNotEmpty) expression = expression.substring(0, expression.length - 1); }
-      else if (v == '=') {
-        try { result = _format(CalculatorParser(expression, degrees: degrees).parse()); _saveResult(); }
-        catch (_) { result = t('Error', 'Error', 'Erreur', 'Fehler', 'Errore', 'Erro'); }
-      } else if (v == '±') { expression = expression.startsWith('-') ? expression.substring(1) : '-$expression'; }
-      else if (v == 'x²') { expression += '^2'; }
-      else if (v == '1/x') { expression = '1/($expression)'; }
-      else { expression += v; }
+      else if (v == '=') { try { result = _format(CalculatorParser(expression, degrees: degrees).parse()); _saveResult(); } catch (_) { result = t('Error', 'Error', 'Erreur', 'Fehler', 'Errore', 'Erro'); } }
+      else if (v == '±') expression = expression.startsWith('-') ? expression.substring(1) : '-$expression';
+      else if (v == 'x²') expression += '^2';
+      else if (v == '1/x') expression = '1/($expression)';
+      else expression += v;
     });
   }
 
-  void _startBackspaceRepeat() {
-    _backspaceTimer?.cancel();
-    _backspaceTimer = Timer(const Duration(milliseconds: 420), () {
-      if (!mounted) return;
-      key('⌫');
-      _backspaceTimer = Timer.periodic(const Duration(milliseconds: 75), (_) { if (mounted) key('⌫'); });
-    });
-  }
+  void _startBackspaceRepeat() { _backspaceTimer?.cancel(); _backspaceTimer = Timer(const Duration(milliseconds: 420), () { if (!mounted) return; key('⌫'); _backspaceTimer = Timer.periodic(const Duration(milliseconds: 75), (_) { if (mounted) key('⌫'); }); }); }
   void _stopBackspaceRepeat() { _backspaceTimer?.cancel(); _backspaceTimer = null; }
-
-  String _format(double x) {
-    if (!x.isFinite) return 'Error';
-    if ((x - x.roundToDouble()).abs() < 1e-10) return x.round().toString();
-    return x.toStringAsPrecision(12).replaceFirst(RegExp(r'0+$'), '').replaceFirst(RegExp(r'\.$'), '');
-  }
-
-  Future<void> _copy() async {
-    await Clipboard.setData(ClipboardData(text: '$expression = $result'));
-    if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(t('Resultado copiado', 'Result copied', 'Résultat copié', 'Ergebnis kopiert', 'Risultato copiato', 'Resultado copiado'))));
-  }
+  String _format(double x) { if (!x.isFinite) return 'Error'; if ((x - x.roundToDouble()).abs() < 1e-10) return x.round().toString(); return x.toStringAsPrecision(12).replaceFirst(RegExp(r'0+$'), '').replaceFirst(RegExp(r'\.$'), ''); }
+  Future<void> _copy() async { await Clipboard.setData(ClipboardData(text: '$expression = $result')); if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(t('Resultado copiado', 'Result copied', 'Résultat copié', 'Ergebnis kopiert', 'Risultato copiato', 'Resultado copiado')))); }
   Future<void> _share() async => SharePlus.instance.share(ShareParams(text: '$expression = $result', subject: 'UTILIA'));
   void _reuse(String item) { final parts = item.split(' = '); setState(() { expression = parts.first; result = parts.length > 1 ? parts.sublist(1).join(' = ') : '0'; }); }
 
-  @override
-  Widget build(BuildContext context) {
+  @override Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark || scientific;
     return Scaffold(
+      backgroundColor: scientific ? const Color(0xFF07111F) : Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         toolbarHeight: 56,
-        title: Text(scientific ? t('Calculadora científica', 'Scientific calculator', 'Calculatrice scientifique', 'Wissenschaftlicher Rechner', 'Calcolatrice scientifica', 'Calculadora científica') : t('Calculadora', 'Calculator', 'Calculatrice', 'Rechner', 'Calcolatrice', 'Calculadora'), style: const TextStyle(fontWeight: FontWeight.w900)),
-        actions: [
-          IconButton(tooltip: t('Copiar', 'Copy', 'Copier', 'Kopieren', 'Copia', 'Copiar'), onPressed: _copy, icon: const Icon(Icons.copy_outlined)),
-          IconButton(tooltip: t('Compartir', 'Share', 'Partager', 'Teilen', 'Condividi', 'Partilhar'), onPressed: _share, icon: const Icon(Icons.share_outlined)),
-          IconButton(tooltip: t('Cambiar calculadora', 'Switch calculator', 'Changer de calculatrice', 'Rechner wechseln', 'Cambia calcolatrice', 'Mudar calculadora'), onPressed: () => setState(() => scientific = !scientific), icon: Icon(scientific ? Icons.calculate : Icons.functions)),
-        ],
+        leading: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_rounded)),
+        title: Text(scientific ? t('Científica', 'Scientific', 'Scientifique', 'Wissenschaftlich', 'Scientifica', 'Científica') : t('Calculadora', 'Calculator', 'Calculatrice', 'Rechner', 'Calcolatrice', 'Calculadora'), style: const TextStyle(fontWeight: FontWeight.w900)),
+        actions: [IconButton(tooltip: t('Historial', 'History', 'Historique', 'Verlauf', 'Cronologia', 'Histórico'), onPressed: () => _showRecent(), icon: const Icon(Icons.history_rounded)), IconButton(tooltip: t('Copiar', 'Copy', 'Copier', 'Kopieren', 'Copia', 'Copiar'), onPressed: _copy, icon: const Icon(Icons.copy_outlined)), IconButton(tooltip: t('Cambiar calculadora', 'Switch calculator', 'Changer', 'Wechseln', 'Cambia', 'Mudar'), onPressed: () => setState(() => scientific = !scientific), icon: Icon(scientific ? Icons.calculate_rounded : Icons.functions_rounded))],
       ),
-      body: SafeArea(
-        child: LayoutBuilder(builder: (context, constraints) {
-          final compact = constraints.maxHeight < 700;
-          final displayHeight = compact ? 92.0 : 122.0;
-          final actionHeight = compact ? 42.0 : 48.0;
-          final scientificHeight = compact ? 42.0 : 48.0;
-          final recentHeight = compact ? 46.0 : 52.0;
-          return Column(children: [
-            SizedBox(height: displayHeight, child: Padding(padding: EdgeInsets.fromLTRB(compact ? 14 : 20, compact ? 8 : 14, compact ? 14 : 20, 4), child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              Expanded(child: Align(alignment: Alignment.centerRight, child: SingleChildScrollView(scrollDirection: Axis.horizontal, reverse: true, child: Text(expression.isEmpty ? '0' : expression, style: TextStyle(fontSize: compact ? 18 : 21))))),
-              SingleChildScrollView(scrollDirection: Axis.horizontal, reverse: true, child: Text(result, style: TextStyle(fontSize: compact ? 30 : 36, fontWeight: FontWeight.w900))),
-            ]))),
-            SizedBox(height: actionHeight, child: Padding(padding: const EdgeInsets.symmetric(horizontal: 12), child: Row(children: [
-              Expanded(child: OutlinedButton.icon(onPressed: _copy, icon: const Icon(Icons.copy, size: 18), label: Text(t('Copiar', 'Copy', 'Copier', 'Kopieren', 'Copia', 'Copiar')))),
-              const SizedBox(width: 8),
-              Expanded(child: OutlinedButton.icon(onPressed: _share, icon: const Icon(Icons.share, size: 18), label: Text(t('Compartir', 'Share', 'Partager', 'Teilen', 'Condividi', 'Partilhar')))),
-            ]))),
-            if (scientific) ...[
-              const SizedBox(height: 4),
-              SizedBox(height: scientificHeight, child: _scientificRow([_small('sin(', 'sin('), _small('cos(', 'cos('), _small('tan(', 'tan('), _small('ln(', 'ln('), _small('log(', 'log(')])),
-              SizedBox(height: scientificHeight, child: _scientificRow([_small('√', '√('), _small('x²', 'x²'), _small('^', '^'), _small('1/x', '1/x'), _small('!', '!'), _small(degrees ? 'DEG' : 'RAD', 'mode')])),
-            ],
-            Expanded(child: Padding(padding: const EdgeInsets.fromLTRB(10, 6, 10, 4), child: scientific ? _scientificKeypad(compact) : _standardKeypad(compact))),
-            SizedBox(height: recentHeight, child: recent.isEmpty ? ListTile(dense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 16), leading: const Icon(Icons.history, size: 21), title: Text(t('Cálculos recientes', 'Recent calculations', 'Calculs récents', 'Letzte Berechnungen', 'Calcoli recenti', 'Cálculos recentes'))) : ExpansionTile(tilePadding: const EdgeInsets.symmetric(horizontal: 16), childrenPadding: EdgeInsets.zero, initiallyExpanded: false, leading: const Icon(Icons.history, size: 21), title: Text(t('Cálculos recientes', 'Recent calculations', 'Calculs récents', 'Letzte Berechnungen', 'Calcoli recenti', 'Cálculos recentes')), children: recent.map((item) => ListTile(dense: true, title: Text(item), trailing: IconButton(icon: const Icon(Icons.replay), tooltip: t('Repetir', 'Repeat', 'Répéter', 'Wiederholen', 'Ripeti', 'Repetir'), onPressed: () => _reuse(item)))).toList())),
-          ]);
-        }),
-      ),
+      body: SafeArea(child: LayoutBuilder(builder: (context, constraints) {
+        final compact = constraints.maxHeight < 700;
+        return Column(children: [
+          if (scientific) Padding(padding: const EdgeInsets.fromLTRB(14, 2, 14, 8), child: Container(height: 38, decoration: BoxDecoration(color: const Color(0xFF142235), borderRadius: BorderRadius.circular(22)), child: Row(children: [_mode('DEG', degrees, () => setState(() => degrees = true)), _mode('RAD', !degrees, () => setState(() => degrees = false))]))),
+          Container(height: compact ? 112 : 145, margin: const EdgeInsets.fromLTRB(14, 4, 14, 8), padding: const EdgeInsets.fromLTRB(17, 14, 17, 12), decoration: BoxDecoration(color: dark ? const Color(0xFF0F1B2A) : Colors.white, borderRadius: BorderRadius.circular(20)), child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [Expanded(child: Align(alignment: Alignment.centerRight, child: SingleChildScrollView(scrollDirection: Axis.horizontal, reverse: true, child: Text(expression.isEmpty ? '0' : expression, style: TextStyle(fontSize: compact ? 18 : 21, color: dark ? Colors.white70 : Theme.of(context).colorScheme.onSurfaceVariant))))), SingleChildScrollView(scrollDirection: Axis.horizontal, reverse: true, child: Text(result, style: TextStyle(fontSize: compact ? 34 : 42, fontWeight: FontWeight.w900, color: dark ? Colors.white : Theme.of(context).colorScheme.onSurface)))])),
+          if (!scientific) Padding(padding: const EdgeInsets.symmetric(horizontal: 14), child: Row(children: [_action('Copiar', Icons.copy_rounded, _copy), const SizedBox(width: 8), _action('Compartir', Icons.share_rounded, _share)])),
+          if (scientific) ...[_functionRow([_small('sin(', 'sin('), _small('cos(', 'cos('), _small('tan(', 'tan('), _small('ln(', 'ln('), _small('log(', 'log(')]), _functionRow([_small('π', 'π'), _small('e', 'e'), _small('x²', 'x²'), _small('xʸ', '^'), _small('√', '√('), _small('!', '!')])],
+          Expanded(child: Padding(padding: const EdgeInsets.fromLTRB(11, 7, 11, 5), child: _keypad(compact, dark))),
+          SizedBox(height: compact ? 34 : 40, child: TextButton.icon(onPressed: _showRecent, icon: const Icon(Icons.history_rounded, size: 18), label: Text(t('Cálculos recientes', 'Recent calculations', 'Calculs récents', 'Letzte Berechnungen', 'Calcoli recenti', 'Cálculos recentes')))),
+        ]);
+      })),
     );
   }
 
-  Widget _scientificRow(List<Widget> children) => Row(children: children);
-  Widget _small(String label, String value) => Expanded(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2), child: OutlinedButton(onPressed: () => value == 'mode' ? setState(() => degrees = !degrees) : key(value), style: OutlinedButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(0, 0), tapTargetSize: MaterialTapTargetSize.shrinkWrap, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))), child: FittedBox(fit: BoxFit.scaleDown, child: Text(label, style: const TextStyle(fontWeight: FontWeight.w700))))));
+  Widget _mode(String label, bool selected, VoidCallback onTap) => Expanded(child: GestureDetector(onTap: onTap, child: Container(alignment: Alignment.center, margin: const EdgeInsets.all(2), decoration: BoxDecoration(color: selected ? UtiliaBrand.blue : Colors.transparent, borderRadius: BorderRadius.circular(20)), child: Text(label, style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 11)))));
+  Widget _action(String label, IconData icon, VoidCallback onTap) => Expanded(child: OutlinedButton.icon(onPressed: onTap, icon: Icon(icon, size: 17), label: Text(label), style: OutlinedButton.styleFrom(minimumSize: const Size(0, 42), padding: EdgeInsets.zero, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)))));
+  Widget _functionRow(List<Widget> children) => SizedBox(height: 39, child: Row(children: children));
+  Widget _small(String label, String value) => Expanded(child: Padding(padding: const EdgeInsets.all(2), child: OutlinedButton(onPressed: () => key(value), style: OutlinedButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(0, 0), tapTargetSize: MaterialTapTargetSize.shrinkWrap, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11))), child: FittedBox(child: Text(label, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12))))));
 
-  Widget _standardKeypad(bool compact) {
-    const rows = [['C', '⌫', '(', ')'], ['7', '8', '9', '÷'], ['4', '5', '6', '×'], ['1', '2', '3', '−'], ['±', '0', ',', '+']];
-    return Column(children: [for (final row in rows) Expanded(child: Row(children: [for (final value in row) Expanded(child: _key(value, compact))])), Expanded(child: Row(children: [Expanded(child: _key('=', compact, primary: true))]))]);
+  Widget _keypad(bool compact, bool dark) {
+    final rows = scientific ? const [['C', '⌫', '(', ')'], ['7', '8', '9', '÷'], ['4', '5', '6', '×'], ['1', '2', '3', '−']] : const [['C', '(', ')', '⌫'], ['7', '8', '9', '÷'], ['4', '5', '6', '×'], ['1', '2', '3', '−']];
+    return Column(children: [for (final row in rows) Expanded(child: Row(children: [for (final v in row) Expanded(child: _key(v, compact, dark))])), Expanded(child: Row(children: [Expanded(child: _key(scientific ? '±' : '±', compact, dark)), Expanded(child: _key('0', compact, dark)), Expanded(child: _key(',', compact, dark)), Expanded(child: _key(scientific ? '+' : '%', compact, dark))])), Expanded(child: Row(children: [Expanded(child: _key(scientific ? '−' : '%', compact, dark)), Expanded(child: _key('=', compact, dark, primary: true))]))]);
   }
 
-  Widget _scientificKeypad(bool compact) {
-    const rows = [['C', '⌫', '(', ')'], ['7', '8', '9', '÷'], ['4', '5', '6', '×'], ['1', '2', '3', '−'], ['±', '0', ',', '+'], ['=']];
-    return Column(children: [for (final row in rows) Expanded(child: Row(children: [for (final value in row) Expanded(child: _key(value, compact, primary: value == '='))]))]);
+  Widget _key(String value, bool compact, bool dark, {bool primary = false}) {
+    final destructive = value == 'C';
+    final bg = primary ? UtiliaBrand.blue : dark ? const Color(0xFF172637) : Theme.of(context).colorScheme.surfaceContainerHighest;
+    final fg = primary ? Colors.white : destructive ? Theme.of(context).colorScheme.error : dark ? Colors.white : Theme.of(context).colorScheme.onSurface;
+    return Padding(padding: const EdgeInsets.all(3), child: Listener(onPointerDown: value == '⌫' ? (_) => _startBackspaceRepeat() : null, onPointerUp: value == '⌫' ? (_) => _stopBackspaceRepeat() : null, onPointerCancel: value == '⌫' ? (_) => _stopBackspaceRepeat() : null, child: Material(color: bg, borderRadius: BorderRadius.circular(compact ? 12 : 15), child: InkWell(onTap: () => key(value), borderRadius: BorderRadius.circular(compact ? 12 : 15), child: Center(child: Text(value, style: TextStyle(fontSize: compact ? 19 : 22, fontWeight: FontWeight.w700, color: fg)))))));
   }
 
-  Widget _key(String value, bool compact, {bool primary = false}) {
-    final scheme = Theme.of(context).colorScheme;
-    final background = primary ? scheme.primary : scheme.surfaceContainerHighest;
-    final foreground = primary ? scheme.onPrimary : scheme.onSurface;
-    return Padding(
-      padding: const EdgeInsets.all(3),
-      child: Listener(
-        onPointerDown: value == '⌫' ? (_) => _startBackspaceRepeat() : null,
-        onPointerUp: value == '⌫' ? (_) => _stopBackspaceRepeat() : null,
-        onPointerCancel: value == '⌫' ? (_) => _stopBackspaceRepeat() : null,
-        child: FilledButton(
-          onPressed: () => key(value),
-          style: FilledButton.styleFrom(backgroundColor: background, foregroundColor: foreground, padding: EdgeInsets.zero, minimumSize: const Size(0, 0), tapTargetSize: MaterialTapTargetSize.shrinkWrap, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(compact ? 12 : 15))),
-          child: FittedBox(fit: BoxFit.scaleDown, child: Text(value, style: TextStyle(fontSize: compact ? 20 : 23, fontWeight: FontWeight.w700))),
-        ),
-      ),
-    );
+  Future<void> _showRecent() async {
+    await showModalBottomSheet<void>(context: context, showDragHandle: true, builder: (c) => SafeArea(child: recent.isEmpty ? Padding(padding: const EdgeInsets.all(28), child: Center(child: Text(t('No hay cálculos recientes.', 'No recent calculations.', 'Aucun calcul récent.', 'Keine aktuellen Berechnungen.', 'Nessun calcolo recente.', 'Sem cálculos recentes.')))) : ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 24), children: recent.map((item) => ListTile(leading: const Icon(Icons.functions_rounded), title: Text(item), trailing: IconButton(icon: const Icon(Icons.replay_rounded), onPressed: () { Navigator.pop(c); _reuse(item); })).toList())));
   }
 }
 
 class CalculatorParser {
   CalculatorParser(this.s, {this.degrees = true});
-  final String s;
-  final bool degrees;
-  int p = 0;
+  final String s; final bool degrees; int p = 0;
   double parse() { p = 0; final v = _expr(); _skip(); if (p < s.length) throw const FormatException('syntax'); return v; }
   void _skip() { while (p < s.length && s[p] == ' ') p++; }
   bool _eat(String x) { _skip(); if (s.startsWith(x, p)) { p += x.length; return true; } return false; }
