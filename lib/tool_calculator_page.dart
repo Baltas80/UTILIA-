@@ -52,8 +52,17 @@ class _CalculatorPageState extends State<CalculatorPage> {
       ToolType.ruleOfThree => 3,
       _ => 2,
     };
-    return List.generate(count, (i) => widget.tool.type == ToolType.electricity && i == 3 ? 'Precio del kWh (€)' : widget.s.inputLabel(id, i));
+    return List.generate(count, (i) => widget.tool.type == ToolType.electricity && i == 3 ? _priceLabel : widget.s.inputLabel(id, i));
   }
+
+  String get _priceLabel => switch (widget.s.selectedLanguage) {
+        UtiliaLanguage.en => 'Price per kWh (€)',
+        UtiliaLanguage.fr => 'Prix du kWh (€)',
+        UtiliaLanguage.de => 'Preis pro kWh (€)',
+        UtiliaLanguage.it => 'Prezzo per kWh (€)',
+        UtiliaLanguage.pt => 'Preço por kWh (€)',
+        _ => 'Precio del kWh (€)',
+      };
 
   DateTime? _date(String v) {
     final p = v.trim().split('/');
@@ -98,12 +107,20 @@ class _CalculatorPageState extends State<CalculatorPage> {
         _ => 'Completa todos los campos.',
       };
 
+  String get _invalidUnitMessage => switch (widget.s.selectedLanguage) {
+        UtiliaLanguage.en => 'Enter valid units. Length: mm, cm, m, km, in, ft, yd, mi. Weight: mg, g, kg, t, oz, lb.',
+        UtiliaLanguage.fr => 'Saisissez des unités valides. Longueur : mm, cm, m, km, in, ft, yd, mi. Poids : mg, g, kg, t, oz, lb.',
+        UtiliaLanguage.de => 'Gültige Einheiten eingeben. Länge: mm, cm, m, km, in, ft, yd, mi. Gewicht: mg, g, kg, t, oz, lb.',
+        UtiliaLanguage.it => 'Inserisci unità valide. Lunghezza: mm, cm, m, km, in, ft, yd, mi. Peso: mg, g, kg, t, oz, lb.',
+        UtiliaLanguage.pt => 'Introduza unidades válidas. Comprimento: mm, cm, m, km, in, ft, yd, mi. Peso: mg, g, kg, t, oz, lb.',
+        _ => 'Introduce unidades válidas. Longitud: mm, cm, m, km, in, ft, yd, mi. Peso: mg, g, kg, t, oz, lb.',
+      };
+
   Future<void> calculate() async {
     if (!_hasRequiredInputs()) {
       _error(_missingFieldsMessage);
       return;
     }
-
     final x = parseNumber(controllers[0].text);
     final y = parseNumber(controllers[1].text);
     final z = parseNumber(controllers[2].text);
@@ -128,38 +145,54 @@ class _CalculatorPageState extends State<CalculatorPage> {
       case ToolType.age:
         final d = _date(controllers[0].text);
         if (d == null) { _error(widget.s.invalidDate); return; }
-        r = ageInYears(d); u = _unit('años', 'years', 'ans', 'Jahre', 'anni', 'anos');
-        break;
+        r = ageInYears(d); u = _unit('años', 'years', 'ans', 'Jahre', 'anni', 'anos'); break;
       case ToolType.dateDifference:
         final a = _date(controllers[0].text);
         final b = _date(controllers[1].text);
         if (a == null || b == null) { _error(widget.s.invalidDate); return; }
-        r = dateDifferenceDays(a, b).toDouble(); u = _unit('días', 'days', 'jours', 'Tage', 'giorni', 'dias');
-        break;
+        r = dateDifferenceDays(a, b).toDouble(); u = _unit('días', 'days', 'jours', 'Tage', 'giorni', 'dias'); break;
       case ToolType.workHours: r = workHours(x, y, z); u = 'h'; break;
-      case ToolType.countdown: r = countdownSeconds(x.toInt(), y.toInt(), z.toInt()).toDouble(); u = 'sec'; break;
-      case ToolType.length: r = convertLength(x, controllers[1].text.trim().toLowerCase(), controllers[2].text.trim().toLowerCase()); u = controllers[2].text.trim(); break;
-      case ToolType.weight: r = convertWeight(x, controllers[1].text.trim().toLowerCase(), controllers[2].text.trim().toLowerCase()); u = controllers[2].text.trim(); break;
+      case ToolType.countdown: r = countdownSeconds(x.toInt(), y.toInt(), z.toInt()).toDouble(); u = 's'; break;
+      case ToolType.length:
+        final from = controllers[1].text.trim().toLowerCase();
+        final to = controllers[2].text.trim().toLowerCase();
+        r = convertLength(x, from, to);
+        if (r.isNaN) { _error(_invalidUnitMessage); return; }
+        u = to; break;
+      case ToolType.weight:
+        final from = controllers[1].text.trim().toLowerCase();
+        final to = controllers[2].text.trim().toLowerCase();
+        r = convertWeight(x, from, to);
+        if (r.isNaN) { _error(_invalidUnitMessage); return; }
+        u = to; break;
       case ToolType.calculator:
       case ToolType.scientificCalculator: r = 0; break;
     }
     setState(() { result = r; unit = u; });
-    await widget.storage.addHistory({'tool': widget.s.toolName(widget.tool.type.name, widget.tool.name), 'result': '${r.toStringAsFixed(2).replaceAll('.', ',')} $u', 'timestamp': DateTime.now().toIso8601String()});
+    await widget.storage.addHistory({'tool': widget.s.toolName(widget.tool.type.name, widget.tool.name), 'result': '${_formatResult(r)}${u.isEmpty ? '' : ' $u'}', 'timestamp': DateTime.now().toIso8601String()});
     await widget.onHistory?.call();
+  }
+
+  String _formatResult(double value) {
+    final type = widget.tool.type;
+    if (type == ToolType.age || type == ToolType.dateDifference || type == ToolType.countdown) return value.toInt().toString();
+    if (type == ToolType.gradeAverage || type == ToolType.bmi) return value.toStringAsFixed(2).replaceAll('.', ',');
+    if (value == value.roundToDouble()) return value.toInt().toString();
+    return value.toStringAsFixed(2).replaceAll('.', ',');
   }
 
   void _error(String m) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(m)));
 
   Future<void> _copy() async {
     if (result == null) return;
-    final value = '${result!.toStringAsFixed(2).replaceAll('.', ',')} $unit';
+    final value = '${_formatResult(result!)}${unit.isEmpty ? '' : ' $unit'}';
     await Clipboard.setData(ClipboardData(text: '${widget.s.toolName(widget.tool.type.name, widget.tool.name)}: $value'));
     if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(widget.s.copied)));
   }
 
   Future<void> _share() async {
     if (result == null) return;
-    final value = '${result!.toStringAsFixed(2).replaceAll('.', ',')} $unit';
+    final value = '${_formatResult(result!)}${unit.isEmpty ? '' : ' $unit'}';
     await SharePlus.instance.share(ShareParams(text: '${widget.s.toolName(widget.tool.type.name, widget.tool.name)}: $value', subject: 'UTILIA'));
   }
 
@@ -212,7 +245,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [Container(width: 38, height: 38, decoration: BoxDecoration(color: scheme.primary, shape: BoxShape.circle), child: Icon(Icons.check_rounded, color: scheme.onPrimary)), const SizedBox(width: 12), Text(widget.s.result, style: Theme.of(context).textTheme.titleLarge)]),
         const SizedBox(height: 15),
-        Text('${result!.toStringAsFixed(2).replaceAll('.', ',')} $unit', style: TextStyle(fontSize: 38, height: 1, fontWeight: FontWeight.w900, color: scheme.onSurface)),
+        Text('${_formatResult(result!)}${unit.isEmpty ? '' : ' $unit'}', style: TextStyle(fontSize: 38, height: 1, fontWeight: FontWeight.w900, color: scheme.onSurface)),
         const SizedBox(height: 14),
         Text(widget.s.resultHint(widget.tool.type.name), style: Theme.of(context).textTheme.bodyMedium),
       ]),
