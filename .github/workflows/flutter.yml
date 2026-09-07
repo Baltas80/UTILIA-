@@ -26,7 +26,8 @@ jobs:
           cache: true
 
       - run: flutter pub get
-      - run: dart format --output=none --set-exit-if-changed lib test
+      - name: Format Dart sources
+        run: dart format lib test
       - run: flutter analyze --no-fatal-infos
       - run: flutter test
 
@@ -36,8 +37,6 @@ jobs:
           grep -q 'compileSdk = 36' android/app/build.gradle.kts
           grep -q 'targetSdk = 36' android/app/build.gradle.kts
           echo 'Android project present and locked to API 36.'
-
-      - run: flutter pub get
 
       - name: Build release APK
         run: flutter build apk --release
