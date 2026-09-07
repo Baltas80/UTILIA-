@@ -65,7 +65,7 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
       Container(width: 52, height: 52, decoration: BoxDecoration(color: accent.withValues(alpha: .12), borderRadius: BorderRadius.circular(17)), child: Icon(tool.icon, color: accent, size: 27)),
       const SizedBox(width: 14), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(widget.s.toolName(tool.type.name, tool.name), style: Theme.of(context).textTheme.titleMedium), const SizedBox(height: 4), Text(widget.s.toolDescription(tool.type.name, tool.description), maxLines: 2, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodyMedium)])),
       IconButton(onPressed: () => _toggleFavorite(tool.type), tooltip: widget.s.favorites, icon: Icon(favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded, color: favorite ? accent : Theme.of(context).colorScheme.outline)),
-    ])));
+    ]))));
   }
 }
 
