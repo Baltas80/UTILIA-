@@ -69,16 +69,6 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
     });
   }
 
-  void _startBackspaceRepeat() {
-    _backspaceTimer?.cancel();
-    _backspaceTimer = Timer(const Duration(milliseconds: 420), () {
-      if (!mounted) return;
-      key('⌫');
-      _backspaceTimer = Timer.periodic(const Duration(milliseconds: 75), (_) { if (mounted) key('⌫'); });
-    });
-  }
-  void _stopBackspaceRepeat() { _backspaceTimer?.cancel(); _backspaceTimer = null; }
-
   String _format(double x) {
     if (!x.isFinite) return 'Error';
     if ((x - x.roundToDouble()).abs() < 1e-10) return x.round().toString();
@@ -120,16 +110,16 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
     final radius = BorderRadius.circular(compact ? 12 : 15);
     return Padding(
       padding: const EdgeInsets.all(3),
-      child: GestureDetector(
-        onTap: () => key(value),
-        onLongPressStart: value == '⌫' ? (_) => _startBackspaceRepeat() : null,
-        onLongPressEnd: value == '⌫' ? (_) => _stopBackspaceRepeat() : null,
-        onLongPressCancel: value == '⌫' ? _stopBackspaceRepeat : null,
-        child: Container(
-          decoration: BoxDecoration(color: bg, borderRadius: radius),
-          alignment: Alignment.center,
-          child: Text(value, style: TextStyle(fontSize: compact ? 19 : 22, fontWeight: FontWeight.w700, color: fg)),
+      child: FilledButton(
+        onPressed: () => key(value),
+        style: FilledButton.styleFrom(
+          backgroundColor: bg,
+          foregroundColor: fg,
+          padding: EdgeInsets.zero,
+          minimumSize: const Size(0, 0),
+          shape: RoundedRectangleBorder(borderRadius: radius),
         ),
+        child: Text(value, style: TextStyle(fontSize: compact ? 19 : 22, fontWeight: FontWeight.w700)),
       ),
     );
   }
