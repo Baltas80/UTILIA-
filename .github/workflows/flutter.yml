@@ -27,12 +27,11 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          import re
 
           fixes = {
               'lib/tool_calculator_page.dart': [
                   ("import 'catalog.dart';\n", ''),
-                  ("widget.s.resultHint", "widget.s.result"),
-                  ("widget.s.result()", "widget.s.result"),
               ],
               'lib/category_page.dart': [
                   ("import 'catalog.dart';\n", ''),
@@ -46,6 +45,8 @@ jobs:
               original = text
               for old, new in replacements:
                   text = text.replace(old, new)
+              if filename.endswith('tool_calculator_page.dart'):
+                  text = re.sub(r'widget\.s\.result(?:Hint)?\(\)', 'widget.s.result', text)
               if text != original:
                   path.write_text(text, encoding='utf-8')
                   changed = True
