@@ -28,7 +28,7 @@ double costPerKm(double totalCost, double km) =>
     km <= 0 ? 0 : totalCost / km;
 double area(double length, double width) => length * width;
 double paintLitres(double wallArea, double coverageM2PerLitre,
-        {int coats = 1}) =>
+        {int coats = 2}) =>
     coverageM2PerLitre <= 0 || coats <= 0
         ? 0
         : wallArea * coats / coverageM2PerLitre;
