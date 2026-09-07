@@ -70,44 +70,42 @@ double workHours(double startHour, double endHour, double breakMinutes) {
 int countdownSeconds(int hours, int minutes, int seconds) =>
     hours * 3600 + minutes * 60 + seconds;
 
+const lengthFactors = <String, double>{
+  'mm': 0.001,
+  'cm': 0.01,
+  'm': 1,
+  'km': 1000,
+  'in': 0.0254,
+  'ft': 0.3048,
+  'yd': 0.9144,
+  'mi': 1609.344,
+};
+
+const weightFactors = <String, double>{
+  'mg': 0.000001,
+  'g': 0.001,
+  'kg': 1,
+  't': 1000,
+  'oz': 0.028349523125,
+  'lb': 0.45359237,
+};
+
 double metresToLength(double value, String unit) {
-  const factors = <String, double>{
-    'mm': 0.001,
-    'cm': 0.01,
-    'm': 1,
-    'km': 1000,
-    'in': 0.0254,
-    'ft': 0.3048,
-    'yd': 0.9144,
-    'mi': 1609.344,
-  };
-  return value * (factors[unit] ?? 1);
+  final factor = lengthFactors[unit];
+  if (factor == null) return double.nan;
+  return value * factor;
 }
 
 double convertLength(double value, String from, String to) {
-  final metres = metresToLength(value, from);
-  const factors = <String, double>{
-    'mm': 0.001,
-    'cm': 0.01,
-    'm': 1,
-    'km': 1000,
-    'in': 0.0254,
-    'ft': 0.3048,
-    'yd': 0.9144,
-    'mi': 1609.344,
-  };
-  return metres / (factors[to] ?? 1);
+  final fromFactor = lengthFactors[from];
+  final toFactor = lengthFactors[to];
+  if (fromFactor == null || toFactor == null) return double.nan;
+  return value * fromFactor / toFactor;
 }
 
 double convertWeight(double value, String from, String to) {
-  const factors = <String, double>{
-    'mg': 0.000001,
-    'g': 0.001,
-    'kg': 1,
-    't': 1000,
-    'oz': 0.028349523125,
-    'lb': 0.45359237,
-  };
-  final kg = value * (factors[from] ?? 1);
-  return kg / (factors[to] ?? 1);
+  final fromFactor = weightFactors[from];
+  final toFactor = weightFactors[to];
+  if (fromFactor == null || toFactor == null) return double.nan;
+  return value * fromFactor / toFactor;
 }
