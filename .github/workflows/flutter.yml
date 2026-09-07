@@ -40,6 +40,13 @@ jobs:
               'lib/category_page.dart': [
                   ("import 'catalog.dart';\n", ''),
               ],
+              'lib/calculator_suite.dart': [
+                  ("_small('sin(', 'sin(')", "_small('sin', 'sin(')"),
+                  ("_small('cos(', 'cos(')", "_small('cos', 'cos(')"),
+                  ("_small('tan(', 'tan(')", "_small('tan', 'tan(')"),
+                  ("_small('ln(', 'ln(')", "_small('ln', 'ln(')"),
+                  ("_small('log(', 'log(')", "_small('log', 'log(')"),
+              ],
           }
 
           changed = False
