@@ -75,7 +75,27 @@ class _CalculatorPageState extends State<CalculatorPage> {
         _ => es,
       };
 
+  bool _needsTextInput(int index) => switch (widget.tool.type) {
+        ToolType.age || ToolType.dateDifference => true,
+        ToolType.length || ToolType.weight => index > 0,
+        ToolType.gradeAverage => true,
+        _ => false,
+      };
+
+  bool _hasRequiredInputs() {
+    final required = labels.length;
+    for (var i = 0; i < required; i++) {
+      if (controllers[i].text.trim().isEmpty) return false;
+    }
+    return true;
+  }
+
   Future<void> calculate() async {
+    if (!_hasRequiredInputs()) {
+      _error(widget.s.requiredFields);
+      return;
+    }
+
     final x = parseNumber(controllers[0].text);
     final y = parseNumber(controllers[1].text);
     final z = parseNumber(controllers[2].text);
@@ -147,7 +167,15 @@ class _CalculatorPageState extends State<CalculatorPage> {
         children: [
           Text(widget.s.toolDescription(widget.tool.type.name, widget.tool.description), style: Theme.of(context).textTheme.bodyLarge),
           const SizedBox(height: 22),
-          ...List.generate(labels.length, (i) => Padding(padding: const EdgeInsets.only(bottom: 12), child: TextField(controller: controllers[i], keyboardType: TextInputType.numberWithOptions(decimal: true, signed: true), decoration: InputDecoration(labelText: labels[i])))),
+          ...List.generate(labels.length, (i) => Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: TextField(
+              controller: controllers[i],
+              keyboardType: _needsTextInput(i) ? TextInputType.text : const TextInputType.numberWithOptions(decimal: true, signed: true),
+              textInputAction: i == labels.length - 1 ? TextInputAction.done : TextInputAction.next,
+              decoration: InputDecoration(labelText: labels[i]),
+            ),
+          )),
           const SizedBox(height: 4),
           FilledButton.icon(onPressed: calculate, icon: const Icon(Icons.auto_awesome_rounded), label: Text(widget.s.calculate)),
           if (result != null) ...[
