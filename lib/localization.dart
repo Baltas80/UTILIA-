@@ -30,7 +30,17 @@ class UtiliaStrings {
   String get emptyHistory => _t('Historial\nTus cálculos aparecerán aquí.', 'History\nYour calculations will appear here.', 'Historique\nVos calculs apparaîtront ici.', 'Verlauf\nIhre Berechnungen erscheinen hier.', 'Cronologia\nI tuoi calcoli appariranno qui.', 'Histórico\nOs seus cálculos aparecerão aqui.');
   String toolsCount(int n) => _t('$n herramientas', '$n tools', '$n outils', '$n Werkzeuge', '$n strumenti', '$n ferramentas');
   String get invalidDate => _t('Introduce una fecha válida.', 'Enter a valid date.', 'Saisissez une date valide.', 'Geben Sie ein gültiges Datum ein.', 'Inserisci una data valida.', 'Introduza uma data válida.');
-  String category(String id) => _category(id);
+  String category(String id) => switch (id) {
+        'Dinero' => _t('Dinero', 'Money', 'Argent', 'Geld', 'Denaro', 'Dinheiro'),
+        'Tiempo' => _t('Tiempo', 'Time', 'Temps', 'Zeit', 'Tempo', 'Tempo'),
+        'Casa' => _t('Casa', 'Home', 'Maison', 'Haus', 'Casa', 'Casa'),
+        'Coche' => _t('Coche', 'Car', 'Voiture', 'Auto', 'Auto', 'Carro'),
+        'Conversores' => _t('Conversores', 'Converters', 'Convertisseurs', 'Umrechner', 'Convertitori', 'Conversores'),
+        'Salud' => _t('Salud', 'Health', 'Santé', 'Gesundheit', 'Salute', 'Saúde'),
+        'Estudio' => _t('Estudio', 'Study', 'Études', 'Lernen', 'Studio', 'Estudo'),
+        'Varios' => _t('Varios', 'Miscellaneous', 'Divers', 'Sonstiges', 'Varie', 'Vários'),
+        _ => id,
+      };
   String toolName(String id, String fallback) => _tool(id, fallback, 0);
   String toolDescription(String id, String fallback) => _tool(id, fallback, 1);
   String _t(String es, String en, String fr, String de, String it, String pt) => switch (selectedLanguage) { UtiliaLanguage.en => en, UtiliaLanguage.fr => fr, UtiliaLanguage.de => de, UtiliaLanguage.it => it, UtiliaLanguage.pt => pt, _ => es };
@@ -76,5 +86,4 @@ class UtiliaStrings {
     final list = translated[id] ?? es;
     return index < list.length ? list[index] : es[index];
   }
-  String _category(String id) => _t(id, id, id, id, id, id);
 }
