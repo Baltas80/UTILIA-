@@ -70,9 +70,15 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
       return Column(children: [for (final row in rows) Expanded(child: Row(children: [for (final value in row) Expanded(child: _key(value, compact, true))])), Expanded(child: Row(children: [Expanded(child: _key('±', compact, true)), Expanded(child: _key('=', compact, true, primary: true))]))]);
     }
     final rows = const [['C', '(', ')', '⌫'], ['7', '8', '9', '÷'], ['4', '5', '6', '×'], ['1', '2', '3', '−'], ['0', ',', '%', '+']];
-    return Row(children: [Expanded(child: Column(children: [for (final row in rows) Expanded(child: Row(children: [for (final value in row.take(3)) Expanded(child: _key(value, compact, false))]))])), SizedBox(width: MediaQuery.sizeOf(context).size.width * .02), Expanded(child: Column(children: [for (final value in ['⌫', '÷', '×', '−']) Expanded(child: _key(value, compact, false)), Expanded(flex: 2, child: _key('+', compact, false)), Expanded(flex: 2, child: _key('=', compact, false, primary: true))]))]);
+    return Row(children: [Expanded(child: Column(children: [for (final row in rows) Expanded(child: Row(children: [for (final value in row.take(3)) Expanded(child: _key(value, compact, false))]))])), SizedBox(width: MediaQuery.sizeOf(context).width * .02), Expanded(child: Column(children: [for (final value in ['⌫', '÷', '×', '−']) Expanded(child: _key(value, compact, false)), Expanded(flex: 2, child: _key('+', compact, false)), Expanded(flex: 2, child: _key('=', compact, false, primary: true))]))]);
   }
-  Widget _key(String value, bool compact, bool dark, {bool primary = false}) { final destructive = value == 'C'; final bg = primary ? UtiliaBrand.blue : dark ? const Color(0xFF172637) : Colors.white; final fg = primary ? Colors.white : destructive ? const Color(0xFFE43E4E) : dark ? Colors.white : UtiliaBrand.ink; return Padding(padding: const EdgeInsets.all(3), child: Material(color: bg, borderRadius: BorderRadius.circular(compact ? 12 : 15), elevation: dark || primary ? 0 : 1, shadowColor: Colors.black.withValues(alpha: .06), child: InkWell(borderRadius: BorderRadius.circular(compact ? 12 : 15), onTap: () => key(value), child: Center(child: Text(value, style: TextStyle(fontSize: compact ? 19 : 22, fontWeight: FontWeight.w700, color: fg)))))); }
+
+  Widget _key(String value, bool compact, bool dark, {bool primary = false}) {
+    final destructive = value == 'C';
+    final bg = primary ? UtiliaBrand.blue : dark ? const Color(0xFF172637) : Colors.white;
+    final fg = primary ? Colors.white : destructive ? const Color(0xFFE43E4E) : dark ? Colors.white : UtiliaBrand.ink;
+    return Padding(padding: const EdgeInsets.all(3), child: Material(color: bg, borderRadius: BorderRadius.circular(compact ? 12 : 15), elevation: dark || primary ? 0 : 1, shadowColor: Colors.black.withValues(alpha: .06), child: InkWell(borderRadius: BorderRadius.circular(compact ? 12 : 15), onTap: () => key(value), child: Center(child: Text(value, style: TextStyle(fontSize: compact ? 19 : 22, fontWeight: FontWeight.w700, color: fg))))));
+  }
 
   Future<void> _showRecent() async {
     await showModalBottomSheet<void>(
@@ -111,7 +117,15 @@ class CalculatorParser {
   double _term() { var value = _power(); while (true) { if (_eat('×') || _eat('*')) value *= _power(); else if (_eat('÷') || _eat('/')) value /= _power(); else return value; } }
   double _power() { var value = _unary(); if (_eat('^')) value = math.pow(value, _power()).toDouble(); return value; }
   double _unary() { _skip(); if (_eat('±')) return -_unary(); if (_eat('-')) return -_unary(); return _primary(); }
-  double _primary() { _skip(); if (_eat('(')) { final value = _expr(); if (!_eat(')')) throw const FormatException(')'); return value; } for (final function in ['sin(', 'cos(', 'tan(', 'ln(', 'log(', '√(']) { if (_eat(function)) { final value = _expr(); if (!_eat(')')) throw const FormatException(')'); return _function(function.substring(0, function.length - 1), value); } } if (_eat('π')) return math.pi; if (_eat('e')) return math.e; final start = p; while (p < s.length && RegExp(r'[0-9.,]').hasMatch(s[p])) p++; if (start == p) throw const FormatException('number'); var value = double.parse(s.substring(start, p).replaceAll(',', '.')); while (_eat('!')) value = _factorial(value); return value; }
+  double _primary() {
+    _skip();
+    if (_eat('(')) { final value = _expr(); if (!_eat(')')) throw const FormatException(')'); return value; }
+    for (final function in ['sin(', 'cos(', 'tan(', 'ln(', 'log(', '√(']) { if (_eat(function)) { final value = _expr(); if (!_eat(')')) throw const FormatException(')'); return _function(function.substring(0, function.length - 1), value); } }
+    if (_eat('π')) return math.pi;
+    if (_eat('e')) return math.e;
+    final start = p; while (p < s.length && RegExp(r'[0-9.,]').hasMatch(s[p])) p++; if (start == p) throw const FormatException('number');
+    var value = double.parse(s.substring(start, p).replaceAll(',', '.')); while (_eat('!')) value = _factorial(value); return value;
+  }
   double _function(String name, double value) => switch (name) { 'sin' => math.sin(degrees ? value * math.pi / 180 : value), 'cos' => math.cos(degrees ? value * math.pi / 180 : value), 'tan' => math.tan(degrees ? value * math.pi / 180 : value), 'ln' => math.log(value), 'log' => math.log(value) / math.ln10, _ => math.sqrt(value) };
   double _factorial(double value) { if (value < 0 || value > 170 || value != value.roundToDouble()) throw const FormatException('factorial'); var result = 1.0; for (var i = 2; i <= value; i++) result *= i; return result; }
 }
