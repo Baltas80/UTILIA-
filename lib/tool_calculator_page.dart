@@ -23,6 +23,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
   final controllers = List.generate(4, (_) => TextEditingController());
   double? result;
   String unit = '';
+  String? _fromUnit;
+  String? _toUnit;
 
   @override
   void dispose() {
@@ -60,7 +62,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
         UtiliaLanguage.fr => 'Prix du kWh (€)',
         UtiliaLanguage.de => 'Preis pro kWh (€)',
         UtiliaLanguage.it => 'Prezzo per kWh (€)',
-        UtiliaLanguage.pt => 'Preço por kWh (€)',
+        UtiliaLanguage.pt => 'Preço do kWh (€)',
         _ => 'Precio del kWh (€)',
       };
 
@@ -84,6 +86,26 @@ class _CalculatorPageState extends State<CalculatorPage> {
         _ => es,
       };
 
+  Map<String, String> get _unitOptions => widget.tool.type == ToolType.length
+      ? {
+          'mm': _unit('Milímetros (mm)', 'Millimeters (mm)', 'Millimètres (mm)', 'Millimeter (mm)', 'Millimetri (mm)', 'Milímetros (mm)'),
+          'cm': _unit('Centímetros (cm)', 'Centimeters (cm)', 'Centimètres (cm)', 'Zentimeter (cm)', 'Centimetri (cm)', 'Centímetros (cm)'),
+          'm': _unit('Metros (m)', 'Meters (m)', 'Mètres (m)', 'Meter (m)', 'Metri (m)', 'Metros (m)'),
+          'km': _unit('Kilómetros (km)', 'Kilometers (km)', 'Kilomètres (km)', 'Kilometer (km)', 'Chilometri (km)', 'Quilómetros (km)'),
+          'in': _unit('Pulgadas (in)', 'Inches (in)', 'Pouces (in)', 'Zoll (in)', 'Pollici (in)', 'Polegadas (in)'),
+          'ft': _unit('Pies (ft)', 'Feet (ft)', 'Pieds (ft)', 'Fuß (ft)', 'Piedi (ft)', 'Pés (ft)'),
+          'yd': _unit('Yardas (yd)', 'Yards (yd)', 'Yards (yd)', 'Yards (yd)', 'Iarde (yd)', 'Jardas (yd)'),
+          'mi': _unit('Millas (mi)', 'Miles (mi)', 'Miles (mi)', 'Meilen (mi)', 'Miglia (mi)', 'Milhas (mi)'),
+        }
+      : {
+          'mg': _unit('Miligramos (mg)', 'Milligrams (mg)', 'Milligrammes (mg)', 'Milligramm (mg)', 'Milligrammi (mg)', 'Miligramas (mg)'),
+          'g': _unit('Gramos (g)', 'Grams (g)', 'Grammes (g)', 'Gramm (g)', 'Grammi (g)', 'Gramas (g)'),
+          'kg': _unit('Kilogramos (kg)', 'Kilograms (kg)', 'Kilogrammes (kg)', 'Kilogramm (kg)', 'Chilogrammi (kg)', 'Quilogramas (kg)'),
+          't': _unit('Toneladas (t)', 'Tonnes (t)', 'Tonnes (t)', 'Tonnen (t)', 'Tonnellate (t)', 'Toneladas (t)'),
+          'oz': _unit('Onzas (oz)', 'Ounces (oz)', 'Onces (oz)', 'Unzen (oz)', 'Once (oz)', 'Onças (oz)'),
+          'lb': _unit('Libras (lb)', 'Pounds (lb)', 'Livres (lb)', 'Pfund (lb)', 'Libbre (lb)', 'Libras (lb)'),
+        };
+
   bool _needsTextInput(int index) => switch (widget.tool.type) {
         ToolType.age || ToolType.dateDifference => true,
         ToolType.length || ToolType.weight => index > 0,
@@ -93,7 +115,11 @@ class _CalculatorPageState extends State<CalculatorPage> {
 
   bool _hasRequiredInputs() {
     for (var i = 0; i < labels.length; i++) {
+      if ((widget.tool.type == ToolType.length || widget.tool.type == ToolType.weight) && i > 0) continue;
       if (controllers[i].text.trim().isEmpty) return false;
+    }
+    if (widget.tool.type == ToolType.length || widget.tool.type == ToolType.weight) {
+      return _fromUnit != null && _toUnit != null;
     }
     return true;
   }
@@ -108,12 +134,12 @@ class _CalculatorPageState extends State<CalculatorPage> {
       };
 
   String get _invalidUnitMessage => switch (widget.s.selectedLanguage) {
-        UtiliaLanguage.en => 'Enter valid units. Length: mm, cm, m, km, in, ft, yd, mi. Weight: mg, g, kg, t, oz, lb.',
-        UtiliaLanguage.fr => 'Saisissez des unités valides. Longueur : mm, cm, m, km, in, ft, yd, mi. Poids : mg, g, kg, t, oz, lb.',
-        UtiliaLanguage.de => 'Gültige Einheiten eingeben. Länge: mm, cm, m, km, in, ft, yd, mi. Gewicht: mg, g, kg, t, oz, lb.',
-        UtiliaLanguage.it => 'Inserisci unità valide. Lunghezza: mm, cm, m, km, in, ft, yd, mi. Peso: mg, g, kg, t, oz, lb.',
-        UtiliaLanguage.pt => 'Introduza unidades válidas. Comprimento: mm, cm, m, km, in, ft, yd, mi. Peso: mg, g, kg, t, oz, lb.',
-        _ => 'Introduce unidades válidas. Longitud: mm, cm, m, km, in, ft, yd, mi. Peso: mg, g, kg, t, oz, lb.',
+        UtiliaLanguage.en => 'Select valid units.',
+        UtiliaLanguage.fr => 'Sélectionnez des unités valides.',
+        UtiliaLanguage.de => 'Gültige Einheiten auswählen.',
+        UtiliaLanguage.it => 'Seleziona unità valide.',
+        UtiliaLanguage.pt => 'Selecione unidades válidas.',
+        _ => 'Selecciona unidades válidas.',
       };
 
   Future<void> calculate() async {
@@ -154,14 +180,14 @@ class _CalculatorPageState extends State<CalculatorPage> {
       case ToolType.workHours: r = workHours(x, y, z); u = 'h'; break;
       case ToolType.countdown: r = countdownSeconds(x.toInt(), y.toInt(), z.toInt()).toDouble(); u = 's'; break;
       case ToolType.length:
-        final from = controllers[1].text.trim().toLowerCase();
-        final to = controllers[2].text.trim().toLowerCase();
+        final from = _fromUnit!;
+        final to = _toUnit!;
         r = convertLength(x, from, to);
         if (r.isNaN) { _error(_invalidUnitMessage); return; }
         u = to; break;
       case ToolType.weight:
-        final from = controllers[1].text.trim().toLowerCase();
-        final to = controllers[2].text.trim().toLowerCase();
+        final from = _fromUnit!;
+        final to = _toUnit!;
         r = convertWeight(x, from, to);
         if (r.isNaN) { _error(_invalidUnitMessage); return; }
         u = to; break;
@@ -199,6 +225,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
   @override
   Widget build(BuildContext context) {
     final title = widget.s.toolName(widget.tool.type.name, widget.tool.name);
+    final converter = widget.tool.type == ToolType.length || widget.tool.type == ToolType.weight;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_rounded)),
@@ -214,15 +241,40 @@ class _CalculatorPageState extends State<CalculatorPage> {
         children: [
           Text(widget.s.toolDescription(widget.tool.type.name, widget.tool.description), style: Theme.of(context).textTheme.bodyLarge),
           const SizedBox(height: 22),
-          ...List.generate(labels.length, (i) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: TextField(
-              controller: controllers[i],
-              keyboardType: _needsTextInput(i) ? TextInputType.text : const TextInputType.numberWithOptions(decimal: true, signed: true),
-              textInputAction: i == labels.length - 1 ? TextInputAction.done : TextInputAction.next,
-              decoration: InputDecoration(labelText: labels[i]),
-            ),
-          )),
+          ...List.generate(labels.length, (i) {
+            if (converter && i > 0) {
+              final isFrom = i == 1;
+              final value = isFrom ? _fromUnit : _toUnit;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: DropdownButtonFormField<String>(
+                  value: value,
+                  decoration: InputDecoration(labelText: labels[i]),
+                  items: _unitOptions.entries.map((entry) => DropdownMenuItem<String>(value: entry.key, child: Text(entry.value))).toList(),
+                  onChanged: (selected) {
+                    setState(() {
+                      if (isFrom) {
+                        _fromUnit = selected;
+                      } else {
+                        _toUnit = selected;
+                      }
+                      result = null;
+                      unit = '';
+                    });
+                  },
+                ),
+              );
+            }
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: TextField(
+                controller: controllers[i],
+                keyboardType: _needsTextInput(i) ? TextInputType.text : const TextInputType.numberWithOptions(decimal: true, signed: true),
+                textInputAction: i == labels.length - 1 ? TextInputAction.done : TextInputAction.next,
+                decoration: InputDecoration(labelText: labels[i]),
+              ),
+            );
+          }),
           const SizedBox(height: 4),
           FilledButton.icon(onPressed: calculate, icon: const Icon(Icons.auto_awesome_rounded), label: Text(widget.s.calculate)),
           if (result != null) ...[
