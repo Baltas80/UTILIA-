@@ -386,7 +386,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
           Expanded(
             child: Row(
               children: [
-                for (final value in row)
+                for (final value in row]
                   Expanded(child: _key(value, compact)),
               ],
             ),
@@ -417,7 +417,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
           Expanded(
             child: Row(
               children: [
-                for (final value in row]
+                for (final value in row)
                   Expanded(child: _key(value, compact, primary: value == '=')),
               ],
             ),
