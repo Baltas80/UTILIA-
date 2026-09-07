@@ -25,7 +25,7 @@ void main() {
     test('paint invalid coverage is safe', () => expect(paintLitres(40, 0), 0));
 
     test('electricity', () => expect(electricityCost(1000, 2, 30, .20), 12));
-    test('BMI', () => expect(bmi(80, 180), closeTo(24.691, .001)));
+    test('BMI uses height in centimetres', () => expect(bmi(80, 180), closeTo(24.691, .001)));
     test('BMI invalid height is safe', () => expect(bmi(80, 0), 0));
 
     test('grade average', () => expect(gradeAverage([5, 7, 8]), closeTo(6.6667, .001)));
@@ -51,7 +51,9 @@ void main() {
     test('countdown seconds', () => expect(countdownSeconds(1, 2, 3), 3723));
     test('length conversion', () => expect(convertLength(1, 'km', 'm'), 1000));
     test('length conversion round trip', () => expect(convertLength(250, 'cm', 'm'), 2.5));
+    test('invalid length unit returns NaN', () => expect(convertLength(1, 'foo', 'm').isNaN, isTrue));
     test('weight conversion', () => expect(convertWeight(1, 'kg', 'g'), 1000));
     test('weight conversion round trip', () => expect(convertWeight(1000, 'g', 'kg'), 1));
+    test('invalid weight unit returns NaN', () => expect(convertWeight(1, 'kg', 'foo').isNaN, isTrue));
   });
 }
