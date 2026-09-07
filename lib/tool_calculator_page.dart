@@ -106,7 +106,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
           'lb': _unit('Libras (lb)', 'Pounds (lb)', 'Livres (lb)', 'Pfund (lb)', 'Libbre (lb)', 'Libras (lb)'),
         };
 
-  bool _isConverter => widget.tool.type == ToolType.length || widget.tool.type == ToolType.weight;
+  bool get _isConverter => widget.tool.type == ToolType.length || widget.tool.type == ToolType.weight;
 
   bool _needsTextInput(int index) => switch (widget.tool.type) {
         ToolType.age || ToolType.dateDifference => true,
