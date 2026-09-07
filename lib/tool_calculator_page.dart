@@ -106,6 +106,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
           'lb': _unit('Libras (lb)', 'Pounds (lb)', 'Livres (lb)', 'Pfund (lb)', 'Libbre (lb)', 'Libras (lb)'),
         };
 
+  bool _isConverter => widget.tool.type == ToolType.length || widget.tool.type == ToolType.weight;
+
   bool _needsTextInput(int index) => switch (widget.tool.type) {
         ToolType.age || ToolType.dateDifference => true,
         ToolType.length || ToolType.weight => index > 0,
@@ -115,11 +117,26 @@ class _CalculatorPageState extends State<CalculatorPage> {
 
   bool _hasRequiredInputs() {
     for (var i = 0; i < labels.length; i++) {
-      if ((widget.tool.type == ToolType.length || widget.tool.type == ToolType.weight) && i > 0) continue;
+      if (_isConverter && i > 0) continue;
       if (controllers[i].text.trim().isEmpty) return false;
     }
-    if (widget.tool.type == ToolType.length || widget.tool.type == ToolType.weight) {
-      return _fromUnit != null && _toUnit != null;
+    if (_isConverter) return _fromUnit != null && _toUnit != null;
+    return true;
+  }
+
+  bool _validNumber(String value) => double.tryParse(value.trim().replaceAll(',', '.')) != null;
+
+  bool _validGradeList(String value) {
+    final parts = value.replaceAll(';', ',').split(',').map((e) => e.trim()).toList();
+    return parts.isNotEmpty && parts.every((part) => part.isNotEmpty && _validNumber(part));
+  }
+
+  bool _validateNumericInputs() {
+    if (widget.tool.type == ToolType.gradeAverage) return _validGradeList(controllers[0].text);
+    if (widget.tool.type == ToolType.age || widget.tool.type == ToolType.dateDifference) return true;
+    for (var i = 0; i < labels.length; i++) {
+      if (_isConverter && i > 0) continue;
+      if (!_validNumber(controllers[i].text)) return false;
     }
     return true;
   }
@@ -131,6 +148,15 @@ class _CalculatorPageState extends State<CalculatorPage> {
         UtiliaLanguage.it => 'Completa tutti i campi.',
         UtiliaLanguage.pt => 'Preencha todos os campos.',
         _ => 'Completa todos los campos.',
+      };
+
+  String get _invalidNumberMessage => switch (widget.s.selectedLanguage) {
+        UtiliaLanguage.en => 'Enter valid numbers.',
+        UtiliaLanguage.fr => 'Saisissez des nombres valides.',
+        UtiliaLanguage.de => 'Gültige Zahlen eingeben.',
+        UtiliaLanguage.it => 'Inserisci numeri validi.',
+        UtiliaLanguage.pt => 'Introduza números válidos.',
+        _ => 'Introduce números válidos.',
       };
 
   String get _invalidUnitMessage => switch (widget.s.selectedLanguage) {
@@ -145,6 +171,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
   Future<void> calculate() async {
     if (!_hasRequiredInputs()) {
       _error(_missingFieldsMessage);
+      return;
+    }
+    if (!_validateNumericInputs()) {
+      _error(_invalidNumberMessage);
       return;
     }
     final x = parseNumber(controllers[0].text);
@@ -225,7 +255,6 @@ class _CalculatorPageState extends State<CalculatorPage> {
   @override
   Widget build(BuildContext context) {
     final title = widget.s.toolName(widget.tool.type.name, widget.tool.name);
-    final converter = widget.tool.type == ToolType.length || widget.tool.type == ToolType.weight;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_rounded)),
@@ -242,7 +271,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
           Text(widget.s.toolDescription(widget.tool.type.name, widget.tool.description), style: Theme.of(context).textTheme.bodyLarge),
           const SizedBox(height: 22),
           ...List.generate(labels.length, (i) {
-            if (converter && i > 0) {
+            if (_isConverter && i > 0) {
               final isFrom = i == 1;
               final value = isFrom ? _fromUnit : _toUnit;
               return Padding(
