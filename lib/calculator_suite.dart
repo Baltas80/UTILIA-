@@ -25,20 +25,45 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
   Timer? _backspaceTimer;
 
   String t(String es, String en, String fr, String de, String it, String pt) => switch (widget.s.selectedLanguage) {
-    UtiliaLanguage.en => en, UtiliaLanguage.fr => fr, UtiliaLanguage.de => de, UtiliaLanguage.it => it, UtiliaLanguage.pt => pt, _ => es,
+    UtiliaLanguage.en => en,
+    UtiliaLanguage.fr => fr,
+    UtiliaLanguage.de => de,
+    UtiliaLanguage.it => it,
+    UtiliaLanguage.pt => pt,
+    _ => es,
   };
 
-  @override void initState() { super.initState(); scientific = widget.scientific; _loadRecent(); }
-  @override void dispose() { _backspaceTimer?.cancel(); super.dispose(); }
+  @override
+  void initState() {
+    super.initState();
+    scientific = widget.scientific;
+    _loadRecent();
+  }
+
+  @override
+  void dispose() {
+    _backspaceTimer?.cancel();
+    super.dispose();
+  }
 
   Future<void> _loadRecent() async {
     final h = await widget.storage.loadHistory();
     if (!mounted) return;
-    setState(() { recent..clear()..addAll(h.where((e) => e['type'] == 'calculator').map((e) => '${e['expression'] ?? ''} = ${e['result'] ?? ''}').take(8)); });
+    setState(() {
+      recent
+        ..clear()
+        ..addAll(h.where((e) => e['type'] == 'calculator').map((e) => '${e['expression'] ?? ''} = ${e['result'] ?? ''}').take(8));
+    });
   }
 
   Future<void> _saveResult() async {
-    await widget.storage.addHistory({'type': 'calculator', 'tool': scientific ? t('Calculadora científica', 'Scientific calculator', 'Calculatrice scientifique', 'Wissenschaftlicher Rechner', 'Calcolatrice scientifica', 'Calculadora científica') : t('Calculadora', 'Calculator', 'Calculatrice', 'Rechner', 'Calcolatrice', 'Calculadora'), 'expression': expression, 'result': result, 'timestamp': DateTime.now().toIso8601String()});
+    await widget.storage.addHistory({
+      'type': 'calculator',
+      'tool': scientific ? t('Calculadora científica', 'Scientific calculator', 'Calculatrice scientifique', 'Wissenschaftlicher Rechner', 'Calcolatrice scientifica', 'Calculadora científica') : t('Calculadora', 'Calculator', 'Calculatrice', 'Rechner', 'Calcolatrice', 'Calculadora'),
+      'expression': expression,
+      'result': result,
+      'timestamp': DateTime.now().toIso8601String(),
+    });
     await _loadRecent();
     await widget.onHistory?.call();
   }
@@ -49,15 +74,33 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
         final parsed = CalculatorParser(expression, degrees: degrees).parse();
         setState(() => result = _format(parsed));
         _saveResult();
-      } catch (_) { setState(() => result = t('Error', 'Error', 'Erreur', 'Fehler', 'Errore', 'Erro')); }
+      } catch (_) {
+        setState(() => result = t('Error', 'Error', 'Erreur', 'Fehler', 'Errore', 'Erro'));
+      }
       return;
     }
     setState(() {
-      if (value == 'C') { expression = ''; result = '0'; return; }
-      if (value == '⌫') { if (expression.isNotEmpty) expression = expression.substring(0, expression.length - 1); return; }
-      if (value == '±') { expression = expression.startsWith('-') ? expression.substring(1) : '-$expression'; return; }
-      if (value == 'x²') { expression += '^2'; return; }
-      if (value == '1/x') { expression = '1/($expression)'; return; }
+      if (value == 'C') {
+        expression = '';
+        result = '0';
+        return;
+      }
+      if (value == '⌫') {
+        if (expression.isNotEmpty) expression = expression.substring(0, expression.length - 1);
+        return;
+      }
+      if (value == '±') {
+        expression = expression.startsWith('-') ? expression.substring(1) : '-$expression';
+        return;
+      }
+      if (value == 'x²') {
+        expression += '^2';
+        return;
+      }
+      if (value == '1/x') {
+        expression = '1/($expression)';
+        return;
+      }
       expression += value;
     });
   }
@@ -67,35 +110,70 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
     _backspaceTimer = Timer(const Duration(milliseconds: 420), () {
       if (!mounted) return;
       key('⌫');
-      _backspaceTimer = Timer.periodic(const Duration(milliseconds: 75), (_) { if (mounted) key('⌫'); });
+      _backspaceTimer = Timer.periodic(const Duration(milliseconds: 75), (_) {
+        if (mounted) key('⌫');
+      });
     });
   }
-  void _stopBackspaceRepeat() { _backspaceTimer?.cancel(); _backspaceTimer = null; }
-  String _format(double x) { if (!x.isFinite) return 'Error'; if ((x - x.roundToDouble()).abs() < 1e-10) return x.round().toString(); return x.toStringAsPrecision(12).replaceFirst(RegExp(r'0+$'), '').replaceFirst(RegExp(r'\.$'), ''); }
-  Future<void> _copy() async { await Clipboard.setData(ClipboardData(text: '$expression = $result')); if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(widget.s.copied))); }
-  Future<void> _share() => SharePlus.instance.share(ShareParams(text: '$expression = $result', subject: 'UTILIA'));
-  void _reuse(String item) { final p = item.split(' = '); setState(() { expression = p.first; result = p.length > 1 ? p.sublist(1).join(' = ') : '0'; }); }
 
-  @override Widget build(BuildContext context) {
+  void _stopBackspaceRepeat() {
+    _backspaceTimer?.cancel();
+    _backspaceTimer = null;
+  }
+
+  String _format(double x) {
+    if (!x.isFinite) return 'Error';
+    if ((x - x.roundToDouble()).abs() < 1e-10) return x.round().toString();
+    return x.toStringAsPrecision(12).replaceFirst(RegExp(r'0+$'), '').replaceFirst(RegExp(r'\.$'), '');
+  }
+
+  Future<void> _copy() async {
+    await Clipboard.setData(ClipboardData(text: '$expression = $result'));
+    if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(widget.s.copied)));
+  }
+
+  Future<void> _share() => SharePlus.instance.share(ShareParams(text: '$expression = $result', subject: 'UTILIA'));
+
+  void _reuse(String item) {
+    final p = item.split(' = ');
+    setState(() {
+      expression = p.first;
+      result = p.length > 1 ? p.sublist(1).join(' = ') : '0';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final dark = scientific || Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: scientific ? const Color(0xFF07111F) : Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         leading: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_rounded)),
         title: Text(scientific ? t('Científica', 'Scientific', 'Scientifique', 'Wissenschaftlich', 'Scientifica', 'Científica') : t('Calculadora', 'Calculator', 'Calculatrice', 'Rechner', 'Calcolatrice', 'Calculadora'), style: const TextStyle(fontWeight: FontWeight.w900)),
-        actions: [IconButton(onPressed: _showRecent, icon: const Icon(Icons.history_rounded)), IconButton(onPressed: _copy, icon: const Icon(Icons.copy_outlined)), IconButton(onPressed: () => setState(() => scientific = !scientific), icon: Icon(scientific ? Icons.calculate_rounded : Icons.functions_rounded))],
+        actions: [
+          IconButton(onPressed: _showRecent, icon: const Icon(Icons.history_rounded)),
+          IconButton(onPressed: _copy, icon: const Icon(Icons.copy_outlined)),
+          IconButton(onPressed: () => setState(() => scientific = !scientific), icon: Icon(scientific ? Icons.calculate_rounded : Icons.functions_rounded)),
+        ],
       ),
-      body: SafeArea(child: LayoutBuilder(builder: (context, constraints) {
-        final compact = constraints.maxHeight < 700;
-        return Column(children: [
-          if (scientific) _degreeToggle(),
-          _display(compact, dark),
-          if (!scientific) Padding(padding: const EdgeInsets.symmetric(horizontal: 14), child: Row(children: [_action('Copiar', Icons.copy_rounded, _copy), const SizedBox(width: 8), _action('Compartir', Icons.share_rounded, _share)])),
-          if (scientific) ...[_functionRow([_small('sin', 'sin('), _small('cos', 'cos('), _small('tan', 'tan('), _small('ln', 'ln('), _small('log', 'log(')]), _functionRow([_small('π', 'π'), _small('e', 'e'), _small('x²', 'x²'), _small('xʸ', '^'), _small('√', '√('), _small('!', '!')])],
-          Expanded(child: Padding(padding: const EdgeInsets.fromLTRB(11, 7, 11, 5), child: _keypad(compact, dark))),
-          SizedBox(height: compact ? 34 : 40, child: TextButton.icon(onPressed: _showRecent, icon: const Icon(Icons.history_rounded, size: 18), label: Text(t('Cálculos recientes', 'Recent calculations', 'Calculs récents', 'Letzte Berechnungen', 'Calcoli recenti', 'Cálculos recentes')))),
-        ]);
-      })),
+      body: SafeArea(
+        child: LayoutBuilder(builder: (context, constraints) {
+          final compact = constraints.maxHeight < 700;
+          return Column(
+            children: [
+              if (scientific) _degreeToggle(),
+              _display(compact, dark),
+              if (!scientific) Padding(padding: const EdgeInsets.symmetric(horizontal: 14), child: Row(children: [_action('Copiar', Icons.copy_rounded, _copy), const SizedBox(width: 8), _action('Compartir', Icons.share_rounded, _share)])),
+              if (scientific) ...[
+                _functionRow([_small('sin', 'sin('), _small('cos', 'cos('), _small('tan', 'tan('), _small('ln', 'ln('), _small('log', 'log(')]),
+                _functionRow([_small('π', 'π'), _small('e', 'e'), _small('x²', 'x²'), _small('xʸ', '^'), _small('√', '√('), _small('!', '!')]),
+              ],
+              Expanded(child: Padding(padding: const EdgeInsets.fromLTRB(11, 7, 11, 5), child: _keypad(compact, dark))),
+              SizedBox(height: compact ? 34 : 40, child: TextButton.icon(onPressed: _showRecent, icon: const Icon(Icons.history_rounded, size: 18), label: Text(t('Cálculos recientes', 'Recent calculations', 'Calculs récents', 'Letzte Berechnungen', 'Calcoli recenti', 'Cálculos recentes')))),
+            ],
+          );
+        }),
+      ),
     );
   }
 
@@ -115,10 +193,39 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
     final destructive = value == 'C';
     final bg = primary ? UtiliaBrand.blue : dark ? const Color(0xFF172637) : Theme.of(context).colorScheme.surfaceContainerHighest;
     final fg = primary ? Colors.white : destructive ? Theme.of(context).colorScheme.error : dark ? Colors.white : Theme.of(context).colorScheme.onSurface;
-    return Padding(padding: const EdgeInsets.all(3), child: Listener(onPointerDown: value == '⌫' ? (_) => _startBackspaceRepeat() : null, onPointerUp: value == '⌫' ? (_) => _stopBackspaceRepeat() : null, onPointerCancel: value == '⌫' ? (_) => _stopBackspaceRepeat() : null, child: Material(color: bg, borderRadius: BorderRadius.circular(compact ? 12 : 15), child: InkWell(onTap: () => key(value), borderRadius: BorderRadius.circular(compact ? 12 : 15), child: Center(child: Text(value, style: TextStyle(fontSize: compact ? 19 : 22, fontWeight: FontWeight.w700, color: fg)))))));
+    final radius = BorderRadius.circular(compact ? 12 : 15);
+    return Padding(
+      padding: const EdgeInsets.all(3),
+      child: Listener(
+        onPointerDown: value == '⌫' ? (_) => _startBackspaceRepeat() : null,
+        onPointerUp: value == '⌫' ? (_) => _stopBackspaceRepeat() : null,
+        onPointerCancel: value == '⌫' ? (_) => _stopBackspaceRepeat() : null,
+        child: Material(
+          color: bg,
+          borderRadius: radius,
+          child: InkWell(
+            onTap: () => key(value),
+            borderRadius: radius,
+            child: Center(
+              child: Text(value, style: TextStyle(fontSize: compact ? 19 : 22, fontWeight: FontWeight.w700, color: fg)),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
-  Future<void> _showRecent() async { await showModalBottomSheet<void>(context: context, showDragHandle: true, builder: (c) => SafeArea(child: recent.isEmpty ? Padding(padding: const EdgeInsets.all(28), child: Center(child: Text(t('No hay cálculos recientes.', 'No recent calculations.', 'Aucun calcul récent.', 'Keine aktuellen Berechnungen.', 'Nessun calcolo recente.', 'Sem cálculos recentes.')))) : ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 24), children: recent.map((item) => ListTile(leading: const Icon(Icons.functions_rounded), title: Text(item), trailing: IconButton(icon: const Icon(Icons.replay_rounded), onPressed: () { Navigator.pop(c); _reuse(item); }))).toList()))); }
+  Future<void> _showRecent() async {
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (c) => SafeArea(
+        child: recent.isEmpty
+            ? Padding(padding: const EdgeInsets.all(28), child: Center(child: Text(t('No hay cálculos recientes.', 'No recent calculations.', 'Aucun calcul récent.', 'Keine aktuellen Berechnungen.', 'Nessun calcolo recente.', 'Sem cálculos recentes.'))))
+            : ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 24), children: recent.map((item) => ListTile(leading: const Icon(Icons.functions_rounded), title: Text(item), trailing: IconButton(icon: const Icon(Icons.replay_rounded), onPressed: () { Navigator.pop(c); _reuse(item); }))).toList()),
+      ),
+    );
+  }
 }
 
 class CalculatorParser {
