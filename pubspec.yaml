@@ -1,5 +1,5 @@
 name: utilia
-version: 0.4.0+5
+version: 0.5.0+6
 description: UTILIA - Pequeñas herramientas. Grandes soluciones.
 publish_to: 'none'
 
@@ -18,7 +18,3 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
-
-flutter:
-  uses-material-design: true
