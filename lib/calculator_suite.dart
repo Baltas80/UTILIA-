@@ -10,7 +10,10 @@ import 'utilia_design.dart';
 
 class CalculatorSuitePage extends StatefulWidget {
   const CalculatorSuitePage({super.key, this.scientific = false, required this.storage, required this.s, this.onHistory});
-  final bool scientific; final UtiliaStorage storage; final UtiliaStrings s; final Future<void> Function()? onHistory;
+  final bool scientific;
+  final UtiliaStorage storage;
+  final UtiliaStrings s;
+  final Future<void> Function()? onHistory;
   @override State<CalculatorSuitePage> createState() => _CalculatorSuitePageState();
 }
 
@@ -45,7 +48,10 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
         return Column(children: [
           if (scientific) _degreeToggle(),
           _display(compact, dark),
-          if (scientific) ...[_functionRow([_small('sin', 'sin('), _small('cos', 'cos('), _small('tan', 'tan('), _small('ln', 'ln('), _small('log', 'log(')]), _functionRow([_small('π', 'π'), _small('e', 'e'), _small('x²', 'x²'), _small('xʸ', '^'), _small('√', '√(')])],
+          if (scientific) ...[
+            _functionRow([_small('sin', 'sin('), _small('cos', 'cos('), _small('tan', 'tan('), _small('ln', 'ln('), _small('log', 'log(')]),
+            _functionRow([_small('π', 'π'), _small('e', 'e'), _small('x²', 'x²'), _small('xʸ', '^'), _small('√', '√(')]),
+          ],
           Expanded(child: Padding(padding: const EdgeInsets.fromLTRB(10, 7, 10, 3), child: _keypad(compact, dark))),
         ]);
       })),
@@ -66,20 +72,38 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
     final rows = const [['C', '(', ')', '⌫'], ['7', '8', '9', '÷'], ['4', '5', '6', '×'], ['1', '2', '3', '−'], ['0', ',', '%', '+']];
     return Row(children: [Expanded(child: Column(children: [for (final row in rows) Expanded(child: Row(children: [for (final value in row.take(3)) Expanded(child: _key(value, compact, false))]))])), SizedBox(width: MediaQuery.sizeOf(context).size.width * .02), Expanded(child: Column(children: [for (final value in ['⌫', '÷', '×', '−']) Expanded(child: _key(value, compact, false)), Expanded(flex: 2, child: _key('+', compact, false)), Expanded(flex: 2, child: _key('=', compact, false, primary: true))]))]);
   }
+  Widget _key(String value, bool compact, bool dark, {bool primary = false}) { final destructive = value == 'C'; final bg = primary ? UtiliaBrand.blue : dark ? const Color(0xFF172637) : Colors.white; final fg = primary ? Colors.white : destructive ? const Color(0xFFE43E4E) : dark ? Colors.white : UtiliaBrand.ink; return Padding(padding: const EdgeInsets.all(3), child: Material(color: bg, borderRadius: BorderRadius.circular(compact ? 12 : 15), elevation: dark || primary ? 0 : 1, shadowColor: Colors.black.withValues(alpha: .06), child: InkWell(borderRadius: BorderRadius.circular(compact ? 12 : 15), onTap: () => key(value), child: Center(child: Text(value, style: TextStyle(fontSize: compact ? 19 : 22, fontWeight: FontWeight.w700, color: fg)))))); }
 
-  Widget _key(String value, bool compact, bool dark, {bool primary = false}) {
-    final destructive = value == 'C';
-    final bg = primary ? UtiliaBrand.blue : dark ? const Color(0xFF172637) : Colors.white;
-    final fg = primary ? Colors.white : destructive ? const Color(0xFFE43E4E) : dark ? Colors.white : UtiliaBrand.ink;
-    return Padding(padding: const EdgeInsets.all(3), child: Material(color: bg, borderRadius: BorderRadius.circular(compact ? 12 : 15), elevation: dark || primary ? 0 : 1, shadowColor: Colors.black.withValues(alpha: .06), child: InkWell(borderRadius: BorderRadius.circular(compact ? 12 : 15), onTap: () => key(value), child: Center(child: Text(value, style: TextStyle(fontSize: compact ? 19 : 22, fontWeight: FontWeight.w700, color: fg))))));
+  Future<void> _showRecent() async {
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) {
+        if (recent.isEmpty) {
+          return SafeArea(child: Padding(padding: const EdgeInsets.all(28), child: Center(child: Text(t('No hay cálculos recientes.', 'No recent calculations.', 'Aucun calcul récent.', 'Keine aktuellen Berechnungen.', 'Nessun calcolo recente.', 'Sem cálculos recentes.')))));
+        }
+        return SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+            children: recent.map((item) {
+              return ListTile(
+                leading: const Icon(Icons.functions_rounded),
+                title: Text(item),
+                trailing: IconButton(icon: const Icon(Icons.replay_rounded), onPressed: () { Navigator.pop(sheetContext); _reuse(item); }),
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
   }
-
-  Future<void> _showRecent() async { await showModalBottomSheet<void>(context: context, showDragHandle: true, builder: (sheetContext) => SafeArea(child: recent.isEmpty ? Padding(padding: const EdgeInsets.all(28), child: Center(child: Text(t('No hay cálculos recientes.', 'No recent calculations.', 'Aucun calcul récent.', 'Keine aktuellen Berechnungen.', 'Nessun calcolo recente.', 'Sem cálculos recentes.')))) : ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 24), children: recent.map((item) => ListTile(leading: const Icon(Icons.functions_rounded), title: Text(item), trailing: IconButton(icon: const Icon(Icons.replay_rounded), onPressed: () { Navigator.pop(sheetContext); _reuse(item); })).toList()))); }
 }
 
 class CalculatorParser {
   CalculatorParser(this.s, {this.degrees = true});
-  final String s; final bool degrees; int p = 0;
+  final String s;
+  final bool degrees;
+  int p = 0;
   double parse() { p = 0; final value = _expr(); _skip(); if (p < s.length) throw const FormatException('syntax'); return value; }
   void _skip() { while (p < s.length && s[p] == ' ') p++; }
   bool _eat(String value) { _skip(); if (s.startsWith(value, p)) { p += value.length; return true; } return false; }
@@ -87,15 +111,7 @@ class CalculatorParser {
   double _term() { var value = _power(); while (true) { if (_eat('×') || _eat('*')) value *= _power(); else if (_eat('÷') || _eat('/')) value /= _power(); else return value; } }
   double _power() { var value = _unary(); if (_eat('^')) value = math.pow(value, _power()).toDouble(); return value; }
   double _unary() { _skip(); if (_eat('±')) return -_unary(); if (_eat('-')) return -_unary(); return _primary(); }
-  double _primary() {
-    _skip();
-    if (_eat('(')) { final value = _expr(); if (!_eat(')')) throw const FormatException(')'); return value; }
-    for (final function in ['sin(', 'cos(', 'tan(', 'ln(', 'log(', '√(']) { if (_eat(function)) { final value = _expr(); if (!_eat(')')) throw const FormatException(')'); return _function(function.substring(0, function.length - 1), value); } }
-    if (_eat('π')) return math.pi;
-    if (_eat('e')) return math.e;
-    final start = p; while (p < s.length && RegExp(r'[0-9.,]').hasMatch(s[p])) p++; if (start == p) throw const FormatException('number');
-    var value = double.parse(s.substring(start, p).replaceAll(',', '.')); while (_eat('!')) value = _factorial(value); return value;
-  }
+  double _primary() { _skip(); if (_eat('(')) { final value = _expr(); if (!_eat(')')) throw const FormatException(')'); return value; } for (final function in ['sin(', 'cos(', 'tan(', 'ln(', 'log(', '√(']) { if (_eat(function)) { final value = _expr(); if (!_eat(')')) throw const FormatException(')'); return _function(function.substring(0, function.length - 1), value); } } if (_eat('π')) return math.pi; if (_eat('e')) return math.e; final start = p; while (p < s.length && RegExp(r'[0-9.,]').hasMatch(s[p])) p++; if (start == p) throw const FormatException('number'); var value = double.parse(s.substring(start, p).replaceAll(',', '.')); while (_eat('!')) value = _factorial(value); return value; }
   double _function(String name, double value) => switch (name) { 'sin' => math.sin(degrees ? value * math.pi / 180 : value), 'cos' => math.cos(degrees ? value * math.pi / 180 : value), 'tan' => math.tan(degrees ? value * math.pi / 180 : value), 'ln' => math.log(value), 'log' => math.log(value) / math.ln10, _ => math.sqrt(value) };
   double _factorial(double value) { if (value < 0 || value > 170 || value != value.roundToDouble()) throw const FormatException('factorial'); var result = 1.0; for (var i = 2; i <= value; i++) result *= i; return result; }
 }
