@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'calculator_suite.dart';
 import 'localization.dart';
 import 'models/tool.dart';
+import 'paint_calculator_page.dart';
 import 'storage.dart';
 import 'tool_calculator_page.dart';
 import 'utilia_design.dart';
@@ -53,6 +54,8 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
 void openUtiliaTool(BuildContext context, UtiliaTool tool, UtiliaStorage storage, Future<void> Function()? refresh, UtiliaStrings s) {
   if (tool.type == ToolType.calculator || tool.type == ToolType.scientificCalculator) {
     Navigator.push(context, MaterialPageRoute(builder: (_) => CalculatorSuitePage(scientific: tool.type == ToolType.scientificCalculator, storage: storage, s: s, onHistory: refresh)));
+  } else if (tool.type == ToolType.paint) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => PaintCalculatorPage(tool: tool, storage: storage, onHistory: refresh, s: s)));
   } else {
     Navigator.push(context, MaterialPageRoute(builder: (_) => CalculatorPage(tool: tool, storage: storage, onHistory: refresh, s: s)));
   }
