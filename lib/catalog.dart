@@ -24,7 +24,7 @@ const tools = <UtiliaTool>[
   UtiliaTool(name: 'Edad', description: 'Calcula la edad a partir de una fecha.', category: 'Tiempo', icon: Icons.cake_outlined, tint: Color(0xFF7C4DFF), type: ToolType.age),
   UtiliaTool(name: 'Diferencia de fechas', description: 'Calcula el tiempo entre dos fechas.', category: 'Tiempo', icon: Icons.date_range_outlined, tint: Color(0xFF7C4DFF), type: ToolType.dateDifference),
   UtiliaTool(name: 'Horas trabajadas', description: 'Calcula horas entre entrada y salida.', category: 'Tiempo', icon: Icons.schedule, tint: Color(0xFF7C4DFF), type: ToolType.workHours),
-  UtiliaTool(name: 'Cuenta atrás', description: 'Calcula el tiempo restante hasta una fecha.', category: 'Tiempo', icon: Icons.timer_outlined, tint: Color(0xFF7C4DFF), type: ToolType.countdown),
+  UtiliaTool(name: 'Cuenta atrás', description: 'Convierte horas, minutos y segundos a segundos.', category: 'Tiempo', icon: Icons.timer_outlined, tint: Color(0xFF7C4DFF), type: ToolType.countdown),
   UtiliaTool(name: 'Superficie', description: 'Calcula el área de una superficie rectangular.', category: 'Casa', icon: Icons.square_foot, tint: Color(0xFFFF8A00), type: ToolType.area),
   UtiliaTool(name: 'Pintura', description: 'Estima litros de pintura necesarios.', category: 'Casa', icon: Icons.format_paint, tint: Color(0xFFFF8A00), type: ToolType.paint),
   UtiliaTool(name: 'Consumo eléctrico', description: 'Estima el coste de electricidad.', category: 'Casa', icon: Icons.bolt_outlined, tint: Color(0xFFFF8A00), type: ToolType.electricity),
