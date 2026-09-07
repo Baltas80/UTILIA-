@@ -96,7 +96,48 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
 
   Widget _degreeToggle() => Padding(padding: const EdgeInsets.fromLTRB(14, 2, 14, 7), child: Container(height: 38, decoration: BoxDecoration(color: const Color(0xFF142235), borderRadius: BorderRadius.circular(22)), child: Row(children: [_mode('DEG', degrees, () => setState(() => degrees = true)), _mode('RAD', !degrees, () => setState(() => degrees = false))])));
   Widget _mode(String label, bool selected, VoidCallback onTap) => Expanded(child: GestureDetector(onTap: onTap, child: Container(alignment: Alignment.center, margin: const EdgeInsets.all(2), decoration: BoxDecoration(color: selected ? UtiliaBrand.blue : Colors.transparent, borderRadius: BorderRadius.circular(20)), child: Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 11)))));
-  Widget _display(bool compact, bool dark) => Container(height: compact ? 112 : 145, margin: const EdgeInsets.fromLTRB(14, 4, 14, 8), padding: const EdgeInsets.fromLTRB(17, 14, 17, 12), decoration: BoxDecoration(color: dark ? const Color(0xFF0F1B2A) : Colors.white, borderRadius: BorderRadius.circular(20)), child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [Expanded(child: Align(alignment: Alignment.centerRight, child: SingleChildScrollView(scrollDirection: Axis.horizontal, reverse: true, child: Text(expression.isEmpty ? '0' : expression, style: TextStyle(fontSize: compact ? 18 : 21, color: dark ? Colors.white70 : Theme.of(context).colorScheme.onSurfaceVariant))))), SingleChildScrollView(scrollDirection: Axis.horizontal, reverse: true, child: Text(result, style: TextStyle(fontSize: compact ? 34 : 42, fontWeight: FontWeight.w900, color: dark ? Colors.white : Theme.of(context).colorScheme.onSurface))]));
+  Widget _display(bool compact, bool dark) => Container(
+    height: compact ? 112 : 145,
+    margin: const EdgeInsets.fromLTRB(14, 4, 14, 8),
+    padding: const EdgeInsets.fromLTRB(17, 14, 17, 12),
+    decoration: BoxDecoration(
+      color: dark ? const Color(0xFF0F1B2A) : Colors.white,
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              reverse: true,
+              child: Text(
+                expression.isEmpty ? '0' : expression,
+                style: TextStyle(
+                  fontSize: compact ? 18 : 21,
+                  color: dark ? Colors.white70 : Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+          ),
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          reverse: true,
+          child: Text(
+            result,
+            style: TextStyle(
+              fontSize: compact ? 34 : 42,
+              fontWeight: FontWeight.w900,
+              color: dark ? Colors.white : Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
   Widget _action(String label, IconData icon, VoidCallback onTap) => Expanded(child: OutlinedButton.icon(onPressed: onTap, icon: Icon(icon, size: 17), label: Text(label), style: OutlinedButton.styleFrom(minimumSize: const Size(0, 42), padding: EdgeInsets.zero, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)))));
   Widget _functionRow(List<Widget> children) => SizedBox(height: 39, child: Row(children: children));
   Widget _small(String label, String value) => Expanded(child: Padding(padding: const EdgeInsets.all(2), child: OutlinedButton(onPressed: () => key(value), style: OutlinedButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(0, 0), tapTargetSize: MaterialTapTargetSize.shrinkWrap, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)), child: FittedBox(child: Text(label, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12))))));
