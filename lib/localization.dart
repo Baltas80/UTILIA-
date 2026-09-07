@@ -74,9 +74,7 @@ class UtiliaStrings {
       _ => <String,List<String>>{},
     };
     final list = translated[id] ?? es;
-    return index < list.length ? list[index] : 'Value';
+    return index < list.length ? list[index] : es[index];
   }
-
-  String resultHint(String id) => _t('Resultado calculado localmente.', 'Result calculated locally.', 'Résultat calculé localement.', 'Ergebnis lokal berechnet.', 'Risultato calcolato localmente.', 'Resultado calculado localmente.');
-  String _category(String id) => switch (id) { 'money' => _t('Dinero','Money','Argent','Geld','Denaro','Dinheiro'), 'time' => _t('Tiempo','Time','Temps','Zeit','Tempo','Tempo'), 'home' => _t('Casa','Home','Maison','Haus','Casa','Casa'), 'car' => _t('Coche','Car','Voiture','Auto','Auto','Carro'), 'converters' => _t('Conversores','Converters','Convertisseurs','Umrechner','Convertitori','Conversores'), 'health' => _t('Salud','Health','Santé','Gesundheit','Salute','Saúde'), 'study' => _t('Estudio','Study','Études','Lernen','Studio','Estudo'), _ => _t('Varios','Other','Autres','Sonstiges','Altro','Outros') };
+  String _category(String id) => _t(id, id, id, id, id, id);
 }
