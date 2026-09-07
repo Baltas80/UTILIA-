@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -26,111 +26,7 @@ jobs:
           cache: true
 
       - run: flutter pub get
-
-      - name: Repair source issues detected by analyzer
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          fixes = {
-              'lib/tool_calculator_page.dart': [
-                  ("import 'catalog.dart';\n", ''),
-                  ("Text(widget.s.result,\n", "Text(widget.s.result, style: Theme.of(context).textTheme.bodyMedium),\n"),
-              ],
-              'lib/category_page.dart': [
-                  ("import 'catalog.dart';\n", ''),
-              ],
-              'lib/calculator_suite.dart': [
-                  ("_small('sin(', 'sin(')", "_small('sin', 'sin(')"),
-                  ("_small('cos(', 'cos(')", "_small('cos', 'cos(')"),
-                  ("_small('tan(', 'tan(')", "_small('tan', 'tan(')"),
-                  ("_small('ln(', 'ln(')", "_small('ln', 'ln(')"),
-                  ("_small('log(', 'log(')", "_small('log', 'log(')"),
-              ],
-          }
-
-          changed = False
-          for filename, replacements in fixes.items():
-              path = Path(filename)
-              text = path.read_text(encoding='utf-8')
-              original = text
-              for old, new in replacements:
-                  text = text.replace(old, new)
-              if text != original:
-                  path.write_text(text, encoding='utf-8')
-                  changed = True
-                  print(f'Fixed {filename}')
-
-          calc = Path('lib/calculator_suite.dart')
-          lines = calc.read_text(encoding='utf-8').splitlines()
-          for i, line in enumerate(lines):
-              if line.startswith('  Widget _display('):
-                  replacement = [
-                      '  Widget _display(bool compact, bool dark) => Container(',
-                      '    height: compact ? 112 : 145,',
-                      '    margin: const EdgeInsets.fromLTRB(14, 4, 14, 8),',
-                      '    padding: const EdgeInsets.fromLTRB(17, 14, 17, 12),',
-                      '    decoration: BoxDecoration(',
-                      '      color: dark ? const Color(0xFF0F1B2A) : Colors.white,',
-                      '      borderRadius: BorderRadius.circular(20),',
-                      '    ),',
-                      '    child: Column(',
-                      '      crossAxisAlignment: CrossAxisAlignment.end,',
-                      '      children: [',
-                      '        Expanded(',
-                      '          child: Align(',
-                      '            alignment: Alignment.centerRight,',
-                      '            child: SingleChildScrollView(',
-                      '              scrollDirection: Axis.horizontal,',
-                      '              reverse: true,',
-                      '              child: Text(',
-                      "                expression.isEmpty ? '0' : expression,",
-                      '                style: TextStyle(',
-                      '                  fontSize: compact ? 18 : 21,',
-                      '                  color: dark ? Colors.white70 : Theme.of(context).colorScheme.onSurfaceVariant,',
-                      '                ),',
-                      '              ),',
-                      '            ),',
-                      '          ),',
-                      '        ),',
-                      '        SingleChildScrollView(',
-                      '          scrollDirection: Axis.horizontal,',
-                      '          reverse: true,',
-                      '          child: Text(',
-                      '            result,',
-                      '            style: TextStyle(',
-                      '              fontSize: compact ? 34 : 42,',
-                      '              fontWeight: FontWeight.w900,',
-                      '              color: dark ? Colors.white : Theme.of(context).colorScheme.onSurface,',
-                      '            ),',
-                      '          ),',
-                      '        ),',
-                      '      ],',
-                      '    ),',
-                      '  );',
-                  ]
-                  if lines[i:i + 1] != replacement:
-                      lines[i:i + 1] = replacement
-                      changed = True
-                      print('Fixed calculator display syntax')
-                  break
-          calc.write_text('\n'.join(lines) + '\n', encoding='utf-8')
-
-          if changed:
-              print('Source fixes applied; committing them to master.')
-          else:
-              print('No source fixes needed.')
-          PY
-
-          if ! git diff --quiet; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add lib/tool_calculator_page.dart lib/category_page.dart lib/calculator_suite.dart
-            git commit -m "Fix source issues detected by CI"
-            git push
-          fi
-
-      - run: dart format lib test
+      - run: dart format --output=none --set-exit-if-changed lib test
       - run: flutter analyze --no-fatal-infos
       - run: flutter test
 
