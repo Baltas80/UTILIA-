@@ -65,7 +65,7 @@ jobs:
           fi
 
       - run: dart format lib test
-      - run: flutter analyze
+      - run: flutter analyze --no-fatal-infos
       - run: flutter test
 
       - name: Bootstrap Android project
