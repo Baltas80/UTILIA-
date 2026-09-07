@@ -118,9 +118,20 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
     final bg = primary ? UtiliaBrand.blue : dark ? const Color(0xFF172637) : Theme.of(context).colorScheme.surfaceContainerHighest;
     final fg = primary ? Colors.white : destructive ? Theme.of(context).colorScheme.error : dark ? Colors.white : Theme.of(context).colorScheme.onSurface;
     final radius = BorderRadius.circular(compact ? 12 : 15);
-    final button = Material(color: bg, borderRadius: radius, child: InkWell(onTap: () => key(value), borderRadius: radius, child: Center(child: Text(value, style: TextStyle(fontSize: compact ? 19 : 22, fontWeight: FontWeight.w700, color: fg)))));
-    if (value != '⌫') return Padding(padding: const EdgeInsets.all(3), child: button);
-    return Padding(padding: const EdgeInsets.all(3), child: GestureDetector(onLongPressStart: (_) => _startBackspaceRepeat(), onLongPressEnd: (_) => _stopBackspaceRepeat(), onLongPressCancel: _stopBackspaceRepeat, child: button));
+    return Padding(
+      padding: const EdgeInsets.all(3),
+      child: GestureDetector(
+        onTap: () => key(value),
+        onLongPressStart: value == '⌫' ? (_) => _startBackspaceRepeat() : null,
+        onLongPressEnd: value == '⌫' ? (_) => _stopBackspaceRepeat() : null,
+        onLongPressCancel: value == '⌫' ? _stopBackspaceRepeat : null,
+        child: Container(
+          decoration: BoxDecoration(color: bg, borderRadius: radius),
+          alignment: Alignment.center,
+          child: Text(value, style: TextStyle(fontSize: compact ? 19 : 22, fontWeight: FontWeight.w700, color: fg)),
+        ),
+      ),
+    );
   }
 
   Future<void> _showRecent() async {
