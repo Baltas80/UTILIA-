@@ -120,7 +120,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
             ]))),
             if (scientific) ...[
               const SizedBox(height: 4),
-              SizedBox(height: scientificHeight, child: _scientificRow([_small('sin', 'sin('), _small('cos', 'cos('), _small('tan', 'tan('), _small('ln', 'ln('), _small('log', 'log(')])),
+              SizedBox(height: scientificHeight, child: _scientificRow([_small('sin(', 'sin('), _small('cos(', 'cos('), _small('tan(', 'tan('), _small('ln(', 'ln('), _small('log(', 'log(')])),
               SizedBox(height: scientificHeight, child: _scientificRow([_small('√', '√('), _small('x²', 'x²'), _small('^', '^'), _small('1/x', '1/x'), _small('!', '!'), _small(degrees ? 'DEG' : 'RAD', 'mode')])),
             ],
             Expanded(child: Padding(padding: const EdgeInsets.fromLTRB(10, 6, 10, 4), child: scientific ? _scientificKeypad(compact) : _standardKeypad(compact))),
