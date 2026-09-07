@@ -26,7 +26,7 @@ class UtiliaStrings {
   String get result => _t('Resultado', 'Result', 'Résultat', 'Ergebnis', 'Risultato', 'Resultado');
   String get copied => _t('Resultado copiado', 'Result copied', 'Résultat copié', 'Ergebnis kopiert', 'Risultato copiato', 'Resultado copiado');
   String get clearHistory => _t('Borrar historial', 'Clear history', 'Effacer l’historique', 'Verlauf löschen', 'Cancella cronologia', 'Apagar histórico');
-  String get emptyFavorites => _t('Favoritos\nMantén pulsada una herramienta para añadirla.', 'Favorites\nLong-press a tool to add it.', 'Favoris\nMaintenez un outil pour l’ajouter.', 'Favoriten\nWerkzeug gedrückt halten zum Hinzufügen.', 'Preferiti\nTieni premuto uno strumento per aggiungerlo.', 'Favoritos\nMantenha uma ferramenta pressionada para adicionar.');
+  String get emptyFavorites => _t('Favoritos\nToca el corazón de una herramienta para añadirla.', 'Favorites\nTap a tool’s heart to add it.', 'Favoris\nTouchez le cœur d’un outil pour l’ajouter.', 'Favoriten\nTippen Sie auf das Herz eines Werkzeugs, um es hinzuzufügen.', 'Preferiti\nTocca il cuore di uno strumento per aggiungerlo.', 'Favoritos\nToque no coração de uma ferramenta para a adicionar.');
   String get emptyHistory => _t('Historial\nTus cálculos aparecerán aquí.', 'History\nYour calculations will appear here.', 'Historique\nVos calculs apparaîtront ici.', 'Verlauf\nIhre Berechnungen erscheinen hier.', 'Cronologia\nI tuoi calcoli appariranno qui.', 'Histórico\nOs seus cálculos aparecerão aqui.');
   String toolsCount(int n) => _t('$n herramientas', '$n tools', '$n outils', '$n Werkzeuge', '$n strumenti', '$n ferramentas');
   String get invalidDate => _t('Introduce una fecha válida.', 'Enter a valid date.', 'Saisissez une date valide.', 'Geben Sie ein gültiges Datum ein.', 'Inserisci una data valida.', 'Introduza uma data válida.');
@@ -79,7 +79,7 @@ class UtiliaStrings {
       UtiliaLanguage.en => {'bmi':['Weight (kg)','Height (cm)'],'gradeAverage':['Grades separated by commas'],'length':['Value','Source unit','Target unit'],'weight':['Value','Source unit','Target unit']},
       UtiliaLanguage.fr => {'bmi':['Poids (kg)','Taille (cm)'],'gradeAverage':['Notes séparées par des virgules'],'length':['Valeur','Unité source','Unité cible'],'weight':['Valeur','Unité source','Unité cible']},
       UtiliaLanguage.de => {'bmi':['Gewicht (kg)','Größe (cm)'],'gradeAverage':['Noten durch Kommas getrennt'],'length':['Wert','Quelleinheit','Zieleinheit'],'weight':['Wert','Quelleinheit','Zieleinheit']},
-      UtiliaLanguage.it => {'bmi':['Peso (kg)','Altezza (cm)'],'gradeAverage':['Voti separati da virgole'],'length':['Valore','Unità di origine','Unità di destinazione'],'weight':['Valore','Unità di origine','Unità di destinazione']},
+      UtiliaLanguage.it => {'bmi':['Peso (kg)','Altezza (cm)'],'gradeAverage':['Voti separati da virgole'],'length':['Valore','Unità di origine','Unità di destinazione'] ,'weight':['Valore','Unità di origine','Unità di destinazione']},
       UtiliaLanguage.pt => {'bmi':['Peso (kg)','Altura (cm)'],'gradeAverage':['Notas separadas por vírgulas'],'length':['Valor','Unidade de origem','Unidade de destino'],'weight':['Valor','Unidade de origem','Unidade de destino']},
       _ => <String,List<String>>{},
     };
