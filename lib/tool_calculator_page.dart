@@ -378,7 +378,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
         const SizedBox(height: 15),
         Text('${_formatResult(result!)}${unit.isEmpty ? '' : ' $unit'}', style: TextStyle(fontSize: 38, height: 1, fontWeight: FontWeight.w900, color: scheme.onSurface)),
         const SizedBox(height: 14),
-        Text(widget.s.result(widget.tool.type.name), style: Theme.of(context).textTheme.bodyMedium),
+        Text(widget.s.result,
       ]),
     );
   }
