@@ -83,8 +83,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
       };
 
   bool _hasRequiredInputs() {
-    final required = labels.length;
-    for (var i = 0; i < required; i++) {
+    for (var i = 0; i < labels.length; i++) {
       if (controllers[i].text.trim().isEmpty) return false;
     }
     return true;
@@ -92,7 +91,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
 
   Future<void> calculate() async {
     if (!_hasRequiredInputs()) {
-      _error(widget.s.requiredFields);
+      _error('Completa todos los campos.');
       return;
     }
 
