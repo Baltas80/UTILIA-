@@ -141,6 +141,50 @@ class _CalculatorPageState extends State<CalculatorPage> {
     return true;
   }
 
+  bool _validateToolRanges(double x, double y, double z, double price) {
+    switch (widget.tool.type) {
+      case ToolType.percentage:
+        return x >= 0 && y >= 0;
+      case ToolType.discount:
+        return x >= 0 && y >= 0 && y <= 100;
+      case ToolType.iva:
+        return x >= 0 && y >= 0 && y <= 100;
+      case ToolType.tip:
+        return x >= 0 && y >= 0 && z > 0;
+      case ToolType.loan:
+        return x > 0 && y >= 0 && z > 0;
+      case ToolType.compoundInterest:
+        return x > 0 && y >= 0 && z > 0;
+      case ToolType.area:
+        return x >= 0 && y >= 0;
+      case ToolType.paint:
+        return x >= 0 && y > 0;
+      case ToolType.electricity:
+        return x >= 0 && y >= 0 && z >= 0 && price >= 0;
+      case ToolType.fuel:
+        return x >= 0 && y >= 0 && z >= 0;
+      case ToolType.costPerKm:
+        return x >= 0 && y > 0;
+      case ToolType.bmi:
+        return x > 0 && y > 0;
+      case ToolType.ruleOfThree:
+        return x != 0;
+      case ToolType.workHours:
+        return x >= 0 && x <= 24 && y >= 0 && y <= 24 && z >= 0 && z < 1440;
+      case ToolType.countdown:
+        return x >= 0 && y >= 0 && y < 60 && z >= 0 && z < 60;
+      case ToolType.length:
+      case ToolType.weight:
+        return x >= 0;
+      case ToolType.age:
+      case ToolType.dateDifference:
+      case ToolType.gradeAverage:
+      case ToolType.calculator:
+      case ToolType.scientificCalculator:
+        return true;
+    }
+  }
+
   String get _missingFieldsMessage => switch (widget.s.selectedLanguage) {
         UtiliaLanguage.en => 'Complete all fields.',
         UtiliaLanguage.fr => 'Remplissez tous les champs.',
@@ -157,6 +201,15 @@ class _CalculatorPageState extends State<CalculatorPage> {
         UtiliaLanguage.it => 'Inserisci numeri validi.',
         UtiliaLanguage.pt => 'Introduza números válidos.',
         _ => 'Introduce números válidos.',
+      };
+
+  String get _invalidValueMessage => switch (widget.s.selectedLanguage) {
+        UtiliaLanguage.en => 'Check the values entered.',
+        UtiliaLanguage.fr => 'Vérifiez les valeurs saisies.',
+        UtiliaLanguage.de => 'Überprüfen Sie die eingegebenen Werte.',
+        UtiliaLanguage.it => 'Controlla i valori inseriti.',
+        UtiliaLanguage.pt => 'Verifique os valores introduzidos.',
+        _ => 'Revisa los valores introducidos.',
       };
 
   String get _invalidUnitMessage => switch (widget.s.selectedLanguage) {
@@ -181,6 +234,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
     final y = parseNumber(controllers[1].text);
     final z = parseNumber(controllers[2].text);
     final price = parseNumber(controllers[3].text);
+    if (!_validateToolRanges(x, y, z, price)) {
+      _error(_invalidValueMessage);
+      return;
+    }
     double r;
     String u = '';
     switch (widget.tool.type) {
