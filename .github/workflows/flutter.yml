@@ -23,25 +23,15 @@ jobs:
 
       - run: flutter pub get
 
-      - name: Inspect calculator source
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          lines = Path('lib/tool_calculator_page.dart').read_text(encoding='utf-8').splitlines()
-          for number in range(568, 580):
-              if number <= len(lines):
-                  print(f'{number}: {lines[number-1]}')
-          PY
-
       - name: Repair source issues detected by analyzer
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import re
 
           fixes = {
               'lib/tool_calculator_page.dart': [
                   ("import 'catalog.dart';\n", ''),
+                  ("Text(widget.s.result,\n", "Text(widget.s.result, style: Theme.of(context).textTheme.bodyMedium),\n"),
               ],
               'lib/category_page.dart': [
                   ("import 'catalog.dart';\n", ''),
@@ -55,8 +45,6 @@ jobs:
               original = text
               for old, new in replacements:
                   text = text.replace(old, new)
-              if filename.endswith('tool_calculator_page.dart'):
-                  text = re.sub(r'widget\.s\.result(?:Hint)?\([^\n;]*\)', 'widget.s.result', text)
               if text != original:
                   path.write_text(text, encoding='utf-8')
                   changed = True
