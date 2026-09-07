@@ -46,7 +46,7 @@ jobs:
               for old, new in replacements:
                   text = text.replace(old, new)
               if filename.endswith('tool_calculator_page.dart'):
-                  text = re.sub(r'widget\.s\.result(?:Hint)?\(\)', 'widget.s.result', text)
+                  text = re.sub(r'widget\.s\.result(?:Hint)?\([^\n;]*\)', 'widget.s.result', text)
               if text != original:
                   path.write_text(text, encoding='utf-8')
                   changed = True
