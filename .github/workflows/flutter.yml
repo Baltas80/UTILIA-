@@ -18,7 +18,7 @@ jobs:
   validate-and-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: subosito/flutter-action@v2
         with:
@@ -45,7 +45,7 @@ jobs:
         run: flutter build appbundle --release
 
       - name: Upload Android release artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: utilia-release-builds
           path: |
