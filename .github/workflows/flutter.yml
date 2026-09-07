@@ -5,37 +5,35 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+  workflow_dispatch:
 
 jobs:
-  analyze-and-test:
+  validate-and-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.35.7'
           cache: true
+
       - run: flutter pub get
       - run: dart format --output=none --set-exit-if-changed lib test
       - run: flutter analyze
       - run: flutter test
 
-  android-build:
-    needs: analyze-and-test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.35.7'
-          cache: true
       - name: Bootstrap Android project
         run: flutter create . --platforms=android --project-name utilia --org com.utilia.app
+
       - run: flutter pub get
+
       - name: Build release APK
         run: flutter build apk --release
+
       - name: Build release App Bundle
         run: flutter build appbundle --release
+
       - name: Upload Android release artifacts
         uses: actions/upload-artifact@v4
         with:
