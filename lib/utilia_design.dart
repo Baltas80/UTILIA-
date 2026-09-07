@@ -67,6 +67,17 @@ class UtiliaGradientHeader extends StatelessWidget {
   @override Widget build(BuildContext context) => Container(height: 142, padding: const EdgeInsets.all(20), decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [color, color.withValues(alpha: .72)]), borderRadius: BorderRadius.circular(26)), child: Stack(children: [Positioned(right: -4, top: -8, child: Icon(icon, size: 92, color: Colors.white.withValues(alpha: .18))), Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [Text(title, style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w900)), const SizedBox(height: 5), ConstrainedBox(constraints: const BoxConstraints(maxWidth: 235), child: Text(subtitle, style: TextStyle(color: Colors.white.withValues(alpha: .92), fontSize: 12.5, height: 1.25, fontWeight: FontWeight.w600)))])]));
 }
 
+class UtiliaPill extends StatelessWidget {
+  const UtiliaPill({super.key, required this.label, required this.selected, required this.onSelected});
+  final String label;
+  final bool selected;
+  final ValueChanged<bool> onSelected;
+  @override Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return FilterChip(label: Text(label), selected: selected, onSelected: onSelected, showCheckmark: false, side: BorderSide.none, backgroundColor: scheme.surfaceContainerHighest, selectedColor: scheme.primary.withValues(alpha: .12), labelStyle: TextStyle(fontWeight: FontWeight.w800, color: selected ? scheme.primary : scheme.onSurface));
+  }
+}
+
 class UtiliaCalculatorButton extends StatelessWidget {
   const UtiliaCalculatorButton({super.key, required this.label, required this.onPressed, this.primary = false, this.destructive = false, this.dark = false});
   final String label; final VoidCallback onPressed; final bool primary, destructive, dark;
