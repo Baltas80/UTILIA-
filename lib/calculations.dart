@@ -10,7 +10,7 @@ double tipAmount(double bill, double percent) => percentageOf(bill, percent);
 double tipPerPerson(double bill, double percent, int people) =>
     people <= 0 ? 0 : (bill + tipAmount(bill, percent)) / people;
 double compound(double principal, double annualRate, int years) =>
-    principal * _pow(1 + annualRate / 100, years);
+    years <= 0 ? principal : principal * _pow(1 + annualRate / 100, years);
 
 double _pow(double base, int exponent) {
   var result = 1.0;
@@ -36,7 +36,6 @@ double electricityCost(
 double bmi(double kg, double heightCm) {
   final m = heightCm / 100;
   return m <= 0 ? 0 : kg / (m * m);
-}
 double gradeAverage(List<double> grades) =>
     grades.isEmpty ? 0 : grades.reduce((a, b) => a + b) / grades.length;
 double ruleOfThree(double a, double b, double c) => a == 0 ? 0 : b * c / a;
