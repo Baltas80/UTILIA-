@@ -36,6 +36,7 @@ double electricityCost(
 double bmi(double kg, double heightCm) {
   final m = heightCm / 100;
   return m <= 0 ? 0 : kg / (m * m);
+}
 double gradeAverage(List<double> grades) =>
     grades.isEmpty ? 0 : grades.reduce((a, b) => a + b) / grades.length;
 double ruleOfThree(double a, double b, double c) => a == 0 ? 0 : b * c / a;
