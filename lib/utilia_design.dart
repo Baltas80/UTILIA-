@@ -6,7 +6,7 @@ class UtiliaBrand {
   static const violet = Color(0xFF7652E8);
   static const cyan = Color(0xFF14B7C7);
   static const ink = Color(0xFF0D172A);
-  static const lightBackground = Color(0xFFF7F9FC);
+  static const lightBackground = Color(0xFFF6F8FC);
   static const darkBackground = Color(0xFF06111F);
   static const categoryColors = <String, Color>{
     'Dinero': Color(0xFF16B878),
@@ -28,8 +28,8 @@ ThemeData utiliaTheme(Brightness brightness) {
     primary: UtiliaBrand.blue,
     onPrimary: Colors.white,
     surface: dark ? const Color(0xFF0B1726) : Colors.white,
-    surfaceContainer: dark ? const Color(0xFF101F31) : const Color(0xFFF1F5FB),
-    surfaceContainerHighest: dark ? const Color(0xFF1A2A3B) : const Color(0xFFEAF1F9),
+    surfaceContainer: dark ? const Color(0xFF101F31) : const Color(0xFFF0F4FA),
+    surfaceContainerHighest: dark ? const Color(0xFF1A2A3B) : const Color(0xFFE8EFF8),
     surfaceTint: Colors.transparent,
   );
   final text = TextTheme(
@@ -52,7 +52,7 @@ ThemeData utiliaTheme(Brightness brightness) {
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       scrolledUnderElevation: 0,
-      toolbarHeight: 64,
+      toolbarHeight: 60,
       titleTextStyle: text.titleLarge,
       iconTheme: IconThemeData(color: scheme.onSurface, size: 23),
     ),
@@ -62,14 +62,14 @@ ThemeData utiliaTheme(Brightness brightness) {
       color: dark ? const Color(0xFF101E2E) : Colors.white,
       surfaceTintColor: Colors.transparent,
       shadowColor: Colors.black.withValues(alpha: .08),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
     ),
     navigationBarTheme: NavigationBarThemeData(
-      height: 76,
+      height: 70,
       elevation: 0,
       backgroundColor: dark ? const Color(0xFF081421) : Colors.white,
       indicatorColor: dark ? const Color(0xFF173D68) : const Color(0xFFDCEBFF),
-      labelTextStyle: WidgetStatePropertyAll(text.labelLarge!.copyWith(fontSize: 10)),
+      labelTextStyle: WidgetStatePropertyAll(text.labelLarge!.copyWith(fontSize: 9.5)),
       iconTheme: WidgetStatePropertyAll(IconThemeData(size: 22, color: scheme.onSurfaceVariant)),
     ),
     filledButtonTheme: FilledButtonThemeData(style: FilledButton.styleFrom(
@@ -80,9 +80,9 @@ ThemeData utiliaTheme(Brightness brightness) {
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: dark ? const Color(0xFF111F30) : Colors.white,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(17), borderSide: BorderSide.none),
-      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(17), borderSide: BorderSide.none),
-      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(17), borderSide: BorderSide(color: scheme.primary, width: 1.5)),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: scheme.primary, width: 1.5)),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
     ),
   );
@@ -151,7 +151,7 @@ class UtiliaSoftIcon extends StatelessWidget {
     height: size,
     decoration: BoxDecoration(
       gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [color.withValues(alpha: .20), color.withValues(alpha: .06)]),
-      borderRadius: BorderRadius.circular(size * .30),
+      borderRadius: BorderRadius.circular(size * .28),
     ),
     child: Icon(icon, color: color, size: size * .53),
   );
@@ -165,18 +165,18 @@ class UtiliaGradientHeader extends StatelessWidget {
   final IconData icon;
   @override
   Widget build(BuildContext context) => Container(
-    height: 158,
-    padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
+    height: 150,
+    padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
     decoration: BoxDecoration(
-      gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [color.withValues(alpha: .96), color.withValues(alpha: .72)]),
-      borderRadius: BorderRadius.circular(26),
+      gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [color.withValues(alpha: .96), color.withValues(alpha: .70)]),
+      borderRadius: BorderRadius.circular(22),
     ),
     child: Stack(children: [
-      Positioned(right: -10, top: -18, child: Icon(icon, size: 112, color: Colors.white.withValues(alpha: .18))),
+      Positioned(right: -12, top: -20, child: Icon(icon, size: 116, color: Colors.white.withValues(alpha: .18))),
       Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.end, children: [
         Text(title, style: const TextStyle(color: Colors.white, fontSize: 23, fontWeight: FontWeight.w900)),
-        const SizedBox(height: 6),
-        ConstrainedBox(constraints: const BoxConstraints(maxWidth: 245), child: Text(subtitle, style: TextStyle(color: Colors.white.withValues(alpha: .94), fontSize: 12.5, height: 1.25, fontWeight: FontWeight.w600))),
+        const SizedBox(height: 5),
+        ConstrainedBox(constraints: const BoxConstraints(maxWidth: 250), child: Text(subtitle, style: TextStyle(color: Colors.white.withValues(alpha: .95), fontSize: 12.2, height: 1.25, fontWeight: FontWeight.w600))),
       ]),
     ]),
   );
