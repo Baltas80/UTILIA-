@@ -26,11 +26,23 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
   Future<void> _toggleFavorite(ToolType type) async { final next = {...favorites}; next.contains(type) ? next.remove(type) : next.add(type); setState(() => favorites = next); await widget.onFavorite(type); }
   String text(String es, String en, String fr, String de, String it, String pt) => switch (widget.s.selectedLanguage) { UtiliaLanguage.en => en, UtiliaLanguage.fr => fr, UtiliaLanguage.de => de, UtiliaLanguage.it => it, UtiliaLanguage.pt => pt, _ => es };
 
+  String _categorySubtitle() {
+    return switch (widget.category) {
+      'Dinero' => text('Herramientas para gestionar tu dinero.', 'Tools to manage your money.', 'Des outils pour gérer votre argent.', 'Werkzeuge zur Verwaltung Ihres Geldes.', 'Strumenti per gestire il tuo denaro.', 'Ferramentas para gerir o seu dinheiro.'),
+      'Tiempo' => text('Herramientas para organizar mejor tu tiempo.', 'Tools to organize your time better.', 'Des outils pour mieux organiser votre temps.', 'Werkzeuge für eine bessere Zeitplanung.', 'Strumenti per organizzare meglio il tuo tempo.', 'Ferramentas para organizar melhor o seu tempo.'),
+      'Casa' => text('Cálculos prácticos para tu hogar.', 'Practical calculations for your home.', 'Des calculs pratiques pour votre maison.', 'Praktische Berechnungen für Ihr Zuhause.', 'Calcoli pratici per la tua casa.', 'Cálculos práticos para a sua casa.'),
+      'Coche' => text('Herramientas para tus viajes y tu coche.', 'Tools for your car and journeys.', 'Des outils pour votre voiture et vos trajets.', 'Werkzeuge für Ihr Auto und Ihre Fahrten.', 'Strumenti per la tua auto e i tuoi viaggi.', 'Ferramentas para o seu carro e as suas viagens.'),
+      'Conversores' => text('Convierte fácilmente entre unidades.', 'Convert easily between units.', 'Convertissez facilement entre les unités.', 'Einheiten einfach umrechnen.', 'Converti facilmente tra unità.', 'Converta facilmente entre unidades.'),
+      'Salud' => text('Cálculos útiles relacionados con tu bienestar.', 'Useful calculations related to your wellbeing.', 'Des calculs utiles liés à votre bien-être.', 'Nützliche Berechnungen rund um Ihr Wohlbefinden.', 'Calcoli utili per il tuo benessere.', 'Cálculos úteis relacionados com o seu bem-estar.'),
+      'Estudio' => text('Herramientas para estudiar y aprender.', 'Tools for studying and learning.', 'Des outils pour étudier et apprendre.', 'Werkzeuge zum Lernen und Studieren.', 'Strumenti per studiare e imparare.', 'Ferramentas para estudar e aprender.'),
+      _ => text('Herramientas prácticas para tu día a día.', 'Practical tools for everyday life.', 'Des outils pratiques pour votre quotidien.', 'Praktische Werkzeuge für den Alltag.', 'Strumenti pratici per la vita quotidiana.', 'Ferramentas práticas para o dia a dia.'),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final tint = UtiliaBrand.categoryColor(widget.category, widget.tools.first.tint);
     final category = widget.s.category(widget.category);
-    final subtitle = text('Herramientas para tu aprendizaje y trabajo académico.', 'Tools for learning and academic work.', 'Des outils pour l’apprentissage et le travail académique.', 'Werkzeuge für Lernen und akademische Arbeit.', 'Strumenti per l’apprendimento e il lavoro accademico.', 'Ferramentas para aprendizagem e trabalho académico.');
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -45,7 +57,7 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
-              child: UtiliaGradientHeader(title: category, subtitle: subtitle, color: tint, icon: widget.tools.first.icon),
+              child: UtiliaGradientHeader(title: category, subtitle: _categorySubtitle(), color: tint, icon: widget.tools.first.icon),
             ),
             Expanded(child: ListView.builder(padding: const EdgeInsets.fromLTRB(16, 0, 16, 24), itemCount: widget.tools.length, itemBuilder: (_, i) => _toolCard(context, widget.tools[i]))),
           ],
