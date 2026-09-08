@@ -17,25 +17,43 @@ concurrency:
 jobs:
   validate-and-build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout
+        uses: actions/checkout@v6
 
-      - uses: subosito/flutter-action@v2
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
+          channel: stable
           flutter-version: '3.35.7'
-          cache: true
+          cache: false
+          pub-cache: false
 
-      - run: flutter pub get
-      - name: Format Dart sources
-        run: dart format lib test
-      - run: flutter analyze --no-fatal-infos
-      - run: flutter test
+      - name: Show toolchain
+        run: |
+          flutter --version
+          dart --version
+          java -version
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed lib test
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+
+      - name: Test
+        run: flutter test
 
       - name: Verify Android Play configuration
         run: |
           test -f android/app/build.gradle.kts
           grep -q 'compileSdk = 36' android/app/build.gradle.kts
           grep -q 'targetSdk = 36' android/app/build.gradle.kts
+          grep -q 'applicationId = "com.utilia.app.utilia"' android/app/build.gradle.kts
           echo 'Android project present and locked to API 36.'
 
       - name: Build release APK
@@ -44,10 +62,17 @@ jobs:
       - name: Build release App Bundle
         run: flutter build appbundle --release
 
-      - name: Upload Android release artifacts
-        uses: actions/upload-artifact@v5
+      - name: Verify release artifacts
+        run: |
+          test -s build/app/outputs/flutter-apk/app-release.apk
+          test -s build/app/outputs/bundle/release/app-release.aab
+          ls -lh build/app/outputs/flutter-apk/app-release.apk build/app/outputs/bundle/release/app-release.aab
+
+      - name: Upload Android validation artifacts
+        uses: actions/upload-artifact@v6
         with:
           name: utilia-release-builds
+          if-no-files-found: error
           path: |
             build/app/outputs/flutter-apk/app-release.apk
             build/app/outputs/bundle/release/app-release.aab
