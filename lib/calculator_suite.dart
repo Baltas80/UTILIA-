@@ -71,33 +71,19 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
 
   Widget _key(String value, bool compact, bool dark, {bool primary = false}) {
     final destructive = value == 'C';
+    final numeric = RegExp(r'^\d$').hasMatch(value) || value == ',' || value == '%' || value == '±';
+    final operator = !numeric && value != 'C' && value != '⌫' && value != '(' && value != ')';
     final bg = primary ? UtiliaBrand.blue : dark ? const Color(0xFF172637) : Colors.white;
     final fg = primary ? Colors.white : destructive ? const Color(0xFFE43E4E) : dark ? Colors.white : UtiliaBrand.ink;
-    return Padding(padding: const EdgeInsets.all(3), child: Material(color: bg, borderRadius: BorderRadius.circular(compact ? 12 : 15), elevation: dark || primary ? 0 : 1, shadowColor: Colors.black.withValues(alpha: .06), child: InkWell(borderRadius: BorderRadius.circular(compact ? 12 : 15), onTap: () => key(value), child: Center(child: Text(value, style: TextStyle(fontSize: compact ? 19 : 22, fontWeight: FontWeight.w700, color: fg))))));
+    final fontSize = compact ? (numeric ? 24.0 : operator ? 22.0 : 22.0) : (numeric ? 29.0 : operator ? 21.0 : 25.0);
+    return Padding(padding: const EdgeInsets.all(3), child: Material(color: bg, borderRadius: BorderRadius.circular(compact ? 12 : 15), elevation: dark || primary ? 0 : 1, shadowColor: Colors.black.withValues(alpha: .06), child: InkWell(borderRadius: BorderRadius.circular(compact ? 12 : 15), onTap: () => key(value), child: Center(child: Text(value, style: TextStyle(fontSize: fontSize, height: 1, fontWeight: numeric ? FontWeight.w800 : FontWeight.w600, color: fg))))));
   }
 
   Future<void> _showRecent() async {
-    await showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (sheetContext) {
-        if (recent.isEmpty) {
-          return SafeArea(child: Padding(padding: const EdgeInsets.all(28), child: Center(child: Text(t('No hay cálculos recientes.', 'No recent calculations.', 'Aucun calcul récent.', 'Keine aktuellen Berechnungen.', 'Nessun calcolo recente.', 'Sem cálculos recentes.')))));
-        }
-        return SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-            children: recent.map((item) {
-              return ListTile(
-                leading: const Icon(Icons.functions_rounded),
-                title: Text(item),
-                trailing: IconButton(icon: const Icon(Icons.replay_rounded), onPressed: () { Navigator.pop(sheetContext); _reuse(item); }),
-              );
-            }).toList(),
-          ),
-        );
-      },
-    );
+    await showModalBottomSheet<void>(context: context, showDragHandle: true, builder: (sheetContext) {
+      if (recent.isEmpty) return SafeArea(child: Padding(padding: const EdgeInsets.all(28), child: Center(child: Text(t('No hay cálculos recientes.', 'No recent calculations.', 'Aucun calcul récent.', 'Keine aktuellen Berechnungen.', 'Nessun calcolo recente.', 'Sem cálculos recentes.')))));
+      return SafeArea(child: ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 24), children: recent.map((item) => ListTile(leading: const Icon(Icons.functions_rounded), title: Text(item), trailing: IconButton(icon: const Icon(Icons.replay_rounded), onPressed: () { Navigator.pop(sheetContext); _reuse(item); }))).toList()));
+    });
   }
 }
 
