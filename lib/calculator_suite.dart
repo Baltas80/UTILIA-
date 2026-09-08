@@ -123,17 +123,45 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
         ]),
       );
 
-  Widget _functionRow(List<String> values) => SizedBox(height: 38, child: Padding(padding: const EdgeInsets.symmetric(horizontal: 18), child: Row(children: [for (final value in values) Expanded(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 2), child: _functionKey(value)))])));
+  Widget _functionRow(List<String> values) {
+    return SizedBox(
+      height: 38,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 18),
+        child: Row(
+          children: [
+            for (final value in values)
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: _functionKey(value),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _functionKey(String label) => Material(color: const Color(0xFF18283A), borderRadius: BorderRadius.circular(9), child: InkWell(onTap: () => key(switch (label) { 'sin' => 'sin(', 'cos' => 'cos(', 'tan' => 'tan(', 'ln' => 'ln(', 'log' => 'log(', '√' => '√(', _ => label }), borderRadius: BorderRadius.circular(9), child: Center(child: Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 12)))));
 
   Widget _keypad(bool compact, bool dark) {
-    if (scientific) {
-      const rows = [['C', '(', ')', '⌫'], ['7', '8', '9', '÷'], ['4', '5', '6', '×'], ['1', '2', '3', '−'], ['0', ',', '!', '+'], ['±', 'x²', '1/x', '=']];
-      return Column(children: [for (var r = 0; r < rows.length; r++) Expanded(child: Row(children: [for (final value in rows[r]) Expanded(child: _key(value, compact, true, primary: value == '='))]))]);
-    }
-    const rows = [['C', '(', ')', '⌫'], ['7', '8', '9', '÷'], ['4', '5', '6', '×'], ['1', '2', '3', '−'], ['0', ',', '%', '+'], ['±', 'x²', '1/x', '=']];
-    return Column(children: [for (var r = 0; r < rows.length; r++) Expanded(child: Row(children: [for (final value in rows[r]) Expanded(child: _key(value, compact, false, primary: value == '='))]))]);
+    final rows = scientific
+        ? const [['C', '(', ')', '⌫'], ['7', '8', '9', '÷'], ['4', '5', '6', '×'], ['1', '2', '3', '−'], ['0', ',', '!', '+'], ['±', 'x²', '1/x', '=']]
+        : const [['C', '(', ')', '⌫'], ['7', '8', '9', '÷'], ['4', '5', '6', '×'], ['1', '2', '3', '−'], ['0', ',', '%', '+'], ['±', 'x²', '1/x', '=']];
+    return Column(
+      children: [
+        for (final row in rows)
+          Expanded(
+            child: Row(
+              children: [
+                for (final value in row)
+                  Expanded(child: _key(value, compact, dark, primary: value == '=')),
+              ],
+            ),
+          ),
+      ],
+    );
   }
 
   Widget _key(String value, bool compact, bool dark, {bool primary = false}) {
@@ -143,10 +171,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
     final bg = primary ? UtiliaBrand.blue : dark ? const Color(0xFF172637) : Colors.white;
     final fg = primary ? Colors.white : destructive ? const Color(0xFFE43E4E) : dark ? Colors.white : UtiliaBrand.ink;
     final fontSize = compact ? (numeric ? 24.0 : operator ? 17.0 : 19.0) : (numeric ? 25.0 : operator ? 18.0 : 20.0);
-    return Padding(
-      padding: const EdgeInsets.all(4),
-      child: Material(color: bg, borderRadius: BorderRadius.circular(13), elevation: dark || primary ? 0 : 0.5, child: InkWell(borderRadius: BorderRadius.circular(13), onTap: () => key(value), child: Center(child: Text(value, style: TextStyle(fontSize: fontSize, height: 1, fontWeight: numeric ? FontWeight.w800 : FontWeight.w600, color: fg))))),
-    );
+    return Padding(padding: const EdgeInsets.all(4), child: Material(color: bg, borderRadius: BorderRadius.circular(13), elevation: 0, child: InkWell(borderRadius: BorderRadius.circular(13), onTap: () => key(value), child: Center(child: Text(value, style: TextStyle(fontSize: fontSize, height: 1, fontWeight: numeric ? FontWeight.w800 : FontWeight.w600, color: fg))))));
   }
 
   Future<void> _showRecent() async {
