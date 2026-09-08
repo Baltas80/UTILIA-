@@ -1,8 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:share_plus/share_plus.dart';
 
 import 'localization.dart';
 import 'storage.dart';
@@ -33,8 +31,6 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
     setState(() { switch (value) { case 'C': expression = ''; result = '0'; case '⌫': if (expression.isNotEmpty) expression = expression.substring(0, expression.length - 1); case '±': expression = expression.startsWith('-') ? expression.substring(1) : '-$expression'; case 'x²': expression += '^2'; case '1/x': expression = '1/($expression)'; default: expression += value; } });
   }
   String _format(double value) { if (!value.isFinite) return 'Error'; if ((value - value.roundToDouble()).abs() < 1e-10) return value.round().toString(); return value.toStringAsPrecision(12).replaceFirst(RegExp(r'0+$'), '').replaceFirst(RegExp(r'\.$'), ''); }
-  Future<void> _copy() async { await Clipboard.setData(ClipboardData(text: '$expression = $result')); if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(widget.s.copied))); }
-  Future<void> _share() => SharePlus.instance.share(ShareParams(text: '$expression = $result', subject: 'UTILIA'));
   void _reuse(String item) { final parts = item.split(' = '); setState(() { expression = parts.first; result = parts.length > 1 ? parts.sublist(1).join(' = ') : '0'; }); }
 
   @override
