@@ -151,11 +151,9 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
   Widget build(BuildContext context) {
     final dark = scientific;
     return Scaffold(
-      backgroundColor:
-          dark ? const Color(0xFF071522) : const Color(0xFFF7F9FC),
+      backgroundColor: dark ? const Color(0xFF071522) : const Color(0xFFF7F9FC),
       appBar: AppBar(
-        backgroundColor:
-            dark ? const Color(0xFF071522) : Colors.transparent,
+        backgroundColor: dark ? const Color(0xFF071522) : Colors.transparent,
         surfaceTintColor: Colors.transparent,
         toolbarHeight: 58,
         leading: IconButton(
@@ -247,8 +245,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
         ),
       );
 
-  Widget _mode(String label, bool selected, VoidCallback onTap) =>
-      Expanded(
+  Widget _mode(String label, bool selected, VoidCallback onTap) => Expanded(
         child: GestureDetector(
           onTap: onTap,
           child: Container(
@@ -277,9 +274,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
         decoration: BoxDecoration(
           color: dark ? const Color(0xFF101D2A) : Colors.white,
           borderRadius: BorderRadius.circular(18),
-          border: dark
-              ? null
-              : Border.all(color: const Color(0xFFE6ECF4)),
+          border: dark ? null : Border.all(color: const Color(0xFFE6ECF4)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -294,9 +289,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
                     expression.isEmpty ? '0' : expression,
                     style: TextStyle(
                       fontSize: compact ? 18 : 20,
-                      color: dark
-                          ? Colors.white70
-                          : const Color(0xFF63748A),
+                      color: dark ? Colors.white70 : const Color(0xFF63748A),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -344,17 +337,23 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
     String value;
     switch (label) {
       case 'sin':
-        value = 'sin('; break;
+        value = 'sin(';
+        break;
       case 'cos':
-        value = 'cos('; break;
+        value = 'cos(';
+        break;
       case 'tan':
-        value = 'tan('; break;
+        value = 'tan(';
+        break;
       case 'ln':
-        value = 'ln('; break;
+        value = 'ln(';
+        break;
       case 'log':
-        value = 'log('; break;
+        value = 'log(';
+        break;
       case '√':
-        value = '√('; break;
+        value = '√(';
+        break;
       default:
         value = label;
     }
@@ -442,8 +441,16 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
                 ? Colors.white
                 : UtiliaBrand.ink;
     final fontSize = compact
-        ? (numeric ? 24.0 : operator ? 17.0 : 19.0)
-        : (numeric ? 25.0 : operator ? 18.0 : 20.0);
+        ? (numeric
+            ? 24.0
+            : operator
+                ? 17.0
+                : 19.0)
+        : (numeric
+            ? 25.0
+            : operator
+                ? 18.0
+                : 20.0);
     return Padding(
       padding: const EdgeInsets.all(4),
       child: Material(
@@ -459,8 +466,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
               style: TextStyle(
                 fontSize: fontSize,
                 height: 1,
-                fontWeight:
-                    numeric ? FontWeight.w800 : FontWeight.w600,
+                fontWeight: numeric ? FontWeight.w800 : FontWeight.w600,
                 color: fg,
               ),
             ),
@@ -636,9 +642,7 @@ class CalculatorParser {
       };
 
   double _factorial(double value) {
-    if (value < 0 ||
-        value > 170 ||
-        value != value.roundToDouble()) {
+    if (value < 0 || value > 170 || value != value.roundToDouble()) {
       throw const FormatException('factorial');
     }
     var result = 1.0;

@@ -23,10 +23,16 @@ class UtiliaStorage {
   Future<List<Map<String, dynamic>>> loadHistory() async {
     final prefs = await _prefs;
     final raw = prefs.getStringList(_historyKey) ?? <String>[];
-    return raw.map((item) {
-      try { return Map<String, dynamic>.from(jsonDecode(item) as Map); }
-      catch (_) { return <String, dynamic>{}; }
-    }).where((item) => item.isNotEmpty).toList();
+    return raw
+        .map((item) {
+          try {
+            return Map<String, dynamic>.from(jsonDecode(item) as Map);
+          } catch (_) {
+            return <String, dynamic>{};
+          }
+        })
+        .where((item) => item.isNotEmpty)
+        .toList();
   }
 
   Future<void> addHistory(Map<String, dynamic> entry) async {

@@ -24,8 +24,7 @@ double fuelLitres(double km, double litresPer100Km) =>
     km * litresPer100Km / 100;
 double fuelCost(double km, double litresPer100Km, double pricePerLitre) =>
     fuelLitres(km, litresPer100Km) * pricePerLitre;
-double costPerKm(double totalCost, double km) =>
-    km <= 0 ? 0 : totalCost / km;
+double costPerKm(double totalCost, double km) => km <= 0 ? 0 : totalCost / km;
 double area(double length, double width) => length * width;
 double paintLitres(double wallArea, double coverageM2PerLitre,
         {int coats = 2}) =>
@@ -39,6 +38,7 @@ double bmi(double kg, double heightCm) {
   final m = heightCm / 100;
   return m <= 0 ? 0 : kg / (m * m);
 }
+
 double gradeAverage(List<double> grades) =>
     grades.isEmpty ? 0 : grades.reduce((a, b) => a + b) / grades.length;
 double ruleOfThree(double a, double b, double c) => a == 0 ? 0 : b * c / a;

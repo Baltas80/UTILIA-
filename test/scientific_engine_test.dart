@@ -17,7 +17,8 @@ void main() {
 
     test('supports degree and radian trigonometry', () {
       expect(ScientificEngine.evaluate('sin(90)'), closeTo(1, 1e-12));
-      expect(ScientificEngine.evaluate('sin(pi/2)', degrees: false), closeTo(1, 1e-12));
+      expect(ScientificEngine.evaluate('sin(pi/2)', degrees: false),
+          closeTo(1, 1e-12));
       expect(ScientificEngine.evaluate('asin(1)'), closeTo(90, 1e-12));
     });
 
@@ -34,7 +35,8 @@ void main() {
     test('rejects malformed expressions and division by zero', () {
       expect(() => ScientificEngine.evaluate('2/0'), throwsFormatException);
       expect(() => ScientificEngine.evaluate('(2+3'), throwsFormatException);
-      expect(() => ScientificEngine.evaluate('unknown(2)'), throwsFormatException);
+      expect(
+          () => ScientificEngine.evaluate('unknown(2)'), throwsFormatException);
       expect(() => ScientificEngine.evaluate('2+'), throwsFormatException);
     });
   });

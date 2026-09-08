@@ -9,7 +9,15 @@ import 'tool_calculator_page.dart';
 import 'utilia_design.dart';
 
 class UtiliaCategoryPage extends StatefulWidget {
-  const UtiliaCategoryPage({super.key, required this.category, required this.tools, required this.favorites, required this.onFavorite, required this.storage, required this.onHistory, required this.s});
+  const UtiliaCategoryPage(
+      {super.key,
+      required this.category,
+      required this.tools,
+      required this.favorites,
+      required this.onFavorite,
+      required this.storage,
+      required this.onHistory,
+      required this.s});
   final String category;
   final List<UtiliaTool> tools;
   final Set<ToolType> favorites;
@@ -17,31 +25,101 @@ class UtiliaCategoryPage extends StatefulWidget {
   final UtiliaStorage storage;
   final Future<void> Function() onHistory;
   final UtiliaStrings s;
-  @override State<UtiliaCategoryPage> createState() => _UtiliaCategoryPageState();
+  @override
+  State<UtiliaCategoryPage> createState() => _UtiliaCategoryPageState();
 }
 
 class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
   late Set<ToolType> favorites;
-  @override void initState() { super.initState(); favorites = {...widget.favorites}; }
-  Future<void> _toggleFavorite(ToolType type) async { final next = {...favorites}; next.contains(type) ? next.remove(type) : next.add(type); setState(() => favorites = next); await widget.onFavorite(type); }
-  String text(String es, String en, String fr, String de, String it, String pt) => switch (widget.s.selectedLanguage) { UtiliaLanguage.en => en, UtiliaLanguage.fr => fr, UtiliaLanguage.de => de, UtiliaLanguage.it => it, UtiliaLanguage.pt => pt, _ => es };
+  @override
+  void initState() {
+    super.initState();
+    favorites = {...widget.favorites};
+  }
+
+  Future<void> _toggleFavorite(ToolType type) async {
+    final next = {...favorites};
+    next.contains(type) ? next.remove(type) : next.add(type);
+    setState(() => favorites = next);
+    await widget.onFavorite(type);
+  }
+
+  String text(
+          String es, String en, String fr, String de, String it, String pt) =>
+      switch (widget.s.selectedLanguage) {
+        UtiliaLanguage.en => en,
+        UtiliaLanguage.fr => fr,
+        UtiliaLanguage.de => de,
+        UtiliaLanguage.it => it,
+        UtiliaLanguage.pt => pt,
+        _ => es
+      };
 
   String _categorySubtitle() {
     return switch (widget.category) {
-      'Dinero' => text('Herramientas para gestionar tu dinero.', 'Tools to manage your money.', 'Des outils pour gérer votre argent.', 'Werkzeuge zur Verwaltung Ihres Geldes.', 'Strumenti per gestire il tuo denaro.', 'Ferramentas para gerir o seu dinheiro.'),
-      'Tiempo' => text('Herramientas para organizar mejor tu tiempo.', 'Tools to organize your time better.', 'Des outils pour mieux organiser votre temps.', 'Werkzeuge für eine bessere Zeitplanung.', 'Strumenti per organizzare meglio il tuo tempo.', 'Ferramentas para organizar melhor o seu tempo.'),
-      'Casa' => text('Cálculos prácticos para tu hogar.', 'Practical calculations for your home.', 'Des calculs pratiques pour votre maison.', 'Praktische Berechnungen für Ihr Zuhause.', 'Calcoli pratici per la tua casa.', 'Cálculos práticos para a sua casa.'),
-      'Coche' => text('Herramientas para tus viajes y tu coche.', 'Tools for your car and journeys.', 'Des outils pour votre voiture et vos trajets.', 'Werkzeuge für Ihr Auto und Ihre Fahrten.', 'Strumenti per la tua auto e i tuoi viaggi.', 'Ferramentas para o seu carro e as suas viagens.'),
-      'Conversores' => text('Convierte fácilmente entre unidades.', 'Convert easily between units.', 'Convertissez facilement entre les unités.', 'Einheiten einfach umrechnen.', 'Converti facilmente tra unità.', 'Converta facilmente entre unidades.'),
-      'Salud' => text('Cálculos útiles relacionados con tu bienestar.', 'Useful calculations related to your wellbeing.', 'Des calculs utiles liés à votre bien-être.', 'Nützliche Berechnungen rund um Ihr Wohlbefinden.', 'Calcoli utili per il tuo benessere.', 'Cálculos úteis relacionados com o seu bem-estar.'),
-      'Estudio' => text('Herramientas para estudiar y aprender.', 'Tools for studying and learning.', 'Des outils pour étudier et apprendre.', 'Werkzeuge zum Lernen und Studieren.', 'Strumenti per studiare e imparare.', 'Ferramentas para estudar e aprender.'),
-      _ => text('Herramientas prácticas para tu día a día.', 'Practical tools for everyday life.', 'Des outils pratiques pour votre quotidien.', 'Praktische Werkzeuge für den Alltag.', 'Strumenti pratici per la vita quotidiana.', 'Ferramentas práticas para o dia a dia.'),
+      'Dinero' => text(
+          'Herramientas para gestionar tu dinero.',
+          'Tools to manage your money.',
+          'Des outils pour gérer votre argent.',
+          'Werkzeuge zur Verwaltung Ihres Geldes.',
+          'Strumenti per gestire il tuo denaro.',
+          'Ferramentas para gerir o seu dinheiro.'),
+      'Tiempo' => text(
+          'Herramientas para organizar mejor tu tiempo.',
+          'Tools to organize your time better.',
+          'Des outils pour mieux organiser votre temps.',
+          'Werkzeuge für eine bessere Zeitplanung.',
+          'Strumenti per organizzare meglio il tuo tempo.',
+          'Ferramentas para organizar melhor o seu tempo.'),
+      'Casa' => text(
+          'Cálculos prácticos para tu hogar.',
+          'Practical calculations for your home.',
+          'Des calculs pratiques pour votre maison.',
+          'Praktische Berechnungen für Ihr Zuhause.',
+          'Calcoli pratici per la tua casa.',
+          'Cálculos práticos para a sua casa.'),
+      'Coche' => text(
+          'Herramientas para tus viajes y tu coche.',
+          'Tools for your car and journeys.',
+          'Des outils pour votre voiture et vos trajets.',
+          'Werkzeuge für Ihr Auto und Ihre Fahrten.',
+          'Strumenti per la tua auto e i tuoi viaggi.',
+          'Ferramentas para o seu carro e as suas viagens.'),
+      'Conversores' => text(
+          'Convierte fácilmente entre unidades.',
+          'Convert easily between units.',
+          'Convertissez facilement entre les unités.',
+          'Einheiten einfach umrechnen.',
+          'Converti facilmente tra unità.',
+          'Converta facilmente entre unidades.'),
+      'Salud' => text(
+          'Cálculos útiles relacionados con tu bienestar.',
+          'Useful calculations related to your wellbeing.',
+          'Des calculs utiles liés à votre bien-être.',
+          'Nützliche Berechnungen rund um Ihr Wohlbefinden.',
+          'Calcoli utili per il tuo benessere.',
+          'Cálculos úteis relacionados com o seu bem-estar.'),
+      'Estudio' => text(
+          'Herramientas para estudiar y aprender.',
+          'Tools for studying and learning.',
+          'Des outils pour étudier et apprendre.',
+          'Werkzeuge zum Lernen und Studieren.',
+          'Strumenti per studiare e imparare.',
+          'Ferramentas para estudar e aprender.'),
+      _ => text(
+          'Herramientas prácticas para tu día a día.',
+          'Practical tools for everyday life.',
+          'Des outils pratiques pour votre quotidien.',
+          'Praktische Werkzeuge für den Alltag.',
+          'Strumenti pratici per la vita quotidiana.',
+          'Ferramentas práticas para o dia a dia.'),
     };
   }
 
   @override
   Widget build(BuildContext context) {
-    final tint = UtiliaBrand.categoryColor(widget.category, widget.tools.first.tint);
+    final tint =
+        UtiliaBrand.categoryColor(widget.category, widget.tools.first.tint);
     final category = widget.s.category(widget.category);
     return Scaffold(
       body: SafeArea(
@@ -50,16 +128,30 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 2, 10, 2),
               child: Row(children: [
-                IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_rounded)),
-                Expanded(child: Text(category, style: Theme.of(context).textTheme.titleLarge)),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.search_rounded)),
+                IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back_rounded)),
+                Expanded(
+                    child: Text(category,
+                        style: Theme.of(context).textTheme.titleLarge)),
+                IconButton(
+                    onPressed: () {}, icon: const Icon(Icons.search_rounded)),
               ]),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
-              child: UtiliaGradientHeader(title: category, subtitle: _categorySubtitle(), color: tint, icon: widget.tools.first.icon),
+              child: UtiliaGradientHeader(
+                  title: category,
+                  subtitle: _categorySubtitle(),
+                  color: tint,
+                  icon: widget.tools.first.icon),
             ),
-            Expanded(child: ListView.builder(padding: const EdgeInsets.fromLTRB(16, 0, 16, 24), itemCount: widget.tools.length, itemBuilder: (_, i) => _toolCard(context, widget.tools[i]))),
+            Expanded(
+                child: ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                    itemCount: widget.tools.length,
+                    itemBuilder: (_, i) =>
+                        _toolCard(context, widget.tools[i]))),
           ],
         ),
       ),
@@ -74,18 +166,36 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
       child: Card(
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
-          onTap: () => openUtiliaTool(context, tool, widget.storage, widget.onHistory, widget.s),
+          onTap: () => openUtiliaTool(
+              context, tool, widget.storage, widget.onHistory, widget.s),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 9),
             child: Row(children: [
               UtiliaSoftIcon(icon: tool.icon, color: accent, size: 48),
               const SizedBox(width: 12),
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(widget.s.toolName(tool.type.name, tool.name), style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 2),
-                Text(widget.s.toolDescription(tool.type.name, tool.description), maxLines: 2, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodyMedium),
-              ])),
-              IconButton(onPressed: () => _toggleFavorite(tool.type), icon: Icon(favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded, color: favorite ? const Color(0xFFE83D69) : Theme.of(context).colorScheme.outline)),
+              Expanded(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                    Text(widget.s.toolName(tool.type.name, tool.name),
+                        style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 2),
+                    Text(
+                        widget.s
+                            .toolDescription(tool.type.name, tool.description),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyMedium),
+                  ])),
+              IconButton(
+                  onPressed: () => _toggleFavorite(tool.type),
+                  icon: Icon(
+                      favorite
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_border_rounded,
+                      color: favorite
+                          ? const Color(0xFFE83D69)
+                          : Theme.of(context).colorScheme.outline)),
               const Icon(Icons.chevron_right_rounded, size: 20),
             ]),
           ),
@@ -95,12 +205,29 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
   }
 }
 
-void openUtiliaTool(BuildContext context, UtiliaTool tool, UtiliaStorage storage, Future<void> Function()? refresh, UtiliaStrings s) {
-  if (tool.type == ToolType.calculator || tool.type == ToolType.scientificCalculator) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => CalculatorSuitePage(scientific: tool.type == ToolType.scientificCalculator, storage: storage, s: s, onHistory: refresh)));
+void openUtiliaTool(BuildContext context, UtiliaTool tool,
+    UtiliaStorage storage, Future<void> Function()? refresh, UtiliaStrings s) {
+  if (tool.type == ToolType.calculator ||
+      tool.type == ToolType.scientificCalculator) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => CalculatorSuitePage(
+                scientific: tool.type == ToolType.scientificCalculator,
+                storage: storage,
+                s: s,
+                onHistory: refresh)));
   } else if (tool.type == ToolType.paint) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => PaintCalculatorPage(tool: tool, storage: storage, onHistory: refresh, s: s)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => PaintCalculatorPage(
+                tool: tool, storage: storage, onHistory: refresh, s: s)));
   } else {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => CalculatorPage(tool: tool, storage: storage, onHistory: refresh, s: s)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => CalculatorPage(
+                tool: tool, storage: storage, onHistory: refresh, s: s)));
   }
 }
