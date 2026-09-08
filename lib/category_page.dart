@@ -30,13 +30,13 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
   Widget build(BuildContext context) {
     final tint = UtiliaBrand.categoryColor(widget.category, widget.tools.first.tint);
     final category = widget.s.category(widget.category);
-    final subtitle = text('Herramientas para tu día a día.', 'Tools for everyday life.', 'Des outils pour votre quotidien.', 'Werkzeuge für den Alltag.', 'Strumenti per la vita quotidiana.', 'Ferramentas para o dia a dia.');
+    final subtitle = text('Herramientas para tu aprendizaje y trabajo académico.', 'Tools for learning and academic work.', 'Des outils pour l’apprentissage et le travail académique.', 'Werkzeuge für Lernen und akademische Arbeit.', 'Strumenti per l’apprendimento e il lavoro accademico.', 'Ferramentas para aprendizagem e trabalho académico.');
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+              padding: const EdgeInsets.fromLTRB(10, 2, 10, 2),
               child: Row(children: [
                 IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_rounded)),
                 Expanded(child: Text(category, style: Theme.of(context).textTheme.titleLarge)),
@@ -44,11 +44,9 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
               ]),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
-              child: Align(alignment: Alignment.centerLeft, child: Text(text('Todo en su lugar, para tu día a día.', 'Everything in its place, for everyday life.', 'Tout à sa place, pour votre quotidien.', 'Alles an seinem Platz für deinen Alltag.', 'Tutto al suo posto, per la vita di ogni giorno.', 'Tudo no seu lugar, para o seu dia a dia.'), style: Theme.of(context).textTheme.headlineSmall)),
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
+              child: UtiliaGradientHeader(title: category, subtitle: subtitle, color: tint, icon: widget.tools.first.icon),
             ),
-            Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: UtiliaGradientHeader(title: category, subtitle: subtitle, color: tint, icon: widget.tools.first.icon)),
-            const SizedBox(height: 12),
             Expanded(child: ListView.builder(padding: const EdgeInsets.fromLTRB(16, 0, 16, 24), itemCount: widget.tools.length, itemBuilder: (_, i) => _toolCard(context, widget.tools[i]))),
           ],
         ),
