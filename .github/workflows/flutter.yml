@@ -17,6 +17,10 @@ concurrency:
 jobs:
   validate-and-build:
     runs-on: ubuntu-latest
+        env:
+      UTILIA_KEYSTORE_PASSWORD: ${{ secrets.UTILIA_KEYSTORE_PASSWORD }}
+      UTILIA_KEY_ALIAS: ${{ secrets.UTILIA_KEY_ALIAS }}
+      UTILIA_KEY_PASSWORD: ${{ secrets.UTILIA_KEY_PASSWORD }}
     timeout-minutes: 30
     steps:
       - name: Checkout
@@ -72,7 +76,24 @@ jobs:
           grep -q 'targetSdk = 36' android/app/build.gradle.kts
           grep -q 'applicationId = "com.utilia.app.utilia"' android/app/build.gradle.kts
           echo 'Android project present and locked to API 36.'
+      - name: Prepare production signing keystore
+        env:
+          UTILIA_KEYSTORE_BASE64: ${{ secrets.UTILIA_KEYSTORE_BASE64 }}
+        run: |
+          keystore_path="$RUNNER_TEMP/utilia-upload-key.jks"
+          printf '%s' "$UTILIA_KEYSTORE_BASE64" | base64 --decode > "$keystore_path"
+          test -s "$keystore_path"
+          chmod 600 "$keystore_path"
+          echo "UTILIA_KEYSTORE_FILE=$keystore_path" >> "$GITHUB_ENV"
 
+      - name: Verify production signing
+        run: |
+          test -s "$UTILIA_KEYSTORE_FILE"
+          keytool -list \
+            -keystore "$UTILIA_KEYSTORE_FILE" \
+            -alias "$UTILIA_KEY_ALIAS" \
+            -storepass "$UTILIA_KEYSTORE_PASSWORD" >/dev/null
+          echo "Production upload keystore is valid."
       - name: Build release APK
         run: flutter build apk --release
 
