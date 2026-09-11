@@ -17,7 +17,7 @@ concurrency:
 jobs:
   validate-and-build:
     runs-on: ubuntu-latest
-        env:
+    env:
       UTILIA_KEYSTORE_PASSWORD: ${{ secrets.UTILIA_KEYSTORE_PASSWORD }}
       UTILIA_KEY_ALIAS: ${{ secrets.UTILIA_KEY_ALIAS }}
       UTILIA_KEY_PASSWORD: ${{ secrets.UTILIA_KEY_PASSWORD }}
