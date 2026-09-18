@@ -632,9 +632,13 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                           ])),
                       IconButton(
                           onPressed: () => widget.onTheme(!widget.darkMode),
-                          tooltip: text('Cambiar tema', 'Change theme',
-                              'Changer de thème', 'Thema ändern',
-                              'Cambia tema', 'Alterar tema'),
+                          tooltip: text(
+                              'Cambiar tema',
+                              'Change theme',
+                              'Changer de thème',
+                              'Thema ändern',
+                              'Cambia tema',
+                              'Alterar tema'),
                           icon: Icon(
                               widget.darkMode
                                   ? Icons.dark_mode_rounded
@@ -776,8 +780,12 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                         }),
                     SwitchListTile.adaptive(
                         contentPadding: EdgeInsets.zero,
-                        title: Text(text('Modo oscuro', 'Dark mode',
-                            'Mode sombre', 'Dunkelmodus', 'Modalità scura',
+                        title: Text(text(
+                            'Modo oscuro',
+                            'Dark mode',
+                            'Mode sombre',
+                            'Dunkelmodus',
+                            'Modalità scura',
                             'Modo escuro')),
                         value: widget.darkMode,
                         onChanged: (value) async {
@@ -841,9 +849,13 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
     await showDialog<void>(
         context: context,
         builder: (_) => _dialogBody(
-            text('Política de privacidad', 'Privacy policy',
-                'Politique de confidentialité', 'Datenschutzerklärung',
-                'Privacy', 'Política de privacidade'),
+            text(
+                'Política de privacidad',
+                'Privacy policy',
+                'Politique de confidentialité',
+                'Datenschutzerklärung',
+                'Privacy',
+                'Política de privacidade'),
             text(
                 'UTILIA está diseñada para funcionar de forma local siempre que sea posible. Los favoritos, el historial y las preferencias se almacenan en el dispositivo. No introduzcas información personal innecesaria en las herramientas.',
                 'UTILIA is designed to work locally whenever possible. Favorites, history and preferences are stored on the device. Do not enter unnecessary personal information into the tools.',
