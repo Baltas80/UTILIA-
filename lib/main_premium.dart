@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'catalog.dart';
 import 'category_page.dart';
@@ -121,7 +122,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
       'TOOLS FOR EVERYDAY LIFE',
       'DES OUTILS POUR VOTRE QUOTIDIEN',
       'WERKZEUGE FÜR DEN ALLTAG',
-      'STRUMENTI PER LA VITA QUOTIDIANA',
+      'STRUMENTI PER LA TUA GIORNATA',
       'FERRAMENTAS PARA O DIA A DIA');
   String get _heroSub => text(
       'Todo lo que necesitas en una sola app.',
@@ -286,7 +287,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
               action: TextButton(
                   style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 4)),
-                  onPressed: () {},
+                  onPressed: () => setState(() => tab = 0),
                   child: Text(_seeAll)))),
       const SizedBox(height: 7),
       Padding(
@@ -631,6 +632,9 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                           ])),
                       IconButton(
                           onPressed: () => widget.onTheme(!widget.darkMode),
+                          tooltip: text('Cambiar tema', 'Change theme',
+                              'Changer de thème', 'Thema ändern',
+                              'Cambia tema', 'Alterar tema'),
                           icon: Icon(
                               widget.darkMode
                                   ? Icons.dark_mode_rounded
@@ -649,7 +653,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                     'Thema, Sprache und Einstellungen',
                     'Tema, lingua e preferenze',
                     'Tema, idioma e preferências'),
-                _pickLanguage),
+                _openSettings),
             const SizedBox(height: 8),
             _setting(
                 Icons.new_releases_outlined,
@@ -662,7 +666,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                     'Neuigkeiten ansehen',
                     'Scopri le novità',
                     'Ver novidades'),
-                null),
+                _showWhatsNew),
             const SizedBox(height: 8),
             _setting(
                 Icons.star_outline_rounded,
@@ -675,7 +679,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                     'Ihre Meinung hilft uns',
                     'La tua opinione ci aiuta',
                     'A sua opinião ajuda-nos'),
-                null),
+                _rateUtilia),
             const SizedBox(height: 8),
             _setting(
                 Icons.share_outlined,
@@ -688,7 +692,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                     'UTILIA empfehlen',
                     'Consiglia UTILIA',
                     'Recomende UTILIA'),
-                null),
+                _shareUtilia),
             const SizedBox(height: 8),
             _setting(
                 Icons.privacy_tip_outlined,
@@ -706,15 +710,16 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                     'Ihre Daten, Ihre Kontrolle',
                     'I tuoi dati, il tuo controllo',
                     'Os seus dados, o seu controlo'),
-                null),
+                _showPrivacy),
             const SizedBox(height: 8),
             _setting(
                 Icons.info_outline_rounded,
                 text('Acerca de', 'About', 'À propos', 'Über', 'Informazioni',
                     'Sobre'),
                 'UTILIA v0.5.3',
-                null)
+                _showAbout)
           ]));
+
   Widget _setting(
           IconData icon, String title, String subtitle, VoidCallback? onTap) =>
       Card(
@@ -729,6 +734,145 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                   Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
               trailing: const Icon(Icons.chevron_right_rounded),
               onTap: onTap));
+
+  Widget _dialogBody(String title, String message, {IconData? icon}) =>
+      AlertDialog(
+          title: Row(children: [
+            if (icon != null) ...[
+              Icon(icon, color: UtiliaBrand.blue),
+              const SizedBox(width: 10)
+            ],
+            Expanded(child: Text(title))
+          ]),
+          content: SingleChildScrollView(child: Text(message)),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(text('Cerrar', 'Close', 'Fermer', 'Schließen',
+                    'Chiudi', 'Fechar')))
+          ]);
+
+  Future<void> _openSettings() async {
+    await showDialog<void>(
+        context: context,
+        builder: (c) => StatefulBuilder(
+            builder: (c, setDialogState) => AlertDialog(
+                  title: Text(s.languageLabel),
+                  content: Column(mainAxisSize: MainAxisSize.min, children: [
+                    DropdownButtonFormField<UtiliaLanguage>(
+                        value: widget.language,
+                        decoration: InputDecoration(
+                            labelText: text('Idioma', 'Language', 'Langue',
+                                'Sprache', 'Lingua', 'Idioma')),
+                        items: UtiliaLanguage.values
+                            .map((l) => DropdownMenuItem(
+                                value: l,
+                                child: Text(UtiliaStrings(l).languageName)))
+                            .toList(),
+                        onChanged: (value) async {
+                          if (value == null) return;
+                          await widget.onLanguage(value);
+                          if (c.mounted) setDialogState(() {});
+                        }),
+                    SwitchListTile.adaptive(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(text('Modo oscuro', 'Dark mode',
+                            'Mode sombre', 'Dunkelmodus', 'Modalità scura',
+                            'Modo escuro')),
+                        value: widget.darkMode,
+                        onChanged: (value) async {
+                          await widget.onTheme(value);
+                          if (c.mounted) setDialogState(() {});
+                        })
+                  ]),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(c),
+                        child: Text(text('Cerrar', 'Close', 'Fermer',
+                            'Schließen', 'Chiudi', 'Fechar')))
+                  ],
+                )));
+  }
+
+  Future<void> _showWhatsNew() async {
+    await showDialog<void>(
+        context: context,
+        builder: (_) => _dialogBody(
+            text('Novedades', 'What’s new', 'Nouveautés', 'Neuigkeiten',
+                'Novità', 'Novidades'),
+            text(
+                'UTILIA v0.5.3 incluye herramientas, favoritos, historial, selector de idioma y modo oscuro. Seguimos preparando la aplicación para producción.',
+                'UTILIA v0.5.3 includes tools, favorites, history, language selection and dark mode. We are continuing to prepare the app for production.',
+                'UTILIA v0.5.3 inclut des outils, des favoris, un historique, le choix de la langue et le mode sombre. La préparation pour la production continue.',
+                'UTILIA v0.5.3 enthält Werkzeuge, Favoriten, Verlauf, Sprachauswahl und Dunkelmodus. Die Vorbereitung für die Produktion wird fortgesetzt.',
+                'UTILIA v0.5.3 include strumenti, preferiti, cronologia, selezione della lingua e modalità scura. La preparazione per la produzione continua.',
+                'UTILIA v0.5.3 inclui ferramentas, favoritos, histórico, seleção de idioma e modo escuro. A preparação para produção continua.'),
+            icon: Icons.new_releases_outlined));
+  }
+
+  Future<void> _rateUtilia() async {
+    await showDialog<void>(
+        context: context,
+        builder: (_) => _dialogBody(
+            text('Valora UTILIA', 'Rate UTILIA', 'Évaluer UTILIA',
+                'UTILIA bewerten', 'Valuta UTILIA', 'Avaliar UTILIA'),
+            text(
+                'La valoración en Google Play estará disponible cuando UTILIA esté publicada. Gracias por probar la aplicación.',
+                'The Google Play rating will be available once UTILIA is published. Thank you for trying the app.',
+                'La note Google Play sera disponible lorsque UTILIA sera publiée. Merci d’essayer l’application.',
+                'Die Google-Play-Bewertung wird verfügbar sein, sobald UTILIA veröffentlicht ist. Danke für das Testen der App.',
+                'La valutazione su Google Play sarà disponibile quando UTILIA sarà pubblicata. Grazie per aver provato l’app.',
+                'A avaliação no Google Play estará disponível quando a UTILIA for publicada. Obrigado por experimentar a aplicação.'),
+            icon: Icons.star_outline_rounded));
+  }
+
+  Future<void> _shareUtilia() async {
+    await SharePlus.instance.share(ShareParams(
+        text: text(
+            'Descubre UTILIA: herramientas útiles para tu día a día.',
+            'Discover UTILIA: useful tools for everyday life.',
+            'Découvrez UTILIA : des outils utiles au quotidien.',
+            'Entdecke UTILIA: nützliche Werkzeuge für den Alltag.',
+            'Scopri UTILIA: strumenti utili per ogni giorno.',
+            'Descubra a UTILIA: ferramentas úteis para o dia a dia.')));
+  }
+
+  Future<void> _showPrivacy() async {
+    await showDialog<void>(
+        context: context,
+        builder: (_) => _dialogBody(
+            text('Política de privacidad', 'Privacy policy',
+                'Politique de confidentialité', 'Datenschutzerklärung',
+                'Privacy', 'Política de privacidade'),
+            text(
+                'UTILIA está diseñada para funcionar de forma local siempre que sea posible. Los favoritos, el historial y las preferencias se almacenan en el dispositivo. No introduzcas información personal innecesaria en las herramientas.',
+                'UTILIA is designed to work locally whenever possible. Favorites, history and preferences are stored on the device. Do not enter unnecessary personal information into the tools.',
+                'UTILIA est conçue pour fonctionner localement autant que possible. Les favoris, l’historique et les préférences sont stockés sur l’appareil. N’entrez pas d’informations personnelles inutiles dans les outils.',
+                'UTILIA ist so konzipiert, dass sie möglichst lokal arbeitet. Favoriten, Verlauf und Einstellungen werden auf dem Gerät gespeichert. Geben Sie keine unnötigen personenbezogenen Daten in die Werkzeuge ein.',
+                'UTILIA è progettata per funzionare localmente quando possibile. Preferiti, cronologia e preferenze sono memorizzati sul dispositivo. Non inserire informazioni personali non necessarie negli strumenti.',
+                'A UTILIA foi concebida para funcionar localmente sempre que possível. Favoritos, histórico e preferências são armazenados no dispositivo. Não introduza informações pessoais desnecessárias nas ferramentas.'),
+            icon: Icons.privacy_tip_outlined));
+  }
+
+  Future<void> _showAbout() async {
+    await showAboutDialog(
+        context: context,
+        applicationName: 'UTILIA',
+        applicationVersion: '0.5.3',
+        applicationIcon: const UtiliaLogoMark(size: 56),
+        applicationLegalese: '© 2026 UTILIA',
+        children: [
+          const SizedBox(height: 12),
+          Text(text(
+              'Pequeñas herramientas. Grandes soluciones.',
+              'Small tools. Big solutions.',
+              'De petits outils. De grandes solutions.',
+              'Kleine Werkzeuge. Große Lösungen.',
+              'Piccoli strumenti. Grandi soluzioni.',
+              'Pequenas ferramentas. Grandes soluções.'))
+        ]);
+  }
+
   Widget _empty(IconData icon, String message) => Center(
       child: Padding(
           padding: const EdgeInsets.all(42),
