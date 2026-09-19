@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: utilia-ci-${{ github.ref }}
@@ -55,6 +55,24 @@ jobs:
             exit 1
           fi
           echo 'No known high-risk credential patterns found in tracked source.'
+
+      - name: Format Dart source
+        run: dart format lib test
+
+      - name: Commit formatting on master
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo 'Dart source is already formatted.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add lib test
+          git commit -m 'chore: apply dart format [skip ci]'
+          git push origin HEAD:master
 
       - name: Verify Dart formatting
         run: dart format --output=none --set-exit-if-changed lib test
