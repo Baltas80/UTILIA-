@@ -5,7 +5,10 @@ double percentageOf(double amount, double percent) => amount * percent / 100;
 double discountedPrice(double price, double percent) =>
     price - percentageOf(price, percent);
 double priceWithIva(double base, double rate) => base * (1 + rate / 100);
-double priceWithoutIva(double total, double rate) => total / (1 + rate / 100);
+double priceWithoutIva(double total, double rate) {
+  final divisor = 1 + rate / 100;
+  return divisor == 0 ? 0 : total / divisor;
+}
 double tipAmount(double bill, double percent) => percentageOf(bill, percent);
 double tipPerPerson(double bill, double percent, int people) =>
     people <= 0 ? 0 : (bill + tipAmount(bill, percent)) / people;
