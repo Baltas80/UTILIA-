@@ -915,7 +915,8 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
             child: Text(
-              text('Cerrar', 'Close', 'Fermer', 'Schließen', 'Chiudi', 'Fechar'),
+              text(
+                  'Cerrar', 'Close', 'Fermer', 'Schließen', 'Chiudi', 'Fechar'),
             ),
           ),
         ],

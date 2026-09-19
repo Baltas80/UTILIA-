@@ -653,14 +653,15 @@ class UtiliaStrings {
       UtiliaLanguage.pt => 5,
       _ => 0,
     };
-    final values = (labels[id] ?? const [
-      ['Valor'],
-      ['Value'],
-      ['Valeur'],
-      ['Wert'],
-      ['Valore'],
-      ['Valor'],
-    ])[languageIndex];
+    final values = (labels[id] ??
+        const [
+          ['Valor'],
+          ['Value'],
+          ['Valeur'],
+          ['Wert'],
+          ['Valore'],
+          ['Valor'],
+        ])[languageIndex];
     return index < values.length ? values[index] : values.last;
   }
 }

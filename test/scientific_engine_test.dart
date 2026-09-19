@@ -38,8 +38,10 @@ void main() {
       expect(
           () => ScientificEngine.evaluate('unknown(2)'), throwsFormatException);
       expect(() => ScientificEngine.evaluate('2+'), throwsFormatException);
-      expect(() => ScientificEngine.evaluate('sqrt(-1)'), throwsFormatException);
-      expect(() => ScientificEngine.evaluate('2^(10000)'), throwsFormatException);
+      expect(
+          () => ScientificEngine.evaluate('sqrt(-1)'), throwsFormatException);
+      expect(
+          () => ScientificEngine.evaluate('2^(10000)'), throwsFormatException);
     });
   });
 }

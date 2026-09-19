@@ -51,8 +51,9 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
     if (query.isEmpty) return widget.tools;
     return widget.tools.where((tool) {
       final name = widget.s.toolName(tool.type.name, tool.name).toLowerCase();
-      final description =
-          widget.s.toolDescription(tool.type.name, tool.description).toLowerCase();
+      final description = widget.s
+          .toolDescription(tool.type.name, tool.description)
+          .toLowerCase();
       return name.contains(query) || description.contains(query);
     }).toList();
   }
@@ -150,9 +151,13 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
               child: _searching
                   ? Row(children: [
                       IconButton(
-                        tooltip: text('Cerrar búsqueda', 'Close search',
-                            'Fermer la recherche', 'Suche schließen',
-                            'Chiudi ricerca', 'Fechar pesquisa'),
+                        tooltip: text(
+                            'Cerrar búsqueda',
+                            'Close search',
+                            'Fermer la recherche',
+                            'Suche schließen',
+                            'Chiudi ricerca',
+                            'Fechar pesquisa'),
                         onPressed: () {
                           _searchController.clear();
                           setState(() {
@@ -177,9 +182,13 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
                       ),
                       if (_query.isNotEmpty)
                         IconButton(
-                          tooltip: text('Borrar búsqueda', 'Clear search',
-                              'Effacer la recherche', 'Suche löschen',
-                              'Cancella ricerca', 'Limpar pesquisa'),
+                          tooltip: text(
+                              'Borrar búsqueda',
+                              'Clear search',
+                              'Effacer la recherche',
+                              'Suche löschen',
+                              'Cancella ricerca',
+                              'Limpar pesquisa'),
                           onPressed: () {
                             _searchController.clear();
                             setState(() => _query = '');
@@ -224,8 +233,7 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
                             const SizedBox(height: 12),
                             Text(widget.s.noResults,
                                 textAlign: TextAlign.center,
-                                style:
-                                    Theme.of(context).textTheme.titleMedium),
+                                style: Theme.of(context).textTheme.titleMedium),
                           ],
                         ),
                       ),
@@ -273,12 +281,20 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
                   ])),
               IconButton(
                   tooltip: favorite
-                      ? text('Quitar de favoritos', 'Remove from favorites',
-                          'Retirer des favoris', 'Aus Favoriten entfernen',
-                          'Rimuovi dai preferiti', 'Remover dos favoritos')
-                      : text('Añadir a favoritos', 'Add to favorites',
-                          'Ajouter aux favoris', 'Zu Favoriten hinzufügen',
-                          'Aggiungi ai preferiti', 'Adicionar aos favoritos'),
+                      ? text(
+                          'Quitar de favoritos',
+                          'Remove from favorites',
+                          'Retirer des favoris',
+                          'Aus Favoriten entfernen',
+                          'Rimuovi dai preferiti',
+                          'Remover dos favoritos')
+                      : text(
+                          'Añadir a favoritos',
+                          'Add to favorites',
+                          'Ajouter aux favoris',
+                          'Zu Favoriten hinzufügen',
+                          'Aggiungi ai preferiti',
+                          'Adicionar aos favoritos'),
                   onPressed: () => _toggleFavorite(tool.type),
                   icon: Icon(
                       favorite

@@ -15,8 +15,7 @@ void main() {
 
     test('rejects division by zero', () {
       expect(() => CalculatorParser('10/0').parse(), throwsFormatException);
-      expect(() => CalculatorParser('10÷(2-2)').parse(),
-          throwsFormatException);
+      expect(() => CalculatorParser('10÷(2-2)').parse(), throwsFormatException);
     });
 
     test('rejects non-finite powers', () {
