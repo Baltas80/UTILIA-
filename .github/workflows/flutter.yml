@@ -17,7 +17,7 @@ concurrency:
 jobs:
   validate-and-build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     env:
       UTILIA_KEYSTORE_PASSWORD: ${{ secrets.UTILIA_KEYSTORE_PASSWORD }}
       UTILIA_KEY_ALIAS: ${{ secrets.UTILIA_KEY_ALIAS }}
