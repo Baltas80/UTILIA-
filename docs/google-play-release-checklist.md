@@ -4,7 +4,7 @@
 
 - Aplicación: `UTILIA`
 - Application ID: `com.utilia.app.utilia`
-- Versión actual: `0.5.3+9`
+- Versión actual: `0.5.4+10`
 - `compileSdk`: 36
 - `targetSdk`: 36
 - Flutter CI: validación automática de análisis, tests y builds Android
