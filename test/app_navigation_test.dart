@@ -35,10 +35,14 @@ void main() {
       await tester.pumpWidget(const UtiliaPremiumApp());
       await tester.pumpAndSettle();
 
-      final seeAllButtons = find.text('Ver todas');
-      expect(seeAllButtons, findsOneWidget);
+      final quickSeeAll = find.ancestor(
+        of: find.text('Ver todas'),
+        matching: find.byType(TextButton),
+      ).first;
+      expect(quickSeeAll, findsOneWidget);
 
-      await tester.tap(seeAllButtons);
+      await tester.ensureVisible(quickSeeAll);
+      await tester.tap(quickSeeAll);
       await tester.pumpAndSettle();
       expect(find.text('Calculadora'), findsOneWidget);
       expect(find.text('Calculadora científica'), findsOneWidget);
@@ -55,8 +59,13 @@ void main() {
       await tester.drag(homeList, const Offset(0, -700));
       await tester.pumpAndSettle();
 
-      final categorySeeAll = find.text('Ver todas');
+      final categorySeeAll = find.ancestor(
+        of: find.text('Ver todas'),
+        matching: find.byType(TextButton),
+      ).first;
       expect(categorySeeAll, findsOneWidget);
+
+      await tester.ensureVisible(categorySeeAll);
       await tester.tap(categorySeeAll);
       await tester.pumpAndSettle();
       expect(find.text('Dinero'), findsOneWidget);
