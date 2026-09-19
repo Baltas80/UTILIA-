@@ -155,8 +155,10 @@ jobs:
           "$apksigner" verify --verbose "$apk_path"
 
           apk_fingerprint="$("$apksigner" verify --print-certs "$apk_path" 2>/dev/null |
-            awk -F': ' '/Signer #1 certificate SHA-256 digest:/{print $2; exit}')"
+            sed -n 's/.*Signer #1 certificate SHA-256 digest:[[:space:]]*//p' | head -n 1)"
           apk_fingerprint="$(normalize_fingerprint "$apk_fingerprint")"
+          echo "Production certificate SHA-256: $production_fingerprint"
+          echo "APK certificate SHA-256:        $apk_fingerprint"
           test -n "$apk_fingerprint"
           test "$apk_fingerprint" = "$production_fingerprint"
 
@@ -165,12 +167,10 @@ jobs:
           aab_fingerprint="$(keytool -printcert -jarfile "$aab_path" |
             awk -F': ' '/SHA256:/{print $2; exit}')"
           aab_fingerprint="$(normalize_fingerprint "$aab_fingerprint")"
+          echo "AAB certificate SHA-256:        $aab_fingerprint"
           test -n "$aab_fingerprint"
           test "$aab_fingerprint" = "$production_fingerprint"
 
-          echo "Production certificate SHA-256: $production_fingerprint"
-          echo "APK certificate SHA-256:        $apk_fingerprint"
-          echo "AAB certificate SHA-256:        $aab_fingerprint"
           sha256sum "$apk_path" "$aab_path"
           ls -lh "$apk_path" "$aab_path"
           echo 'APK and AAB are signed by the configured production upload key.'
