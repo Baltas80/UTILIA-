@@ -46,6 +46,16 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+      - name: Scan tracked source for accidental secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git grep -n -I -E '(BEGIN (RSA|EC|OPENSSH|DSA|PRIVATE) KEY|AIza[0-9A-Za-z_-]{20,}|gh[pousr]_[A-Za-z0-9]{20,}|xox[baprs]-[A-Za-z0-9-]{20,}|sk_(live|test)_[A-Za-z0-9]{16,})' -- ':!*.lock'; then
+            echo 'Potential credential material found in tracked source.' >&2
+            exit 1
+          fi
+          echo 'No known high-risk credential patterns found in tracked source.'
+
       - name: Verify Dart formatting
         run: dart format --output=none --set-exit-if-changed lib test
 
@@ -88,7 +98,9 @@ jobs:
         shell: bash
         run: |
           test -s "$UTILIA_KEYSTORE_FILE"
-          keytool -list -keystore "$UTILIA_KEYSTORE_FILE"             -alias "$UTILIA_KEY_ALIAS"             -storepass "$UTILIA_KEYSTORE_PASSWORD" >/dev/null
+          keytool -list -keystore "$UTILIA_KEYSTORE_FILE" \
+            -alias "$UTILIA_KEY_ALIAS" \
+            -storepass "$UTILIA_KEYSTORE_PASSWORD" >/dev/null
           echo 'Production upload keystore is valid.'
 
       - name: Build release APK
@@ -141,6 +153,7 @@ jobs:
           echo "Production certificate SHA-256: $production_fingerprint"
           echo "APK certificate SHA-256:        $apk_fingerprint"
           echo "AAB certificate SHA-256:        $aab_fingerprint"
+          sha256sum "$apk_path" "$aab_path"
           ls -lh "$apk_path" "$aab_path"
           echo 'APK and AAB are signed by the configured production upload key.'
 
