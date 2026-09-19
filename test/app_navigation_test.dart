@@ -11,6 +11,7 @@ void main() {
   });
 
   testWidgets('home navigation exposes all primary destinations', (tester) async {
+    SharedPreferences.setMockInitialValues({'language': 'es'});
     await tester.pumpWidget(const UtiliaPremiumApp());
     await tester.pumpAndSettle();
 
@@ -25,6 +26,7 @@ void main() {
   });
 
   testWidgets('quick access and categories open real lists', (tester) async {
+    SharedPreferences.setMockInitialValues({'language': 'es'});
     await tester.pumpWidget(const UtiliaPremiumApp());
     await tester.pumpAndSettle();
 
