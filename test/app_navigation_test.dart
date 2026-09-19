@@ -36,9 +36,9 @@ void main() {
       await tester.pumpAndSettle();
 
       final seeAllButtons = find.text('Ver todas');
-      expect(seeAllButtons, findsNWidgets(2));
+      expect(seeAllButtons, findsOneWidget);
 
-      await tester.tap(seeAllButtons.first);
+      await tester.tap(seeAllButtons);
       await tester.pumpAndSettle();
       expect(find.text('Calculadora'), findsOneWidget);
       expect(find.text('Calculadora científica'), findsOneWidget);
@@ -51,7 +51,13 @@ void main() {
       await tester.pageBack();
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Ver todas').last);
+      final homeList = find.byType(ListView).first;
+      await tester.drag(homeList, const Offset(0, -700));
+      await tester.pumpAndSettle();
+
+      final categorySeeAll = find.text('Ver todas');
+      expect(categorySeeAll, findsOneWidget);
+      await tester.tap(categorySeeAll);
       await tester.pumpAndSettle();
       expect(find.text('Dinero'), findsOneWidget);
       expect(find.text('Conversores'), findsOneWidget);
