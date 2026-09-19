@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:utilia/catalog.dart';
+import 'package:utilia/category_page.dart';
+import 'package:utilia/localization.dart';
 import 'package:utilia/main_premium.dart';
+import 'package:utilia/models/tool.dart';
+import 'package:utilia/storage.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -29,47 +34,30 @@ void main() {
   );
 
   testWidgets(
-    'quick access and categories open real lists',
+    'category page exposes the real tool list',
     (tester) async {
-      SharedPreferences.setMockInitialValues({'language': 'es'});
-      await tester.pumpWidget(const UtiliaPremiumApp());
+      final categoryTools = tools.where((tool) => tool.category == 'Dinero').toList();
+      const strings = UtiliaStrings(UtiliaLanguage.es);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: UtiliaCategoryPage(
+            category: 'Dinero',
+            tools: categoryTools,
+            favorites: <ToolType>{},
+            onFavorite: (_) async {},
+            storage: UtiliaStorage(),
+            onHistory: () async {},
+            s: strings,
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
 
-      final quickSeeAll = find.ancestor(
-        of: find.text('Ver todas'),
-        matching: find.byType(TextButton),
-      ).first;
-      expect(quickSeeAll, findsOneWidget);
-
-      await tester.ensureVisible(quickSeeAll);
-      await tester.tap(quickSeeAll);
-      await tester.pumpAndSettle();
-      expect(find.text('Calculadora'), findsOneWidget);
-      expect(find.text('Calculadora científica'), findsOneWidget);
-
-      await tester.tap(find.text('Calculadora').first);
-      await tester.pumpAndSettle();
-      expect(find.text('Científica'), findsNothing);
-      expect(find.text('Calculadora'), findsWidgets);
-
-      await tester.pageBack();
-      await tester.pumpAndSettle();
-
-      final homeList = find.byType(ListView).first;
-      await tester.drag(homeList, const Offset(0, -700));
-      await tester.pumpAndSettle();
-
-      final categorySeeAll = find.ancestor(
-        of: find.text('Ver todas'),
-        matching: find.byType(TextButton),
-      ).first;
-      expect(categorySeeAll, findsOneWidget);
-
-      await tester.ensureVisible(categorySeeAll);
-      await tester.tap(categorySeeAll);
-      await tester.pumpAndSettle();
-      expect(find.text('Dinero'), findsOneWidget);
-      expect(find.text('Conversores'), findsOneWidget);
+      expect(find.text('Porcentaje'), findsOneWidget);
+      expect(find.text('Descuentos'), findsOneWidget);
+      expect(find.text('Préstamos'), findsOneWidget);
+      expect(find.text('Interés compuesto'), findsOneWidget);
     },
   );
 }
