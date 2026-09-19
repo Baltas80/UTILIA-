@@ -33,7 +33,10 @@ Herramientas previstas en el catálogo inicial:
 
 ## Calidad
 - Tests unitarios para fórmulas críticas.
-- CI en GitHub Actions para formato, análisis y tests.
+- CI en GitHub Actions para formato, análisis, tests y validación de release Android.
+- CI valida `compileSdk 36`, `targetSdk 36`, `minSdk 24` y `applicationId com.utilia.app.utilia`.
+- Los builds de release requieren firma mediante secretos de CI; las claves privadas no se almacenan en el repositorio.
+- La CI comprueba APK/AAB, certificados de firma y hashes SHA-256 de los artefactos.
 - No incorporar credenciales, claves API ni datos personales al repositorio.
 
 ## Roadmap
