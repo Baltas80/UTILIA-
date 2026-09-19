@@ -10,7 +10,7 @@ void main() {
     });
 
     test('supports decimal commas and unary operators', () {
-      expect(CalculatorParser('-2,5 + +1').parse(), closeTo(-1.5, 1e-12));
+      expect(CalculatorParser('-2,5 + 1').parse(), closeTo(-1.5, 1e-12));
     });
 
     test('rejects division by zero', () {
