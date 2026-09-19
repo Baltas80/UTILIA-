@@ -245,8 +245,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
         ]),
       );
 
-  Future<void> _showToolList(
-      List<UtiliaTool> items, String title) async {
+  Future<void> _showToolList(List<UtiliaTool> items, String title) async {
     await showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -277,8 +276,8 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                           borderRadius: BorderRadius.circular(18)),
                       leading: UtiliaSoftIcon(
                         icon: tool.icon,
-                        color: UtiliaBrand.categoryColor(
-                            tool.category, tool.tint),
+                        color:
+                            UtiliaBrand.categoryColor(tool.category, tool.tint),
                         size: 44,
                       ),
                       title: Text(name(tool)),
@@ -290,7 +289,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           if (mounted) {
                             openUtiliaTool(
-                              context, tool, widget.storage, _load, s);
+                                context, tool, widget.storage, _load, s);
                           }
                         });
                       },
