@@ -852,62 +852,75 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
 
   Future<void> _showPrivacy() async {
     final uri = Uri.parse(
-        'https://raw.githubusercontent.com/Baltas80/UTILIA-/master/docs/privacy-policy.html');
+      'https://raw.githubusercontent.com/Baltas80/UTILIA-/master/docs/privacy-policy.html',
+    );
+    final title = text(
+      'Política de privacidad',
+      'Privacy policy',
+      'Politique de confidentialité',
+      'Datenschutzerklärung',
+      'Privacy',
+      'Política de privacidade',
+    );
+    final message = text(
+      'UTILIA funciona principalmente de forma local. Los favoritos, el historial, el idioma y el modo oscuro se almacenan en el dispositivo. Compartir un resultado solo ocurre cuando tú lo solicitas.',
+      'UTILIA works mainly locally. Favorites, history, language and dark mode are stored on the device. Sharing a result only occurs when you request it.',
+      'UTILIA fonctionne principalement en local. Les favoris, l’historique, la langue et le mode sombre sont stockés sur l’appareil. Le partage d’un résultat ne se produit que lorsque vous le demandez.',
+      'UTILIA arbeitet hauptsächlich lokal. Favoriten, Verlauf, Sprache und Dunkelmodus werden auf dem Gerät gespeichert. Ein Ergebnis wird nur geteilt, wenn Sie dies anfordern.',
+      'UTILIA funziona principalmente in locale. Preferiti, cronologia, lingua e modalità scura sono memorizzati sul dispositivo. Un risultato viene condiviso solo quando lo richiedi.',
+      'A UTILIA funciona principalmente de forma local. Favoritos, histórico, idioma e modo escuro são armazenados no dispositivo. A partilha de um resultado só ocorre quando a solicita.',
+    );
+    final openLabel = text(
+      'Abrir política de privacidad',
+      'Open privacy policy',
+      'Ouvrir la politique de confidentialité',
+      'Datenschutzerklärung öffnen',
+      'Apri la privacy policy',
+      'Abrir política de privacidade',
+    );
+    final errorMessage = text(
+      'No se pudo abrir la política.',
+      'The privacy policy could not be opened.',
+      'Impossible d’ouvrir la politique de confidentialité.',
+      'Die Datenschutzerklärung konnte nicht geöffnet werden.',
+      'Impossibile aprire la privacy policy.',
+      'Não foi possível abrir a política de privacidade.',
+    );
     await showDialog<void>(
-        context: context,
-        builder: (dialogContext) => AlertDialog(
-              title: Row(children: [
-                const Icon(Icons.privacy_tip_outlined, color: UtiliaBrand.blue),
-                const SizedBox(width: 10),
-                Expanded(
-                    child: Text(text(
-                        'Política de privacidad',
-                        'Privacy policy',
-                        'Politique de confidentialité',
-                        'Datenschutzerklärung',
-                        'Privacy',
-                        'Política de privacidade')))
-              ]),
-              content: SingleChildScrollView(
-                child: Text(text(
-                    'UTILIA está diseñada para funcionar de forma local siempre que sea posible. Los favoritos, el historial y las preferencias se almacenan en el dispositivo. La función de compartir solo se ejecuta cuando tú la inicias. No introduzcas información personal innecesaria en las herramientas.',
-                    'UTILIA is designed to work locally whenever possible. Favorites, history and preferences are stored on the device. Sharing only occurs when you initiate it. Do not enter unnecessary personal information into the tools.',
-                    'UTILIA est conçue pour fonctionner localement autant que possible. Les favoris, l’historique et les préférences sont stockés sur le dispositif. Le partage ne se produit que lorsque vous l’initiez. N’entrez pas d’informations personnelles inutiles dans les outils.',
-                    'UTILIA ist so konzipiert, dass sie möglichst lokal arbeitet. Favoriten, Verlauf und Einstellungen werden auf dem Gerät gespeichert. Das Teilen erfolgt nur, wenn Sie es selbst starten. Geben Sie keine unnötigen personenbezogenen Daten in die Werkzeuge ein.',
-                    'UTILIA è progettata per funzionare localmente quando possibile. Preferiti, cronologia e preferenze sono memorizzati sul dispositivo. La condivisione avviene solo quando la avvii tu. Non inserire informazioni personali non necessarie negli strumenti.',
-                    'A UTILIA foi concebida para funcionar localmente sempre que possível. Favoritos, histórico e preferências são armazenados no dispositivo. A partilha ocorre apenas quando é iniciada por si. Não introduza informações pessoais desnecessárias nas ferramentas.')))
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () async {
-                    final launched = await launchUrl(
-                      uri,
-                      mode: LaunchMode.externalApplication,
-                    );
-                    if (!launched && mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(text(
-                            'No se pudo abrir la política.',
-                            'The privacy policy could not be opened.',
-                            'Impossible d’ouvrir la politique de confidentialité.',
-                            'Die Datenschutzerklärung konnte nicht geöffnet werden.',
-                            'Impossibile aprire la privacy policy.',
-                            'Não foi possível abrir a política de privacidade.',
-                          )),
-                        ),
-                      );
-                    }
-                  },
-                  child: Text(s.privacyLink),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  child: Text(text('Cerrar', 'Close', 'Fermer', 'Schließen',
-                      'Chiudi', 'Fechar')),
-                ),
-              ],
-            ));
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Row(
+          children: [
+            const Icon(Icons.privacy_tip_outlined, color: UtiliaBrand.blue),
+            const SizedBox(width: 10),
+            Expanded(child: Text(title)),
+          ],
+        ),
+        content: SingleChildScrollView(child: Text(message)),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              final launched = await launchUrl(
+                uri,
+                mode: LaunchMode.externalApplication,
+              );
+              if (!launched && mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(errorMessage)),
+                );
+              }
+            },
+            child: Text(openLabel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(
+              text('Cerrar', 'Close', 'Fermer', 'Schließen', 'Chiudi', 'Fechar'),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showAbout() {
