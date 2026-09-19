@@ -66,7 +66,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if git grep -n -I -E 'TODO|FIXME|HACK|PLACEHOLDER|coming soon|lorem ipsum' -- ':!*.lock'; then
+          if git grep -n -I -E 'TODO|FIXME|HACK|PLACEHOLDER|coming soon|lorem ipsum' -- ':(exclude).github/workflows/*' ':!*.lock'; then
             echo 'Unfinished production marker found in tracked source.' >&2
             exit 1
           fi
