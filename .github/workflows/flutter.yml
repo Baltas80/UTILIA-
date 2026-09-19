@@ -70,7 +70,7 @@ jobs:
             echo 'Unfinished production marker found in tracked source.' >&2
             exit 1
           fi
-          if git grep -n -I -E 'localhost|127\.0\.0\.1|example\.com' -- ':!*.lock'; then
+          if git grep -n -I -E 'localhost|127\.0\.0\.1|example\.com' -- ':(exclude).github/workflows/*' ':!*.lock'; then
             echo 'Development/test endpoint found in tracked source.' >&2
             exit 1
           fi
