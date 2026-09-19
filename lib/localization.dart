@@ -484,70 +484,183 @@ class UtiliaStrings {
   }
 
   String inputLabel(String id, int index) {
-    const d = <String, List<String>>{
-      'percentage': ['Cantidad', 'Porcentaje (%)'],
-      'discount': ['Precio (€)', 'Descuento (%)'],
-      'iva': ['Precio (€)', 'IVA (%)'],
-      'tip': ['Cuenta (€)', 'Propina (%)', 'Personas'],
-      'loan': ['Capital (€)', 'Interés anual (%)', 'Meses'],
-      'compoundInterest': ['Capital (€)', 'Interés anual (%)', 'Años'],
-      'age': ['Fecha de nacimiento (dd/mm/aaaa)'],
+    const labels = <String, List<List<String>>>{
+      'percentage': [
+        ['Cantidad', 'Porcentaje (%)'],
+        ['Amount', 'Percentage (%)'],
+        ['Montant', 'Pourcentage (%)'],
+        ['Betrag', 'Prozentsatz (%)'],
+        ['Importo', 'Percentuale (%)'],
+        ['Valor', 'Percentagem (%)'],
+      ],
+      'discount': [
+        ['Precio (€)', 'Descuento (%)'],
+        ['Price (€)', 'Discount (%)'],
+        ['Prix (€)', 'Réduction (%)'],
+        ['Preis (€)', 'Rabatt (%)'],
+        ['Prezzo (€)', 'Sconto (%)'],
+        ['Preço (€)', 'Desconto (%)'],
+      ],
+      'iva': [
+        ['Precio (€)', 'IVA (%)'],
+        ['Price (€)', 'VAT (%)'],
+        ['Prix (€)', 'TVA (%)'],
+        ['Preis (€)', 'MwSt. (%)'],
+        ['Prezzo (€)', 'IVA (%)'],
+        ['Preço (€)', 'IVA (%)'],
+      ],
+      'tip': [
+        ['Cuenta (€)', 'Propina (%)', 'Personas'],
+        ['Bill (€)', 'Tip (%)', 'People'],
+        ['Addition (€)', 'Pourboire (%)', 'Personnes'],
+        ['Rechnung (€)', 'Trinkgeld (%)', 'Personen'],
+        ['Conto (€)', 'Mancia (%)', 'Persone'],
+        ['Conta (€)', 'Gorjeta (%)', 'Pessoas'],
+      ],
+      'loan': [
+        ['Capital (€)', 'Interés anual (%)', 'Meses'],
+        ['Principal (€)', 'Annual interest (%)', 'Months'],
+        ['Capital (€)', 'Intérêt annuel (%)', 'Mois'],
+        ['Kapital (€)', 'Jährlicher Zins (%)', 'Monate'],
+        ['Capitale (€)', 'Interesse annuo (%)', 'Mesi'],
+        ['Capital (€)', 'Juro anual (%)', 'Meses'],
+      ],
+      'compoundInterest': [
+        ['Capital (€)', 'Interés anual (%)', 'Años'],
+        ['Principal (€)', 'Annual interest (%)', 'Years'],
+        ['Capital (€)', 'Intérêt annuel (%)', 'Années'],
+        ['Kapital (€)', 'Jährlicher Zins (%)', 'Jahre'],
+        ['Capitale (€)', 'Interesse annuo (%)', 'Anni'],
+        ['Capital (€)', 'Juro anual (%)', 'Anos'],
+      ],
+      'age': [
+        ['Fecha de nacimiento (dd/mm/aaaa)'],
+        ['Birth date (dd/mm/yyyy)'],
+        ['Date de naissance (jj/mm/aaaa)'],
+        ['Geburtsdatum (TT/MM/JJJJ)'],
+        ['Data di nascita (gg/mm/aaaa)'],
+        ['Data de nascimento (dd/mm/aaaa)'],
+      ],
       'dateDifference': [
-        'Fecha inicial (dd/mm/aaaa)',
-        'Fecha final (dd/mm/aaaa)'
+        ['Fecha inicial (dd/mm/aaaa)', 'Fecha final (dd/mm/aaaa)'],
+        ['Start date (dd/mm/yyyy)', 'End date (dd/mm/yyyy)'],
+        ['Date de début (jj/mm/aaaa)', 'Date de fin (jj/mm/aaaa)'],
+        ['Startdatum (TT/MM/JJJJ)', 'Enddatum (TT/MM/JJJJ)'],
+        ['Data iniziale (gg/mm/aaaa)', 'Data finale (gg/mm/aaaa)'],
+        ['Data inicial (dd/mm/aaaa)', 'Data final (dd/mm/aaaa)'],
       ],
       'workHours': [
-        'Hora de inicio (ej. 8,5)',
-        'Hora de fin (ej. 17)',
-        'Descanso (min)'
+        ['Hora de inicio (ej. 8,5)', 'Hora de fin (ej. 17)', 'Descanso (min)'],
+        ['Start time (e.g. 8.5)', 'End time (e.g. 17)', 'Break (min)'],
+        ['Heure de début (ex. 8,5)', 'Heure de fin (ex. 17)', 'Pause (min)'],
+        ['Startzeit (z. B. 8,5)', 'Endzeit (z. B. 17)', 'Pause (Min.)'],
+        ['Ora di inizio (es. 8,5)', 'Ora di fine (es. 17)', 'Pausa (min)'],
+        ['Hora de início (ex. 8,5)', 'Hora de fim (ex. 17)', 'Pausa (min)'],
       ],
-      'countdown': ['Horas', 'Minutos', 'Segundos'],
-      'area': ['Largo (m)', 'Ancho (m)'],
-      'paint': ['Superficie (m²)', 'Cobertura (m²/L)'],
-      'electricity': ['Potencia (W)', 'Horas/día', 'Días'],
-      'fuel': ['Distancia (km)', 'Consumo (L/100 km)', 'Precio €/L'],
-      'costPerKm': ['Coste total (€)', 'Kilómetros'],
-      'length': ['Valor', 'Unidad de origen', 'Unidad de destino'],
-      'weight': ['Valor', 'Unidad de origen', 'Unidad de destino'],
-      'bmi': ['Peso (kg)', 'Altura (cm)'],
-      'gradeAverage': ['Notas separadas por comas'],
-      'ruleOfThree': ['A', 'B', 'C']
+      'countdown': [
+        ['Horas', 'Minutos', 'Segundos'],
+        ['Hours', 'Minutes', 'Seconds'],
+        ['Heures', 'Minutes', 'Secondes'],
+        ['Stunden', 'Minuten', 'Sekunden'],
+        ['Ore', 'Minuti', 'Secondi'],
+        ['Horas', 'Minutos', 'Segundos'],
+      ],
+      'area': [
+        ['Largo (m)', 'Ancho (m)'],
+        ['Length (m)', 'Width (m)'],
+        ['Longueur (m)', 'Largeur (m)'],
+        ['Länge (m)', 'Breite (m)'],
+        ['Lunghezza (m)', 'Larghezza (m)'],
+        ['Comprimento (m)', 'Largura (m)'],
+      ],
+      'paint': [
+        ['Superficie (m²)', 'Cobertura (m²/L)'],
+        ['Area (m²)', 'Coverage (m²/L)'],
+        ['Surface (m²)', 'Rendement (m²/L)'],
+        ['Fläche (m²)', 'Reichweite (m²/L)'],
+        ['Superficie (m²)', 'Copertura (m²/L)'],
+        ['Superfície (m²)', 'Cobertura (m²/L)'],
+      ],
+      'electricity': [
+        ['Potencia (W)', 'Horas/día', 'Días', 'Precio del kWh (€)'],
+        ['Power (W)', 'Hours/day', 'Days', 'Price per kWh (€)'],
+        ['Puissance (W)', 'Heures/jour', 'Jours', 'Prix du kWh (€)'],
+        ['Leistung (W)', 'Stunden/Tag', 'Tage', 'Preis pro kWh (€)'],
+        ['Potenza (W)', 'Ore/giorno', 'Giorni', 'Prezzo per kWh (€)'],
+        ['Potência (W)', 'Horas/dia', 'Dias', 'Preço por kWh (€)'],
+      ],
+      'fuel': [
+        ['Distancia (km)', 'Consumo (L/100 km)', 'Precio €/L'],
+        ['Distance (km)', 'Consumption (L/100 km)', 'Price €/L'],
+        ['Distance (km)', 'Consommation (L/100 km)', 'Prix €/L'],
+        ['Entfernung (km)', 'Verbrauch (L/100 km)', 'Preis €/L'],
+        ['Distanza (km)', 'Consumo (L/100 km)', 'Prezzo €/L'],
+        ['Distância (km)', 'Consumo (L/100 km)', 'Preço €/L'],
+      ],
+      'costPerKm': [
+        ['Coste total (€)', 'Kilómetros'],
+        ['Total cost (€)', 'Kilometres'],
+        ['Coût total (€)', 'Kilomètres'],
+        ['Gesamtkosten (€)', 'Kilometer'],
+        ['Costo totale (€)', 'Chilometri'],
+        ['Custo total (€)', 'Quilómetros'],
+      ],
+      'length': [
+        ['Valor', 'Unidad de origen', 'Unidad de destino'],
+        ['Value', 'Source unit', 'Target unit'],
+        ['Valeur', 'Unité source', 'Unité cible'],
+        ['Wert', 'Quelleinheit', 'Zieleinheit'],
+        ['Valore', 'Unità di origine', 'Unità di destinazione'],
+        ['Valor', 'Unidade de origem', 'Unidade de destino'],
+      ],
+      'weight': [
+        ['Valor', 'Unidad de origen', 'Unidad de destino'],
+        ['Value', 'Source unit', 'Target unit'],
+        ['Valeur', 'Unité source', 'Unité cible'],
+        ['Wert', 'Quelleinheit', 'Zieleinheit'],
+        ['Valore', 'Unità di origine', 'Unità di destinazione'],
+        ['Valor', 'Unidade de origem', 'Unidade de destino'],
+      ],
+      'bmi': [
+        ['Peso (kg)', 'Altura (cm)'],
+        ['Weight (kg)', 'Height (cm)'],
+        ['Poids (kg)', 'Taille (cm)'],
+        ['Gewicht (kg)', 'Größe (cm)'],
+        ['Peso (kg)', 'Altezza (cm)'],
+        ['Peso (kg)', 'Altura (cm)'],
+      ],
+      'gradeAverage': [
+        ['Notas separadas por comas'],
+        ['Grades separated by commas'],
+        ['Notes séparées par des virgules'],
+        ['Noten durch Kommas getrennt'],
+        ['Voti separati da virgole'],
+        ['Notas separadas por vírgulas'],
+      ],
+      'ruleOfThree': [
+        ['A', 'B', 'C'],
+        ['A', 'B', 'C'],
+        ['A', 'B', 'C'],
+        ['A', 'B', 'C'],
+        ['A', 'B', 'C'],
+      ],
     };
-    final es = d[id] ?? ['Valor'];
-    final translated = switch (selectedLanguage) {
-      UtiliaLanguage.en => {
-          'bmi': ['Weight (kg)', 'Height (cm)'],
-          'gradeAverage': ['Grades separated by commas'],
-          'length': ['Value', 'Source unit', 'Target unit'],
-          'weight': ['Value', 'Source unit', 'Target unit']
-        },
-      UtiliaLanguage.fr => {
-          'bmi': ['Poids (kg)', 'Taille (cm)'],
-          'gradeAverage': ['Notes séparées par des virgules'],
-          'length': ['Valeur', 'Unité source', 'Unité cible'],
-          'weight': ['Valeur', 'Unité source', 'Unité cible']
-        },
-      UtiliaLanguage.de => {
-          'bmi': ['Gewicht (kg)', 'Größe (cm)'],
-          'gradeAverage': ['Noten durch Kommas getrennt'],
-          'length': ['Wert', 'Quelleinheit', 'Zieleinheit'],
-          'weight': ['Wert', 'Quelleinheit', 'Zieleinheit']
-        },
-      UtiliaLanguage.it => {
-          'bmi': ['Peso (kg)', 'Altezza (cm)'],
-          'gradeAverage': ['Voti separati da virgole'],
-          'length': ['Valore', 'Unità di origine', 'Unità di destinazione'],
-          'weight': ['Valore', 'Unità di origine', 'Unità di destinazione']
-        },
-      UtiliaLanguage.pt => {
-          'bmi': ['Peso (kg)', 'Altura (cm)'],
-          'gradeAverage': ['Notas separadas por vírgulas'],
-          'length': ['Valor', 'Unidade de origem', 'Unidade de destino'],
-          'weight': ['Valor', 'Unidade de origem', 'Unidade de destino']
-        },
-      _ => <String, List<String>>{},
+    final languageIndex = switch (selectedLanguage) {
+      UtiliaLanguage.en => 1,
+      UtiliaLanguage.fr => 2,
+      UtiliaLanguage.de => 3,
+      UtiliaLanguage.it => 4,
+      UtiliaLanguage.pt => 5,
+      _ => 0,
     };
-    final list = translated[id] ?? es;
-    return index < list.length ? list[index] : es[index];
+    final values = (labels[id] ?? const [
+      ['Valor'],
+      ['Value'],
+      ['Valeur'],
+      ['Wert'],
+      ['Valore'],
+      ['Valor'],
+    ])[languageIndex];
+    return index < values.length ? values[index] : values.last;
   }
 }
