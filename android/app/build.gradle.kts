@@ -51,12 +51,11 @@ android {
 
     buildTypes {
         release {
-            signingConfig = if (hasReleaseSigning) {
-                signingConfigs.getByName("release")
-            } else {
-                // Local/CI validation builds remain possible without exposing a keystore.
-                signingConfigs.getByName("debug")
+            check(hasReleaseSigning) {
+                "Production release signing is not configured. Set UTILIA_KEYSTORE_FILE, " +
+                    "UTILIA_KEYSTORE_PASSWORD, UTILIA_KEY_ALIAS and UTILIA_KEY_PASSWORD."
             }
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 }
