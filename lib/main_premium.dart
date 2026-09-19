@@ -277,7 +277,8 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                           borderRadius: BorderRadius.circular(18)),
                       leading: UtiliaSoftIcon(
                         icon: tool.icon,
-                        color: UtiliaBrand.categoryColor(tool.category, tool.tint),
+                        color: UtiliaBrand.categoryColor(
+                            tool.category, tool.tint),
                         size: 44,
                       ),
                       title: Text(name(tool)),
