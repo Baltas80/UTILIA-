@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'catalog.dart';
 import 'category_page.dart';
@@ -237,6 +238,8 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
               ])),
           IconButton(
               visualDensity: VisualDensity.compact,
+              tooltip: text('Ajustes', 'Settings', 'Réglages', 'Einstellungen',
+                  'Impostazioni', 'Definições'),
               onPressed: () => setState(() => tab = 3),
               icon: const Icon(Icons.settings_outlined)),
         ]),
@@ -757,6 +760,8 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
           ]);
 
   Future<void> _openSettings() async {
+    var selectedLanguage = widget.language;
+    var selectedDarkMode = widget.darkMode;
     await showDialog<void>(
         context: context,
         builder: (c) => StatefulBuilder(
@@ -764,7 +769,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                   title: Text(s.languageLabel),
                   content: Column(mainAxisSize: MainAxisSize.min, children: [
                     DropdownButtonFormField<UtiliaLanguage>(
-                        initialValue: widget.language,
+                        initialValue: selectedLanguage,
                         decoration: InputDecoration(
                             labelText: text('Idioma', 'Language', 'Langue',
                                 'Sprache', 'Lingua', 'Idioma')),
@@ -775,8 +780,8 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                             .toList(),
                         onChanged: (value) async {
                           if (value == null) return;
+                          setDialogState(() => selectedLanguage = value);
                           await widget.onLanguage(value);
-                          if (c.mounted) setDialogState(() {});
                         }),
                     SwitchListTile.adaptive(
                         contentPadding: EdgeInsets.zero,
@@ -787,10 +792,10 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                             'Dunkelmodus',
                             'Modalità scura',
                             'Modo escuro')),
-                        value: widget.darkMode,
+                        value: selectedDarkMode,
                         onChanged: (value) async {
+                          setDialogState(() => selectedDarkMode = value);
                           await widget.onTheme(value);
-                          if (c.mounted) setDialogState(() {});
                         })
                   ]),
                   actions: [
@@ -846,24 +851,63 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
   }
 
   Future<void> _showPrivacy() async {
+    final uri = Uri.parse(
+        'https://raw.githubusercontent.com/Baltas80/UTILIA-/master/docs/privacy-policy.html');
     await showDialog<void>(
         context: context,
-        builder: (_) => _dialogBody(
-            text(
-                'Política de privacidad',
-                'Privacy policy',
-                'Politique de confidentialité',
-                'Datenschutzerklärung',
-                'Privacy',
-                'Política de privacidade'),
-            text(
-                'UTILIA está diseñada para funcionar de forma local siempre que sea posible. Los favoritos, el historial y las preferencias se almacenan en el dispositivo. No introduzcas información personal innecesaria en las herramientas.',
-                'UTILIA is designed to work locally whenever possible. Favorites, history and preferences are stored on the device. Do not enter unnecessary personal information into the tools.',
-                'UTILIA est conçue pour fonctionner localement autant que possible. Les favoris, l’historique et les préférences sont stockés sur le dispositif. N’entrez pas d’informations personnelles inutiles dans les outils.',
-                'UTILIA ist so konzipiert, dass sie möglichst lokal arbeitet. Favoriten, Verlauf und Einstellungen werden auf dem Gerät gespeichert. Geben Sie keine unnötigen personenbezogenen Daten in die Werkzeuge ein.',
-                'UTILIA è progettata per funzionare localmente quando possibile. Preferiti, cronologia e preferenze sono memorizzati sul dispositivo. Non inserire informazioni personali non necessarie negli strumenti.',
-                'A UTILIA foi concebida para funcionar localmente sempre que possível. Favoritos, histórico e preferências são armazenados no dispositivo. Não introduza informações pessoais desnecessárias nas ferramentas.'),
-            icon: Icons.privacy_tip_outlined));
+        builder: (dialogContext) => AlertDialog(
+              title: Row(children: [
+                const Icon(Icons.privacy_tip_outlined, color: UtiliaBrand.blue),
+                const SizedBox(width: 10),
+                Expanded(
+                    child: Text(text(
+                        'Política de privacidad',
+                        'Privacy policy',
+                        'Politique de confidentialité',
+                        'Datenschutzerklärung',
+                        'Privacy',
+                        'Política de privacidade')))
+              ]),
+              content: SingleChildScrollView(
+                child: Text(text(
+                    'UTILIA está diseñada para funcionar de forma local siempre que sea posible. Los favoritos, el historial y las preferencias se almacenan en el dispositivo. La función de compartir solo se ejecuta cuando tú la inicias. No introduzcas información personal innecesaria en las herramientas.',
+                    'UTILIA is designed to work locally whenever possible. Favorites, history and preferences are stored on the device. Sharing only occurs when you initiate it. Do not enter unnecessary personal information into the tools.',
+                    'UTILIA est conçue pour fonctionner localement autant que possible. Les favoris, l’historique et les préférences sont stockés sur le dispositif. Le partage ne se produit que lorsque vous l’initiez. N’entrez pas d’informations personnelles inutiles dans les outils.',
+                    'UTILIA ist so konzipiert, dass sie möglichst lokal arbeitet. Favoriten, Verlauf und Einstellungen werden auf dem Gerät gespeichert. Das Teilen erfolgt nur, wenn Sie es selbst starten. Geben Sie keine unnötigen personenbezogenen Daten in die Werkzeuge ein.',
+                    'UTILIA è progettata per funzionare localmente quando possibile. Preferiti, cronologia e preferenze sono memorizzati sul dispositivo. La condivisione avviene solo quando la avvii tu. Non inserire informazioni personali non necessarie negli strumenti.',
+                    'A UTILIA foi concebida para funcionar localmente sempre que possível. Favoritos, histórico e preferências são armazenados no dispositivo. A partilha ocorre apenas quando é iniciada por si. Não introduza informações pessoais desnecessárias nas ferramentas.')))
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    final launched = await launchUrl(
+                      uri,
+                      mode: LaunchMode.externalApplication,
+                    );
+                    if (!launched && mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(text(
+                            'No se pudo abrir la política.',
+                            'The privacy policy could not be opened.',
+                            'Impossible d’ouvrir la politique de confidentialité.',
+                            'Die Datenschutzerklärung konnte nicht geöffnet werden.',
+                            'Impossibile aprire la privacy policy.',
+                            'Não foi possível abrir a política de privacidade.',
+                          )),
+                        ),
+                      );
+                    }
+                  },
+                  child: Text(s.privacyLink),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext),
+                  child: Text(text('Cerrar', 'Close', 'Fermer', 'Schließen',
+                      'Chiudi', 'Fechar')),
+                ),
+              ],
+            ));
   }
 
   void _showAbout() {

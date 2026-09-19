@@ -52,6 +52,20 @@ class UtiliaStrings {
       'Werkzeuge suchen...',
       'Cerca strumenti...',
       'Pesquisar ferramentas...');
+  String get noResults => _t(
+      'No hay resultados',
+      'No results found',
+      'Aucun résultat',
+      'Keine Ergebnisse',
+      'Nessun risultato',
+      'Sem resultados');
+  String get privacyLink => _t(
+      'Abrir política de privacidad',
+      'Open privacy policy',
+      'Ouvrir la politique de confidentialité',
+      'Datenschutzerklärung öffnen',
+      'Apri la privacy policy',
+      'Abrir política de privacidade');
   String get categories => _t('Categorías', 'Categories', 'Catégories',
       'Kategorien', 'Categorie', 'Categorias');
   String get results => _t('Resultados', 'Results', 'Résultats', 'Ergebnisse',

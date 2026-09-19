@@ -88,11 +88,31 @@ jobs:
       - name: Build release App Bundle
         run: flutter build appbundle --release
 
-      - name: Verify release artifacts
+      - name: Verify release artifacts and signatures
         run: |
-          test -s build/app/outputs/flutter-apk/app-release.apk
-          test -s build/app/outputs/bundle/release/app-release.aab
-          ls -lh build/app/outputs/flutter-apk/app-release.apk build/app/outputs/bundle/release/app-release.aab
+          apk_path="build/app/outputs/flutter-apk/app-release.apk"
+          aab_path="build/app/outputs/bundle/release/app-release.aab"
+          test -s "$apk_path"
+          test -s "$aab_path"
+
+          production_fingerprint="$(keytool -list -v             -keystore "$UTILIA_KEYSTORE_FILE"             -alias "$UTILIA_KEY_ALIAS"             -storepass "$UTILIA_KEYSTORE_PASSWORD" |
+            awk -F': ' '/SHA256:/{print $2; exit}')"
+          test -n "$production_fingerprint"
+
+          apksigner="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -1)"
+          test -x "$apksigner"
+          "$apksigner" verify --verbose "$apk_path"
+          apk_fingerprint="$("$apksigner" verify --print-certs "$apk_path" 2>/dev/null |
+            awk -F': ' '/Signer #1 certificate SHA-256 digest:/{print $2; exit}')"
+          test "$apk_fingerprint" = "$production_fingerprint"
+
+          aab_fingerprint="$(keytool -printcert -jarfile "$aab_path" |
+            awk -F': ' '/SHA256:/{print $2; exit}')"
+          test "$aab_fingerprint" = "$production_fingerprint"
+
+          jarsigner -verify -verbose "$aab_path" >/dev/null
+          ls -lh "$apk_path" "$aab_path"
+          echo 'APK and AAB are signed by the configured production upload key.'
 
       - name: Upload Android validation artifacts
         uses: actions/upload-artifact@v6

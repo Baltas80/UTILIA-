@@ -31,10 +31,30 @@ class UtiliaCategoryPage extends StatefulWidget {
 
 class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
   late Set<ToolType> favorites;
+  final TextEditingController _searchController = TextEditingController();
+  bool _searching = false;
+  String _query = '';
   @override
   void initState() {
     super.initState();
     favorites = {...widget.favorites};
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  List<UtiliaTool> get _visibleTools {
+    final query = _query.trim().toLowerCase();
+    if (query.isEmpty) return widget.tools;
+    return widget.tools.where((tool) {
+      final name = widget.s.toolName(tool.type.name, tool.name).toLowerCase();
+      final description =
+          widget.s.toolDescription(tool.type.name, tool.description).toLowerCase();
+      return name.contains(query) || description.contains(query);
+    }).toList();
   }
 
   Future<void> _toggleFavorite(ToolType type) async {
@@ -127,16 +147,60 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 2, 10, 2),
-              child: Row(children: [
-                IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.arrow_back_rounded)),
-                Expanded(
-                    child: Text(category,
-                        style: Theme.of(context).textTheme.titleLarge)),
-                IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.search_rounded)),
-              ]),
+              child: _searching
+                  ? Row(children: [
+                      IconButton(
+                        tooltip: text('Cerrar búsqueda', 'Close search',
+                            'Fermer la recherche', 'Suche schließen',
+                            'Chiudi ricerca', 'Fechar pesquisa'),
+                        onPressed: () {
+                          _searchController.clear();
+                          setState(() {
+                            _query = '';
+                            _searching = false;
+                          });
+                        },
+                        icon: const Icon(Icons.arrow_back_rounded),
+                      ),
+                      Expanded(
+                        child: TextField(
+                          controller: _searchController,
+                          autofocus: true,
+                          textInputAction: TextInputAction.search,
+                          onChanged: (value) => setState(() => _query = value),
+                          decoration: InputDecoration(
+                            hintText: widget.s.search,
+                            border: InputBorder.none,
+                            isDense: true,
+                          ),
+                        ),
+                      ),
+                      if (_query.isNotEmpty)
+                        IconButton(
+                          tooltip: text('Borrar búsqueda', 'Clear search',
+                              'Effacer la recherche', 'Suche löschen',
+                              'Cancella ricerca', 'Limpar pesquisa'),
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() => _query = '');
+                          },
+                          icon: const Icon(Icons.clear_rounded),
+                        ),
+                    ])
+                  : Row(children: [
+                      IconButton(
+                          tooltip: text('Volver', 'Back', 'Retour', 'Zurück',
+                              'Indietro', 'Voltar'),
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.arrow_back_rounded)),
+                      Expanded(
+                          child: Text(category,
+                              style: Theme.of(context).textTheme.titleLarge)),
+                      IconButton(
+                          tooltip: widget.s.search,
+                          onPressed: () => setState(() => _searching = true),
+                          icon: const Icon(Icons.search_rounded)),
+                    ]),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
@@ -147,11 +211,31 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
                   icon: widget.tools.first.icon),
             ),
             Expanded(
-                child: ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                    itemCount: widget.tools.length,
-                    itemBuilder: (_, i) =>
-                        _toolCard(context, widget.tools[i]))),
+              child: _visibleTools.isEmpty
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(32),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.search_off_rounded,
+                                size: 42,
+                                color: Theme.of(context).colorScheme.outline),
+                            const SizedBox(height: 12),
+                            Text(widget.s.noResults,
+                                textAlign: TextAlign.center,
+                                style:
+                                    Theme.of(context).textTheme.titleMedium),
+                          ],
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                      itemCount: _visibleTools.length,
+                      itemBuilder: (_, i) =>
+                          _toolCard(context, _visibleTools[i])),
+            ),
           ],
         ),
       ),
@@ -188,6 +272,13 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
                         style: Theme.of(context).textTheme.bodyMedium),
                   ])),
               IconButton(
+                  tooltip: favorite
+                      ? text('Quitar de favoritos', 'Remove from favorites',
+                          'Retirer des favoris', 'Aus Favoriten entfernen',
+                          'Rimuovi dai preferiti', 'Remover dos favoritos')
+                      : text('Añadir a favoritos', 'Add to favorites',
+                          'Ajouter aux favoris', 'Zu Favoriten hinzufügen',
+                          'Aggiungi ai preferiti', 'Adicionar aos favoritos'),
                   onPressed: () => _toggleFavorite(tool.type),
                   icon: Icon(
                       favorite

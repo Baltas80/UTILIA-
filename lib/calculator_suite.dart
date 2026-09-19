@@ -149,7 +149,7 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
 
   @override
   Widget build(BuildContext context) {
-    final dark = scientific;
+    final dark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: dark ? const Color(0xFF071522) : const Color(0xFFF7F9FC),
       appBar: AppBar(

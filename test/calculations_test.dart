@@ -93,5 +93,13 @@ void main() {
             convertWeight(1, 'lb', 'kg'), closeTo(.45359237, .00000001)));
     test('invalid weight unit returns NaN',
         () => expect(convertWeight(1, 'kg', 'foo').isNaN, isTrue));
+    test('price without IVA handles singularity safely',
+        () => expect(priceWithoutIva(100, -100), 0));
+    test('paint rejects invalid coats',
+        () => expect(paintLitres(40, 10, coats: 0), 0));
+    test('countdown handles larger hour values',
+        () => expect(countdownSeconds(24, 0, 0), 86400));
+    test('work hours with full day break is safe',
+        () => expect(workHours(8, 17, 600), 0));
   });
 }

@@ -155,8 +155,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
     return true;
   }
 
-  bool _validNumber(String value) =>
-      double.tryParse(value.trim().replaceAll(',', '.')) != null;
+  bool _validNumber(String value) {
+    final parsed = double.tryParse(value.trim().replaceAll(',', '.'));
+    return parsed != null && parsed.isFinite;
+  }
 
   bool _validInteger(String value) {
     final parsed = double.tryParse(value.trim().replaceAll(',', '.'));
