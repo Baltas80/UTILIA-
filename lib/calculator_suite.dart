@@ -129,7 +129,9 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
   }
 
   String _format(double value) {
-    if (!value.isFinite) return 'Error';
+    if (!value.isFinite) {
+      return t('Error', 'Error', 'Erreur', 'Fehler', 'Errore', 'Erro');
+    }
     if ((value - value.roundToDouble()).abs() < 1e-10) {
       return value.round().toString();
     }
@@ -536,7 +538,9 @@ class CalculatorParser {
     p = 0;
     final value = _expr();
     _skip();
-    if (p < s.length) throw const FormatException('syntax');
+    if (p < s.length || !value.isFinite) {
+      throw const FormatException('invalid result');
+    }
     return value;
   }
 
@@ -574,7 +578,11 @@ class CalculatorParser {
       if (_eat('×') || _eat('*')) {
         value *= _power();
       } else if (_eat('÷') || _eat('/')) {
-        value /= _power();
+        final divisor = _power();
+        if (divisor == 0) {
+          throw const FormatException('division by zero');
+        }
+        value /= divisor;
       } else {
         return value;
       }
@@ -583,7 +591,12 @@ class CalculatorParser {
 
   double _power() {
     var value = _unary();
-    if (_eat('^')) value = math.pow(value, _power()).toDouble();
+    if (_eat('^')) {
+      value = math.pow(value, _power()).toDouble();
+      if (!value.isFinite) {
+        throw const FormatException('non-finite result');
+      }
+    }
     return value;
   }
 
