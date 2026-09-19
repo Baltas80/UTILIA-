@@ -11,17 +11,18 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: utilia-ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   validate-and-build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       UTILIA_KEYSTORE_PASSWORD: ${{ secrets.UTILIA_KEYSTORE_PASSWORD }}
       UTILIA_KEY_ALIAS: ${{ secrets.UTILIA_KEY_ALIAS }}
       UTILIA_KEY_PASSWORD: ${{ secrets.UTILIA_KEY_PASSWORD }}
-    timeout-minutes: 30
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -55,20 +56,28 @@ jobs:
         run: flutter test
 
       - name: Verify Android Play configuration
+        shell: bash
         run: |
           test -f android/app/build.gradle.kts
+          test -f android/app/src/main/AndroidManifest.xml
           grep -q 'compileSdk = 36' android/app/build.gradle.kts
           grep -q 'minSdk = 24' android/app/build.gradle.kts
           grep -q 'targetSdk = 36' android/app/build.gradle.kts
-          grep -Eq '^version: [0-9]+\\.[0-9]+\\.[0-9]+\\+[0-9]+
           grep -q 'applicationId = "com.utilia.app.utilia"' android/app/build.gradle.kts
-          echo 'Android project present and locked to API 36.'
+          grep -Eq '^version: [0-9]+\.[0-9]+\.[0-9]+\+[0-9]+$' pubspec.yaml
+          grep -q 'android:exported="true"' android/app/src/main/AndroidManifest.xml
+          echo 'Android configuration validated.'
 
       - name: Prepare production signing keystore
+        shell: bash
         env:
           UTILIA_KEYSTORE_BASE64: ${{ secrets.UTILIA_KEYSTORE_BASE64 }}
         run: |
           test -n "$UTILIA_KEYSTORE_BASE64"
+          test -n "$UTILIA_KEYSTORE_PASSWORD"
+          test -n "$UTILIA_KEY_ALIAS"
+          test -n "$UTILIA_KEY_PASSWORD"
+
           keystore_path="$RUNNER_TEMP/utilia-upload-key.jks"
           printf '%s' "$UTILIA_KEYSTORE_BASE64" | base64 --decode > "$keystore_path"
           test -s "$keystore_path"
@@ -76,13 +85,11 @@ jobs:
           echo "UTILIA_KEYSTORE_FILE=$keystore_path" >> "$GITHUB_ENV"
 
       - name: Verify production signing
+        shell: bash
         run: |
           test -s "$UTILIA_KEYSTORE_FILE"
-          keytool -list \
-            -keystore "$UTILIA_KEYSTORE_FILE" \
-            -alias "$UTILIA_KEY_ALIAS" \
-            -storepass "$UTILIA_KEYSTORE_PASSWORD" >/dev/null
-          echo "Production upload keystore is valid."
+          keytool -list -keystore "$UTILIA_KEYSTORE_FILE"             -alias "$UTILIA_KEY_ALIAS"             -storepass "$UTILIA_KEYSTORE_PASSWORD" >/dev/null
+          echo 'Production upload keystore is valid.'
 
       - name: Build release APK
         run: flutter build apk --release
@@ -91,9 +98,13 @@ jobs:
         run: flutter build appbundle --release
 
       - name: Verify release artifacts and signatures
+        shell: bash
         run: |
+          set -euo pipefail
+
           apk_path="build/app/outputs/flutter-apk/app-release.apk"
           aab_path="build/app/outputs/bundle/release/app-release.aab"
+
           test -s "$apk_path"
           test -s "$aab_path"
 
@@ -104,79 +115,17 @@ jobs:
           apksigner="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -1)"
           test -x "$apksigner"
           "$apksigner" verify --verbose "$apk_path"
+
           apk_fingerprint="$("$apksigner" verify --print-certs "$apk_path" 2>/dev/null |
             awk -F': ' '/Signer #1 certificate SHA-256 digest:/{print $2; exit}')"
           test "$apk_fingerprint" = "$production_fingerprint"
+
+          jarsigner -verify -verbose "$aab_path" >/dev/null
 
           aab_fingerprint="$(keytool -printcert -jarfile "$aab_path" |
             awk -F': ' '/SHA256:/{print $2; exit}')"
           test "$aab_fingerprint" = "$production_fingerprint"
 
-          jarsigner -verify -verbose "$aab_path" >/dev/null
-          ls -lh "$apk_path" "$aab_path"
-          echo 'APK and AAB are signed by the configured production upload key.'
-
-      - name: Upload Android validation artifacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: utilia-release-builds
-          if-no-files-found: error
-          path: |
-            build/app/outputs/flutter-apk/app-release.apk
-            build/app/outputs/bundle/release/app-release.aab
- pubspec.yaml
-          grep -q 'applicationId = "com.utilia.app.utilia"' android/app/build.gradle.kts
-          echo 'Android project present and locked to API 36.'
-
-      - name: Prepare production signing keystore
-        env:
-          UTILIA_KEYSTORE_BASE64: ${{ secrets.UTILIA_KEYSTORE_BASE64 }}
-        run: |
-          test -n "$UTILIA_KEYSTORE_BASE64"
-          keystore_path="$RUNNER_TEMP/utilia-upload-key.jks"
-          printf '%s' "$UTILIA_KEYSTORE_BASE64" | base64 --decode > "$keystore_path"
-          test -s "$keystore_path"
-          chmod 600 "$keystore_path"
-          echo "UTILIA_KEYSTORE_FILE=$keystore_path" >> "$GITHUB_ENV"
-
-      - name: Verify production signing
-        run: |
-          test -s "$UTILIA_KEYSTORE_FILE"
-          keytool -list \
-            -keystore "$UTILIA_KEYSTORE_FILE" \
-            -alias "$UTILIA_KEY_ALIAS" \
-            -storepass "$UTILIA_KEYSTORE_PASSWORD" >/dev/null
-          echo "Production upload keystore is valid."
-
-      - name: Build release APK
-        run: flutter build apk --release
-
-      - name: Build release App Bundle
-        run: flutter build appbundle --release
-
-      - name: Verify release artifacts and signatures
-        run: |
-          apk_path="build/app/outputs/flutter-apk/app-release.apk"
-          aab_path="build/app/outputs/bundle/release/app-release.aab"
-          test -s "$apk_path"
-          test -s "$aab_path"
-
-          production_fingerprint="$(keytool -list -v             -keystore "$UTILIA_KEYSTORE_FILE"             -alias "$UTILIA_KEY_ALIAS"             -storepass "$UTILIA_KEYSTORE_PASSWORD" |
-            awk -F': ' '/SHA256:/{print $2; exit}')"
-          test -n "$production_fingerprint"
-
-          apksigner="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -1)"
-          test -x "$apksigner"
-          "$apksigner" verify --verbose "$apk_path"
-          apk_fingerprint="$("$apksigner" verify --print-certs "$apk_path" 2>/dev/null |
-            awk -F': ' '/Signer #1 certificate SHA-256 digest:/{print $2; exit}')"
-          test "$apk_fingerprint" = "$production_fingerprint"
-
-          aab_fingerprint="$(keytool -printcert -jarfile "$aab_path" |
-            awk -F': ' '/SHA256:/{print $2; exit}')"
-          test "$aab_fingerprint" = "$production_fingerprint"
-
-          jarsigner -verify -verbose "$aab_path" >/dev/null
           ls -lh "$apk_path" "$aab_path"
           echo 'APK and AAB are signed by the configured production upload key.'
 
