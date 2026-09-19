@@ -81,10 +81,15 @@ double area(double length, double width) {
   return _finite(result) ? result : 0;
 }
 
-double paintLitres(double wallArea, double coverageM2PerLitre,
-    {int coats = 2}) {
-  if (!_finite(wallArea) || !_finite(coverageM2PerLitre) ||
-      coverageM2PerLitre <= 0 || coats <= 0) {
+double paintLitres(
+  double wallArea,
+  double coverageM2PerLitre, {
+  int coats = 2,
+}) {
+  if (!_finite(wallArea) ||
+      !_finite(coverageM2PerLitre) ||
+      coverageM2PerLitre <= 0 ||
+      coats <= 0) {
     return 0;
   }
   final result = wallArea * coats / coverageM2PerLitre;
@@ -92,8 +97,14 @@ double paintLitres(double wallArea, double coverageM2PerLitre,
 }
 
 double electricityCost(
-    double watts, double hoursPerDay, double days, double pricePerKwh) {
-  if (!_finite(watts) || !_finite(hoursPerDay) || !_finite(days) ||
+  double watts,
+  double hoursPerDay,
+  double days,
+  double pricePerKwh,
+) {
+  if (!_finite(watts) ||
+      !_finite(hoursPerDay) ||
+      !_finite(days) ||
       !_finite(pricePerKwh)) {
     return 0;
   }
@@ -130,7 +141,9 @@ double loanPayment(double principal, double annualRate, int months) {
   if (base <= 0 || !base.isFinite) return 0;
   final factor = _pow(base, months);
   final denominator = factor - 1;
-  if (denominator == 0 || !denominator.isFinite || !factor.isFinite) return 0;
+  if (denominator == 0 || !denominator.isFinite || !factor.isFinite) {
+    return 0;
+  }
   final payment = principal * r * factor / denominator;
   return payment.isFinite ? payment : 0;
 }
