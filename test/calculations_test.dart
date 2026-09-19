@@ -5,6 +5,11 @@ void main() {
   group('UTILIA calculations', () {
     test('parse decimal comma', () => expect(parseNumber('12,5'), 12.5));
     test('empty input parses safely', () => expect(parseNumber(''), 0));
+    test('non-finite input parses safely', () {
+      expect(parseNumber('NaN'), 0);
+      expect(parseNumber('Infinity'), 0);
+      expect(parseNumber('-Infinity'), 0);
+    });
 
     test('percentage', () => expect(percentageOf(100, 21), 21));
     test('percentage decimal', () => expect(percentageOf(80, 12.5), 10));
@@ -24,6 +29,10 @@ void main() {
         () => expect(loanPayment(10000, 12, 12), closeTo(888.4879, .001)));
     test('loan with invalid months is safe',
         () => expect(loanPayment(1200, 5, 0), 0));
+    test('loan with invalid negative base is safe',
+        () => expect(loanPayment(1200, -1200, 12), 0));
+    test('loan with extreme rate stays finite',
+        () => expect(loanPayment(1200, 1000000, 12).isFinite, isTrue));
 
     test('compound interest',
         () => expect(compound(1000, 10, 2), closeTo(1210, 0.001)));
