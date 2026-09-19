@@ -245,6 +245,127 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
         ]),
       );
 
+  Future<void> _showToolList(
+      List<UtiliaTool> items, String title) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheetContext) => SafeArea(
+        child: SizedBox(
+          height: MediaQuery.sizeOf(context).height * .78,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(title,
+                      style: Theme.of(context).textTheme.titleLarge),
+                ),
+              ),
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                  itemCount: items.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (_, index) {
+                    final tool = items[index];
+                    return ListTile(
+                      minTileHeight: 64,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18)),
+                      leading: UtiliaSoftIcon(
+                        icon: tool.icon,
+                        color: UtiliaBrand.categoryColor(tool.category, tool.tint),
+                        size: 44,
+                      ),
+                      title: Text(name(tool)),
+                      subtitle: Text(desc(tool),
+                          maxLines: 2, overflow: TextOverflow.ellipsis),
+                      trailing: const Icon(Icons.chevron_right_rounded),
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (mounted) {
+                            openUtiliaTool(
+                              context, tool, widget.storage, _load, s);
+                          }
+                        });
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showCategoryList() async {
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: ListView.separated(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+          shrinkWrap: true,
+          itemCount: categories.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 8),
+          itemBuilder: (_, index) {
+            final category = categories[index];
+            final categoryTools =
+                tools.where((tool) => tool.category == category).toList();
+            return ListTile(
+              minTileHeight: 64,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18)),
+              leading: UtiliaSoftIcon(
+                icon: Icons.grid_view_rounded,
+                color: UtiliaBrand.categoryColor(
+                    category, categoryTints[category] ?? UtiliaBrand.blue),
+                size: 44,
+              ),
+              title: Text(s.category(category)),
+              subtitle: Text(text(
+                categoryTools.length.toString() + ' herramientas',
+                categoryTools.length.toString() + ' tools',
+                categoryTools.length.toString() + ' outils',
+                categoryTools.length.toString() + ' Werkzeuge',
+                categoryTools.length.toString() + ' strumenti',
+                categoryTools.length.toString() + ' ferramentas',
+              )),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () {
+                Navigator.pop(sheetContext);
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => UtiliaCategoryPage(
+                          category: category,
+                          tools: categoryTools,
+                          favorites: favorites,
+                          onFavorite: _favorite,
+                          storage: widget.storage,
+                          onHistory: _load,
+                          s: s,
+                        ),
+                      ),
+                    );
+                  }
+                });
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   Widget _home() {
     final quickTypes = [
       ToolType.calculator,
