@@ -70,7 +70,7 @@ jobs:
             echo 'Unfinished production marker found in tracked source.' >&2
             exit 1
           fi
-          if git grep -n -I -E 'localhost|127\.0\.0\.1|example\.com' -- ':(exclude).github/workflows/*' ':!*.lock'; then
+          if git grep -n -I -E 'localhost|127\\.0\\.0\\.1|example\\.com' -- ':(exclude).github/workflows/*' ':!*.lock'; then
             echo 'Development/test endpoint found in tracked source.' >&2
             exit 1
           fi
@@ -85,9 +85,6 @@ jobs:
           grep -q 'android:allowBackup="false"' android/app/src/main/AndroidManifest.xml
           grep -q 'android:usesCleartextTraffic="false"' android/app/src/main/AndroidManifest.xml
           echo 'Required production files and privacy hardening validated.'
-
-      - name: Debug Dart formatter output
-        run: dart format --output=show test/app_navigation_test.dart
 
       - name: Verify Dart formatting
         run: dart format --output=none --set-exit-if-changed lib test
@@ -111,7 +108,7 @@ jobs:
           grep -q 'targetCompatibility = JavaVersion.VERSION_17' android/app/build.gradle.kts
           grep -q 'jvmTarget = JavaVersion.VERSION_17.toString()' android/app/build.gradle.kts
           grep -q 'applicationId = "com.utilia.app.utilia"' android/app/build.gradle.kts
-          grep -Eq '^version: [0-9]+\.[0-9]+\.[0-9]+\+[0-9]+$' pubspec.yaml
+          grep -Eq '^version: [0-9]+\\.[0-9]+\\.[0-9]+\\+[0-9]+$' pubspec.yaml
           grep -q 'android:exported="true"' android/app/src/main/AndroidManifest.xml
           echo 'Android configuration validated.'
 
@@ -135,9 +132,7 @@ jobs:
         shell: bash
         run: |
           test -s "$UTILIA_KEYSTORE_FILE"
-          keytool -list -keystore "$UTILIA_KEYSTORE_FILE" \
-            -alias "$UTILIA_KEY_ALIAS" \
-            -storepass "$UTILIA_KEYSTORE_PASSWORD" >/dev/null
+          keytool -list -keystore "$UTILIA_KEYSTORE_FILE"             -alias "$UTILIA_KEY_ALIAS"             -storepass "$UTILIA_KEYSTORE_PASSWORD" >/dev/null
           echo 'Production upload keystore is valid.'
 
       - name: Build release APK
@@ -161,10 +156,7 @@ jobs:
             printf '%s' "$1" | tr -d ' :\t\r\n' | tr '[:upper:]' '[:lower:]'
           }
 
-          production_fingerprint="$(keytool -list -v \
-            -keystore "$UTILIA_KEYSTORE_FILE" \
-            -alias "$UTILIA_KEY_ALIAS" \
-            -storepass "$UTILIA_KEYSTORE_PASSWORD" 2>&1 |
+          production_fingerprint="$(keytool -list -v             -keystore "$UTILIA_KEYSTORE_FILE"             -alias "$UTILIA_KEY_ALIAS"             -storepass "$UTILIA_KEYSTORE_PASSWORD" 2>&1 |
             sed -n 's/.*SHA256: *//p' | head -1)"
           production_fingerprint="$(normalize_fingerprint "$production_fingerprint")"
           test -n "$production_fingerprint"
