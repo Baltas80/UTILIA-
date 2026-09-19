@@ -62,7 +62,7 @@ jobs:
         with:
           name: utilia-formatted-sources
           if-no-files-found: error
-          path: "\${{ runner.temp }}/utilia-formatted-sources.tgz"
+          path: ${{ runner.temp }}/utilia-formatted-sources.tgz
 
       - name: Analyze
         run: flutter analyze --no-fatal-infos
