@@ -62,6 +62,30 @@ jobs:
           fi
           echo 'No known high-risk credential patterns found in tracked source.'
 
+      - name: Scan source for unfinished production markers
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git grep -n -I -E 'TODO|FIXME|HACK|PLACEHOLDER|coming soon|lorem ipsum' -- ':!*.lock'; then
+            echo 'Unfinished production marker found in tracked source.' >&2
+            exit 1
+          fi
+          if git grep -n -I -E 'localhost|127\.0\.0\.1|example\.com' -- ':!*.lock'; then
+            echo 'Development/test endpoint found in tracked source.' >&2
+            exit 1
+          fi
+          echo 'No unfinished markers or development endpoints found.'
+
+      - name: Verify required production files
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f docs/privacy-policy.html
+          test -f android/app/src/main/AndroidManifest.xml
+          grep -q 'android:allowBackup="false"' android/app/src/main/AndroidManifest.xml
+          grep -q 'android:usesCleartextTraffic="false"' android/app/src/main/AndroidManifest.xml
+          echo 'Required production files and privacy hardening validated.'
+
       - name: Verify Dart formatting
         run: dart format --output=none --set-exit-if-changed lib test
 
