@@ -2,51 +2,63 @@
 
 **Pequeñas herramientas. Grandes soluciones.**
 
-UTILIA es una aplicación móvil de utilidades cotidianas. El objetivo del producto es resolver tareas concretas en pocos toques, con una interfaz limpia y cálculos deterministas.
+UTILIA es una aplicación móvil de utilidades cotidianas. Resuelve tareas concretas en pocos toques, con una interfaz Material 3, cálculos deterministas y funcionamiento local por defecto.
 
-## Dirección del producto
-- Android primero; arquitectura preparada para iOS.
-- Flutter + Dart + Material 3.
-- Sin cuenta ni backend en el MVP.
-- Privacidad por defecto: cálculos locales.
-- Monetización futura: publicidad no intrusiva y opción premium.
-- Medir uso y retención antes de ampliar funciones complejas.
+## Estado actual
 
-## MVP 0.2
-Categorías: Dinero, Tiempo, Casa, Coche, Conversores, Salud, Estudio y Varios.
+- Android primero, desarrollada con Flutter + Dart.
+- `applicationId`: `com.utilia.app.utilia`.
+- `minSdk`: 24.
+- `targetSdk`: 36.
+- `compileSdk`: 36.
+- Java/Kotlin: 17.
+- Sin cuenta ni backend propio.
+- Favoritos, historial, idioma y tema persistidos localmente.
+- Sin publicidad ni analítica integrada en la versión actual.
+- Compartir resultados únicamente cuando el usuario lo solicita.
+- Soporte de español, inglés, francés, alemán, italiano y portugués.
+- Tema claro y oscuro.
+- Tests unitarios, de persistencia, localización y accesibilidad.
+- CI de producción con análisis, tests, validaciones Android, comprobación de secretos y generación/verificación de APK y AAB firmados.
 
-Herramientas previstas en el catálogo inicial:
-- Porcentaje
-- Descuentos
-- IVA
-- Propinas
-- Préstamos
-- Edad
-- Diferencia de fechas
-- Superficie
-- Combustible
-- Conversor de longitud
-- Conversor de peso
-- IMC
-- Media de notas
-- Regla de tres
+## Categorías y herramientas
 
-## Calidad
-- Tests unitarios para fórmulas críticas.
-- CI en GitHub Actions para formato, análisis, tests y validación de release Android.
-- CI valida `compileSdk 36`, `targetSdk 36`, `minSdk 24` y `applicationId com.utilia.app.utilia`.
-- Los builds de release requieren firma mediante secretos de CI; las claves privadas no se almacenan en el repositorio.
-- La CI comprueba APK/AAB, certificados de firma y hashes SHA-256 de los artefactos.
-- No incorporar credenciales, claves API ni datos personales al repositorio.
+Categorías actuales: Dinero, Tiempo, Casa, Coche, Conversores, Salud, Estudio y Varios.
 
-## Roadmap
-1. Consolidar navegación y catálogo.
-2. Persistencia local real de favoritos e historial.
-3. Completar las herramientas prioritarias y sus tests.
-4. Tema claro/oscuro y accesibilidad.
-5. Analítica de producto respetuosa con la privacidad.
-6. Build firmado AAB y pruebas internas de Google Play.
-7. Iterar según descargas, retención y herramientas más utilizadas.
+El catálogo incluye herramientas para porcentajes, descuentos, IVA, propinas, préstamos, edad, fechas, superficies, combustible, conversiones, IMC, medias, regla de tres y otras utilidades, además de calculadora estándar y científica.
+
+## Privacidad y seguridad
+
+UTILIA está diseñada para minimizar la transmisión de datos. No requiere cuenta ni backend propio. Los datos de funcionamiento de la aplicación se mantienen localmente y la aplicación no solicita permisos de acceso a contactos, ubicación, cámara o almacenamiento compartido.
+
+La política de privacidad pública está en `docs/privacy-policy.html`.
+
+La configuración Android deshabilita las copias de seguridad de la aplicación y el tráfico HTTP sin cifrar. Las credenciales de firma de producción nunca se almacenan en el repositorio.
+
+## Calidad y release
+
+La CI valida como mínimo:
+
+- formato Dart;
+- `flutter analyze`;
+- `flutter test`;
+- configuración Android/Google Play;
+- `applicationId`, SDK y Java 17;
+- ausencia de marcadores de desarrollo y endpoints locales;
+- ausencia de patrones conocidos de secretos;
+- keystore de producción mediante secretos de CI;
+- APK release;
+- AAB release;
+- firma y certificado de producción;
+- alineación de APK a 16 KiB;
+- hashes SHA-256 de los artefactos.
+
+Las claves privadas de firma deben permanecer bajo control seguro del propietario y fuera de Git.
+
+## Documentación de publicación
+
+Antes de enviar la aplicación a Google Play deben completarse con datos de la versión final la ficha de tienda, Data Safety, clasificación de contenido, público objetivo, política de privacidad y capturas reales de la aplicación. No se incluyen capturas ficticias en el repositorio.
 
 ## Licencia
+
 Código propietario. No se concede licencia de reutilización, modificación o redistribución salvo autorización expresa del titular.
