@@ -154,12 +154,9 @@ jobs:
           test -x "$apksigner"
           "$apksigner" verify --verbose "$apk_path"
 
-          apk_fingerprint="$("$apksigner" verify --print-certs "$apk_path" 2>&1 |
-            awk '/Signer #1 certificate SHA-256 digest:/ {
-              if ($NF ~ /^[[:xdigit:]:]{95}$/) { print $NF; exit }
-              if (getline > 0) { print $1; exit }
-            }')"
-          apk_fingerprint="$(normalize_fingerprint "$apk_fingerprint")"
+          apk_certificate_line="$("$apksigner" verify --print-certs "$apk_path" 2>&1 |
+            grep -Eo '([[:xdigit:]]{2}:){31}[[:xdigit:]]{2}' | head -1)"
+          apk_fingerprint="$(normalize_fingerprint "$apk_certificate_line")"
           echo "Production certificate SHA-256: $production_fingerprint"
           echo "APK certificate SHA-256:        $apk_fingerprint"
           test -n "$apk_fingerprint"
