@@ -145,8 +145,8 @@ jobs:
           production_fingerprint="$(keytool -list -v \
             -keystore "$UTILIA_KEYSTORE_FILE" \
             -alias "$UTILIA_KEY_ALIAS" \
-            -storepass "$UTILIA_KEYSTORE_PASSWORD" |
-            awk -F': ' '/SHA256:/{print $2; exit}')"
+            -storepass "$UTILIA_KEYSTORE_PASSWORD" 2>&1 |
+            awk '/SHA256:/{print $2; exit}')"
           production_fingerprint="$(normalize_fingerprint "$production_fingerprint")"
           test -n "$production_fingerprint"
 
@@ -154,8 +154,8 @@ jobs:
           test -x "$apksigner"
           "$apksigner" verify --verbose "$apk_path"
 
-          apk_fingerprint="$("$apksigner" verify --print-certs "$apk_path" 2>/dev/null |
-            awk '/Signer #1 certificate SHA-256 digest:/{getline; print; exit}')"
+          apk_fingerprint="$("$apksigner" verify --print-certs "$apk_path" 2>&1 |
+            awk '/Signer #1 certificate SHA-256 digest:/{getline; print $1; exit}')"
           apk_fingerprint="$(normalize_fingerprint "$apk_fingerprint")"
           echo "Production certificate SHA-256: $production_fingerprint"
           echo "APK certificate SHA-256:        $apk_fingerprint"
@@ -164,8 +164,8 @@ jobs:
 
           jarsigner -verify -verbose "$aab_path" >/dev/null
 
-          aab_fingerprint="$(keytool -printcert -jarfile "$aab_path" |
-            awk -F': ' '/SHA256:/{print $2; exit}')"
+          aab_fingerprint="$(keytool -printcert -jarfile "$aab_path" 2>&1 |
+            awk '/SHA256:/{print $2; exit}')"
           aab_fingerprint="$(normalize_fingerprint "$aab_fingerprint")"
           echo "AAB certificate SHA-256:        $aab_fingerprint"
           test -n "$aab_fingerprint"
