@@ -146,7 +146,7 @@ jobs:
             -keystore "$UTILIA_KEYSTORE_FILE" \
             -alias "$UTILIA_KEY_ALIAS" \
             -storepass "$UTILIA_KEYSTORE_PASSWORD" 2>&1 |
-            awk '/SHA256:/{print $2; exit}')"
+            sed -n 's/.*SHA256: *//p' | head -1)"
           production_fingerprint="$(normalize_fingerprint "$production_fingerprint")"
           test -n "$production_fingerprint"
 
@@ -155,7 +155,10 @@ jobs:
           "$apksigner" verify --verbose "$apk_path"
 
           apk_fingerprint="$("$apksigner" verify --print-certs "$apk_path" 2>&1 |
-            awk '/Signer #1 certificate SHA-256 digest:/{getline; print $1; exit}')"
+            awk '/Signer #1 certificate SHA-256 digest:/ {
+              if ($NF ~ /^[[:xdigit:]:]{95}$/) { print $NF; exit }
+              if (getline > 0) { print $1; exit }
+            }')"
           apk_fingerprint="$(normalize_fingerprint "$apk_fingerprint")"
           echo "Production certificate SHA-256: $production_fingerprint"
           echo "APK certificate SHA-256:        $apk_fingerprint"
@@ -165,7 +168,7 @@ jobs:
           jarsigner -verify -verbose "$aab_path" >/dev/null
 
           aab_fingerprint="$(keytool -printcert -jarfile "$aab_path" 2>&1 |
-            awk '/SHA256:/{print $2; exit}')"
+            sed -n 's/.*SHA256: *//p' | head -1)"
           aab_fingerprint="$(normalize_fingerprint "$aab_fingerprint")"
           echo "AAB certificate SHA-256:        $aab_fingerprint"
           test -n "$aab_fingerprint"
