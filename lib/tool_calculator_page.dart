@@ -414,6 +414,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
         r = 0;
         break;
     }
+    if (!r.isFinite) {
+      _error(_invalidValueMessage);
+      return;
+    }
     setState(() {
       result = r;
       unit = u;
