@@ -490,7 +490,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                         borderRadius: const BorderRadius.vertical(
                             top: Radius.circular(28))),
                     child: body))
-          ]));
+          ])));
   Widget _brandDark(String title) => Padding(
       padding: const EdgeInsets.fromLTRB(12, 7, 14, 6),
       child: Row(children: [
