@@ -1,5 +1,7 @@
-double parseNumber(String value) =>
-    double.tryParse(value.trim().replaceAll(',', '.')) ?? 0;
+double parseNumber(String value) {
+  final parsed = double.tryParse(value.trim().replaceAll(',', '.'));
+  return parsed != null && parsed.isFinite ? parsed : 0;
+}
 
 double percentageOf(double amount, double percent) => amount * percent / 100;
 double discountedPrice(double price, double percent) =>
@@ -50,8 +52,13 @@ double loanPayment(double principal, double annualRate, int months) {
   if (months <= 0) return 0;
   final r = annualRate / 100 / 12;
   if (r == 0) return principal / months;
-  final factor = _pow(1 + r, months);
-  return principal * r * factor / (factor - 1);
+  final base = 1 + r;
+  if (base <= 0) return 0;
+  final factor = _pow(base, months);
+  final denominator = factor - 1;
+  if (denominator == 0 || !denominator.isFinite || !factor.isFinite) return 0;
+  final payment = principal * r * factor / denominator;
+  return payment.isFinite ? payment : 0;
 }
 
 double ageInYears(DateTime birthDate, [DateTime? today]) {
