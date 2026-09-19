@@ -58,6 +58,13 @@ void main() {
       expect(find.text('Porcentaje'), findsOneWidget);
       expect(find.text('Descuentos'), findsOneWidget);
       expect(find.text('Préstamos'), findsOneWidget);
+
+      final list = find.byType(ListView);
+      await tester.scrollUntilVisible(
+        find.text('Interés compuesto'),
+        300,
+        scrollable: list,
+      );
       expect(find.text('Interés compuesto'), findsOneWidget);
     },
   );
