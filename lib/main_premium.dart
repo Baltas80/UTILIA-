@@ -945,30 +945,55 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
   }
 
   Future<void> _rateUtilia() async {
-    await showDialog<void>(
-        context: context,
-        builder: (_) => _dialogBody(
-            text('Valora UTILIA', 'Rate UTILIA', 'Évaluer UTILIA',
-                'UTILIA bewerten', 'Valuta UTILIA', 'Avaliar UTILIA'),
-            text(
-                'La valoración en Google Play estará disponible cuando UTILIA esté publicada. Gracias por probar la aplicación.',
-                'The Google Play rating will be available once UTILIA is published. Thank you for trying the app.',
-                'La note Google Play sera disponible lorsque UTILIA sera publiée. Merci d’essayer l’application.',
-                'Die Google-Play-Bewertung wird verfügbar sein, sobald UTILIA veröffentlicht ist. Danke für das Testen der App.',
-                'La valutazione su Google Play sarà disponibile quando UTILIA sarà pubblicata. Grazie per aver provato l’app.',
-                'A avaliação no Google Play estará disponível quando a UTILIA for publicada. Obrigado por experimentar a aplicação.'),
-            icon: Icons.star_outline_rounded));
+    final marketUri = Uri.parse(
+      'market://details?id=com.utilia.app.utilia',
+    );
+    final webUri = Uri.parse(
+      'https://play.google.com/store/apps/details?id=com.utilia.app.utilia',
+    );
+    final opened = await launchUrl(
+      marketUri,
+      mode: LaunchMode.externalApplication,
+    );
+    if (!opened) {
+      final webOpened = await launchUrl(
+        webUri,
+        mode: LaunchMode.externalApplication,
+      );
+      if (!webOpened && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              text(
+                'No se pudo abrir Google Play.',
+                'Google Play could not be opened.',
+                'Impossible d’ouvrir Google Play.',
+                'Google Play konnte nicht geöffnet werden.',
+                'Impossibile aprire Google Play.',
+                'Não foi possível abrir o Google Play.',
+              ),
+            ),
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _shareUtilia() async {
-    await SharePlus.instance.share(ShareParams(
-        text: text(
-            'Descubre UTILIA: herramientas útiles para tu día a día.',
-            'Discover UTILIA: useful tools for everyday life.',
-            'Découvrez UTILIA : des outils utiles au quotidien.',
-            'Entdecke UTILIA: nützliche Werkzeuge für den Alltag.',
-            'Scopri UTILIA: strumenti utili per ogni giorno.',
-            'Descubra a UTILIA: ferramentas úteis para o dia a dia.')));
+    final message = text(
+      'Descubre UTILIA: herramientas útiles para tu día a día.',
+      'Discover UTILIA: useful tools for everyday life.',
+      'Découvrez UTILIA : des outils utiles au quotidien.',
+      'Entdecke UTILIA: nützliche Werkzeuge für den Alltag.',
+      'Scopri UTILIA: strumenti utili per ogni giorno.',
+      'Descubra a UTILIA: ferramentas úteis para o dia a dia.',
+    );
+    await SharePlus.instance.share(
+      ShareParams(
+        text:
+            '$message\\n\\nhttps://play.google.com/store/apps/details?id=com.utilia.app.utilia',
+      ),
+    );
   }
 
   Future<void> _showPrivacy() async {
