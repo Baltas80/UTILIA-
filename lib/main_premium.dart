@@ -392,7 +392,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
               action: TextButton(
                   style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 4)),
-                  onPressed: () => setState(() => tab = 1),
+                  onPressed: () => _showToolList(tools, _seeAll),
                   child: Text(_seeAll)))),
       const SizedBox(height: 5),
       SizedBox(
@@ -411,7 +411,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
               action: TextButton(
                   style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 4)),
-                  onPressed: () => setState(() => tab = 0),
+                  onPressed: _showCategoryList,
                   child: Text(_seeAll)))),
       const SizedBox(height: 7),
       Padding(
