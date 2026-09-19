@@ -490,7 +490,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                         borderRadius: const BorderRadius.vertical(
                             top: Radius.circular(28))),
                     child: body))
-          ])));
+          ]));
   Widget _brandDark(String title) => Padding(
       padding: const EdgeInsets.fromLTRB(12, 7, 14, 6),
       child: Row(children: [
@@ -764,7 +764,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                   title: Text(s.languageLabel),
                   content: Column(mainAxisSize: MainAxisSize.min, children: [
                     DropdownButtonFormField<UtiliaLanguage>(
-                        value: widget.language,
+                        initialValue: widget.language,
                         decoration: InputDecoration(
                             labelText: text('Idioma', 'Language', 'Langue',
                                 'Sprache', 'Lingua', 'Idioma')),
@@ -859,15 +859,15 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
             text(
                 'UTILIA está diseñada para funcionar de forma local siempre que sea posible. Los favoritos, el historial y las preferencias se almacenan en el dispositivo. No introduzcas información personal innecesaria en las herramientas.',
                 'UTILIA is designed to work locally whenever possible. Favorites, history and preferences are stored on the device. Do not enter unnecessary personal information into the tools.',
-                'UTILIA est conçue pour fonctionner localement autant que possible. Les favoris, l’historique et les préférences sont stockés sur l’appareil. N’entrez pas d’informations personnelles inutiles dans les outils.',
+                'UTILIA est conçue pour fonctionner localement autant que possible. Les favoris, l’historique et les préférences sont stockés sur le dispositif. N’entrez pas d’informations personnelles inutiles dans les outils.',
                 'UTILIA ist so konzipiert, dass sie möglichst lokal arbeitet. Favoriten, Verlauf und Einstellungen werden auf dem Gerät gespeichert. Geben Sie keine unnötigen personenbezogenen Daten in die Werkzeuge ein.',
                 'UTILIA è progettata per funzionare localmente quando possibile. Preferiti, cronologia e preferenze sono memorizzati sul dispositivo. Non inserire informazioni personali non necessarie negli strumenti.',
                 'A UTILIA foi concebida para funcionar localmente sempre que possível. Favoritos, histórico e preferências são armazenados no dispositivo. Não introduza informações pessoais desnecessárias nas ferramentas.'),
             icon: Icons.privacy_tip_outlined));
   }
 
-  Future<void> _showAbout() async {
-    await showAboutDialog(
+  void _showAbout() {
+    showAboutDialog(
         context: context,
         applicationName: 'UTILIA',
         applicationVersion: '0.5.3',
@@ -897,16 +897,4 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyLarge)
           ])));
-  Future<void> _pickLanguage() async {
-    final value = await showDialog<UtiliaLanguage>(
-        context: context,
-        builder: (c) => SimpleDialog(
-            title: Text(s.languageLabel),
-            children: UtiliaLanguage.values
-                .map((l) => SimpleDialogOption(
-                    onPressed: () => Navigator.pop(c, l),
-                    child: Text(UtiliaStrings(l).languageName)))
-                .toList()));
-    if (value != null) await widget.onLanguage(value);
-  }
 }
