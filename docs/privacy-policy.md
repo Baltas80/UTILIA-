@@ -1,6 +1,6 @@
 # Política de privacidad de UTILIA
 
-**Última actualización: 7 de septiembre de 2026**
+**Última actualización: 19 de septiembre de 2026**
 
 UTILIA es una aplicación de herramientas y calculadoras para Android desarrollada como una aplicación local y orientada a la privacidad.
 
@@ -36,9 +36,13 @@ Esta política puede actualizarse cuando cambien las funciones, dependencias o p
 
 ## 8. Contacto
 
-Para consultas relacionadas con privacidad o protección de datos, puede utilizarse el repositorio público del proyecto UTILIA:
+Para consultas relacionadas con privacidad o protección de datos, puede utilizarse el canal público del proyecto UTILIA:
 
-https://github.com/Baltas80/UTILIA-
+https://github.com/Baltas80/UTILIA-/issues
+
+La copia pública de esta política está disponible en:
+
+https://raw.githubusercontent.com/Baltas80/UTILIA-/master/docs/privacy-policy.html
 
 **Aplicación:** UTILIA  
 **Desarrollador/proyecto:** UTILIA

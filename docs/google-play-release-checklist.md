@@ -34,7 +34,7 @@ El proyecto admite variables de entorno para una firma de release:
 - `UTILIA_KEY_ALIAS`
 - `UTILIA_KEY_PASSWORD`
 
-Si estas variables están completas, Gradle usa la configuración `release`. Si no lo están, los builds de CI/locales pueden continuar con la firma de depuración para validación técnica. El AAB destinado a Google Play debe generarse con la clave de lanzamiento adecuada.
+Cuando estas variables están completas, Gradle usa la configuración `release`. Si faltan, el build `release` falla deliberadamente. No existe fallback a la firma de depuración. El AAB destinado a Google Play debe generarse con la clave de subida configurada para producción.
 
 ## CI
 
@@ -51,6 +51,9 @@ El workflow `.github/workflows/flutter.yml` comprueba:
 - Build de APK release.
 - Build de AAB release.
 - Existencia y tamaño no nulo de ambos artefactos.
+- Verificación de firma del APK mediante `apksigner`.
+- Verificación de firma del AAB mediante `jarsigner`/`keytool`.
+- Coincidencia de la huella SHA-256 de los artefactos con la clave de producción configurada.
 
 Los artefactos generados por CI se consideran **artefactos de validación** hasta que se confirme que el AAB está firmado con la clave de lanzamiento destinada a Google Play.
 

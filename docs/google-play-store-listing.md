@@ -37,7 +37,11 @@ Herramientas
 Calculadora, herramientas, utilidades, conversor, porcentajes, descuentos, IVA, propinas, préstamos, fechas, combustible, superficie, peso, longitud, IMC, notas.
 
 ## Política de privacidad
-Debe introducirse en Play Console una URL pública y accesible que apunte a `docs/privacy-policy.html`. El repositorio actual no debe asumirse como URL pública hasta comprobar que la página es accesible sin autenticación.
+URL pública propuesta para Play Console:
+
+https://raw.githubusercontent.com/Baltas80/UTILIA-/master/docs/privacy-policy.html
+
+Debe comprobarse desde una red externa antes de introducirla en Play Console.
 
 ## Notas para Play Console
 - Aplicación gratuita inicialmente.

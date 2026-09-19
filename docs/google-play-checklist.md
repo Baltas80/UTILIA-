@@ -32,7 +32,7 @@ La clave de subida nunca debe almacenarse en el repositorio. La configuración G
 - `UTILIA_KEY_ALIAS` — alias de la clave.
 - `UTILIA_KEY_PASSWORD` — contraseña de la clave.
 
-Sin esas variables, la compilación utiliza la firma de depuración únicamente para validación técnica local/CI. Esto permite seguir ejecutando tests y builds sin exponer secretos, pero ese AAB no debe subirse a producción.
+Sin esas variables, la configuración de `release` **falla deliberadamente**. No existe fallback a la firma de depuración para builds de producción, por lo que un AAB release sin esas credenciales no puede generarse por accidente.
 
 Para la publicación definitiva, debe configurarse Google Play App Signing y una clave de subida protegida mediante los secretos de GitHub Actions o mediante el flujo seguro elegido para Play Console.
 

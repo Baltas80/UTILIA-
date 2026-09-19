@@ -13,10 +13,13 @@ Según la documentación y dependencias del proyecto:
 - No se prevé recopilar datos personales mediante servidores propios.
 - Favoritos, historial, idioma y preferencias se almacenan localmente.
 - La función de compartir permite al usuario enviar voluntariamente un resultado a otra aplicación mediante Android.
+- La política de privacidad se abre mediante el navegador del dispositivo usando `url_launcher`; esta función no envía datos de los cálculos a un servidor propio.
 
 ## Declaración preliminar
 
-La versión actual está planteada como una aplicación que **no recopila datos del usuario mediante servidores propios** y que **no comparte datos con terceros con fines de recopilación por parte de UTILIA**.
+La versión actual está planteada como una aplicación que **no recoge datos del usuario fuera del dispositivo mediante servidores propios**. Los favoritos, el historial, el idioma y el modo oscuro permanecen almacenados localmente.
+
+La función de compartir se activa únicamente por una acción explícita del usuario. Las directrices actuales de Seguridad de los datos contemplan una excepción para determinadas transferencias iniciadas por el usuario; la respuesta final debe realizarse en Play Console sobre el AAB exacto.
 
 Antes de enviar el formulario, revisar todas las bibliotecas incluidas en el AAB y cualquier comportamiento real de la aplicación. Si se incorpora publicidad, analítica, autenticación, servicios cloud u otra SDK que recopile o comparta datos, esta declaración debe actualizarse.
 
