@@ -155,7 +155,7 @@ jobs:
           "$apksigner" verify --verbose "$apk_path"
 
           apk_fingerprint="$("$apksigner" verify --print-certs "$apk_path" 2>/dev/null |
-            sed -n 's/.*Signer #1 certificate SHA-256 digest:[[:space:]]*//p' | head -n 1)"
+            awk '/Signer #1 certificate SHA-256 digest:/{getline; print; exit}')"
           apk_fingerprint="$(normalize_fingerprint "$apk_fingerprint")"
           echo "Production certificate SHA-256: $production_fingerprint"
           echo "APK certificate SHA-256:        $apk_fingerprint"
