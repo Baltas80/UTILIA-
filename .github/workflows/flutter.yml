@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: utilia-ci-${{ github.ref }}
@@ -48,35 +48,6 @@ jobs:
 
       - name: Verify Dart formatting
         run: dart format --output=none --set-exit-if-changed lib test
-
-      - name: Apply formatter remediation on master
-        if: ${{ failure() && github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-        shell: bash
-        run: |
-          dart format lib test
-          if git diff --quiet -- lib test; then
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add lib test
-          git commit -m "chore: apply dart format"
-          git push origin HEAD:master
-
-      - name: Export formatted sources on failure
-        if: ${{ failure() }}
-        shell: bash
-        run: |
-          dart format lib test
-          tar -czf "$RUNNER_TEMP/utilia-formatted-sources.tgz" lib test
-
-      - name: Upload formatter diagnostics
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v6
-        with:
-          name: utilia-formatted-sources
-          if-no-files-found: error
-          path: ${{ runner.temp }}/utilia-formatted-sources.tgz
 
       - name: Analyze
         run: flutter analyze --no-fatal-infos
