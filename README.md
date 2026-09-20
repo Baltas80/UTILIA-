@@ -14,11 +14,12 @@ UTILIA es una aplicación móvil de utilidades cotidianas. Resuelve tareas concr
 - Java/Kotlin: 17.
 - Sin cuenta ni backend propio.
 - Favoritos, historial, idioma y tema persistidos localmente.
-- Sin publicidad ni analítica integrada en la versión actual.
+- La versión gratuita muestra publicidad mediante Google Mobile Ads; Premium elimina los anuncios mediante una compra única.
+- Sin analítica propia integrada.
 - Compartir resultados únicamente cuando el usuario lo solicita.
 - Soporte de español, inglés, francés, alemán, italiano y portugués.
 - Tema claro y oscuro.
-- Tests unitarios, de persistencia, localización y accesibilidad.
+- Tests unitarios, de persistencia, localización, navegación y accesibilidad.
 - CI de producción con análisis, tests, validaciones Android, comprobación de secretos y generación/verificación de APK y AAB firmados.
 
 ## Categorías y herramientas
@@ -30,6 +31,8 @@ El catálogo incluye herramientas para porcentajes, descuentos, IVA, propinas, p
 ## Privacidad y seguridad
 
 UTILIA está diseñada para minimizar la transmisión de datos. No requiere cuenta ni backend propio. Los datos de funcionamiento de la aplicación se mantienen localmente y la aplicación no solicita permisos de acceso a contactos, ubicación, cámara o almacenamiento compartido.
+
+La versión gratuita integra Google Mobile Ads y utiliza el mecanismo de consentimiento aplicable antes de solicitar anuncios cuando corresponde. Premium se procesa mediante Google Play Billing y desactiva la publicidad.
 
 La política de privacidad pública está en `docs/privacy-policy.html`.
 
@@ -46,6 +49,7 @@ La CI valida como mínimo:
 - `applicationId`, SDK y Java 17;
 - ausencia de marcadores de desarrollo y endpoints locales;
 - ausencia de patrones conocidos de secretos;
+- identificadores de producción de AdMob mediante secretos de CI;
 - keystore de producción mediante secretos de CI;
 - APK release;
 - AAB release;
@@ -53,7 +57,7 @@ La CI valida como mínimo:
 - alineación de APK a 16 KiB;
 - hashes SHA-256 de los artefactos.
 
-Las claves privadas de firma deben permanecer bajo control seguro del propietario y fuera de Git.
+Las claves privadas de firma y los identificadores de configuración sensibles deben permanecer fuera de Git y bajo control seguro del propietario.
 
 ## Documentación de publicación
 
