@@ -79,6 +79,9 @@ class _UtiliaPremiumAppState extends State<UtiliaPremiumApp> {
         themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
         theme: utiliaTheme(Brightness.light),
         darkTheme: utiliaTheme(Brightness.dark),
+        builder: (context, child) => UtiliaGoldEdgeFrame(
+          child: child ?? const SizedBox.shrink(),
+        ),
         home: UtiliaHomePage(
           storage: storage,
           darkMode: darkMode,
