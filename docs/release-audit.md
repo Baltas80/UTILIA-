@@ -7,6 +7,7 @@
 - Application ID: `com.utilia.app.utilia`
 - Flutter: `3.35.7` in CI
 - Release line: `0.5.5`
+- Final formatter commit: `3823db09ca1232ac78f44f3194d26fbcc794b048`
 
 ## Verified in source/CI
 
