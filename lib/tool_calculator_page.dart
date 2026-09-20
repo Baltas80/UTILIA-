@@ -68,13 +68,13 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   String get _priceLabel => switch (widget.s.selectedLanguage) {
-    UtiliaLanguage.en => 'Price per kWh (€)',
-    UtiliaLanguage.fr => 'Prix du kWh (€)',
-    UtiliaLanguage.de => 'Preis pro kWh (€)',
-    UtiliaLanguage.it => 'Prezzo per kWh (€)',
-    UtiliaLanguage.pt => 'Preço do kWh (€)',
-    _ => 'Precio del kWh (€)',
-  };
+        UtiliaLanguage.en => 'Price per kWh (€)',
+        UtiliaLanguage.fr => 'Prix du kWh (€)',
+        UtiliaLanguage.de => 'Preis pro kWh (€)',
+        UtiliaLanguage.it => 'Prezzo per kWh (€)',
+        UtiliaLanguage.pt => 'Preço do kWh (€)',
+        _ => 'Precio del kWh (€)',
+      };
 
   DateTime? _date(String v) {
     final p = v.trim().split('/');
@@ -94,14 +94,15 @@ class _CalculatorPageState extends State<CalculatorPage> {
     String de,
     String it,
     String pt,
-  ) => switch (widget.s.selectedLanguage) {
-    UtiliaLanguage.en => en,
-    UtiliaLanguage.fr => fr,
-    UtiliaLanguage.de => de,
-    UtiliaLanguage.it => it,
-    UtiliaLanguage.pt => pt,
-    _ => es,
-  };
+  ) =>
+      switch (widget.s.selectedLanguage) {
+        UtiliaLanguage.en => en,
+        UtiliaLanguage.fr => fr,
+        UtiliaLanguage.de => de,
+        UtiliaLanguage.it => it,
+        UtiliaLanguage.pt => pt,
+        _ => es,
+      };
 
   Map<String, String> get _unitOptions => widget.tool.type == ToolType.length
       ? {
@@ -226,11 +227,11 @@ class _CalculatorPageState extends State<CalculatorPage> {
       widget.tool.type == ToolType.weight;
 
   bool _needsTextInput(int index) => switch (widget.tool.type) {
-    ToolType.age || ToolType.dateDifference => true,
-    ToolType.length || ToolType.weight => index > 0,
-    ToolType.gradeAverage => true,
-    _ => false,
-  };
+        ToolType.age || ToolType.dateDifference => true,
+        ToolType.length || ToolType.weight => index > 0,
+        ToolType.gradeAverage => true,
+        _ => false,
+      };
 
   bool _hasRequiredInputs() {
     for (var i = 0; i < labels.length; i++) {
@@ -254,11 +255,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   bool _validGradeList(String value) {
-    final parts = value
-        .replaceAll(';', ',')
-        .split(',')
-        .map((e) => e.trim())
-        .toList();
+    final parts =
+        value.replaceAll(';', ',').split(',').map((e) => e.trim()).toList();
     return parts.isNotEmpty &&
         parts.every((part) => part.isNotEmpty && _validNumber(part));
   }
@@ -267,8 +265,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
     if (widget.tool.type == ToolType.gradeAverage)
       return _validGradeList(controllers[0].text);
     if (widget.tool.type == ToolType.age ||
-        widget.tool.type == ToolType.dateDifference)
-      return true;
+        widget.tool.type == ToolType.dateDifference) return true;
     for (var i = 0; i < labels.length; i++) {
       if (_isConverter && i > 0) continue;
       if (!_validNumber(controllers[i].text)) return false;
@@ -332,49 +329,49 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   String get _missingFieldsMessage => switch (widget.s.selectedLanguage) {
-    UtiliaLanguage.en => 'Complete all fields.',
-    UtiliaLanguage.fr => 'Remplissez tous les champs.',
-    UtiliaLanguage.de => 'Füllen Sie alle Felder aus.',
-    UtiliaLanguage.it => 'Completa tutti i campi.',
-    UtiliaLanguage.pt => 'Preencha todos os campos.',
-    _ => 'Completa todos los campos.',
-  };
+        UtiliaLanguage.en => 'Complete all fields.',
+        UtiliaLanguage.fr => 'Remplissez tous les champs.',
+        UtiliaLanguage.de => 'Füllen Sie alle Felder aus.',
+        UtiliaLanguage.it => 'Completa tutti i campi.',
+        UtiliaLanguage.pt => 'Preencha todos os campos.',
+        _ => 'Completa todos los campos.',
+      };
 
   String get _invalidNumberMessage => switch (widget.s.selectedLanguage) {
-    UtiliaLanguage.en => 'Enter valid numbers.',
-    UtiliaLanguage.fr => 'Saisissez des nombres valides.',
-    UtiliaLanguage.de => 'Gültige Zahlen eingeben.',
-    UtiliaLanguage.it => 'Inserisci numeri validi.',
-    UtiliaLanguage.pt => 'Introduza números válidos.',
-    _ => 'Introduce números válidos.',
-  };
+        UtiliaLanguage.en => 'Enter valid numbers.',
+        UtiliaLanguage.fr => 'Saisissez des nombres valides.',
+        UtiliaLanguage.de => 'Gültige Zahlen eingeben.',
+        UtiliaLanguage.it => 'Inserisci numeri validi.',
+        UtiliaLanguage.pt => 'Introduza números válidos.',
+        _ => 'Introduce números válidos.',
+      };
 
   String get _invalidValueMessage => switch (widget.s.selectedLanguage) {
-    UtiliaLanguage.en => 'Check the values entered.',
-    UtiliaLanguage.fr => 'Vérifiez les valeurs saisies.',
-    UtiliaLanguage.de => 'Überprüfen Sie die eingegebenen Werte.',
-    UtiliaLanguage.it => 'Controlla i valori inseriti.',
-    UtiliaLanguage.pt => 'Verifique os valores introduzidos.',
-    _ => 'Revisa los valores introducidos.',
-  };
+        UtiliaLanguage.en => 'Check the values entered.',
+        UtiliaLanguage.fr => 'Vérifiez les valeurs saisies.',
+        UtiliaLanguage.de => 'Überprüfen Sie die eingegebenen Werte.',
+        UtiliaLanguage.it => 'Controlla i valori inseriti.',
+        UtiliaLanguage.pt => 'Verifique os valores introduzidos.',
+        _ => 'Revisa los valores introducidos.',
+      };
 
   String get _futureDateMessage => switch (widget.s.selectedLanguage) {
-    UtiliaLanguage.en => 'The date cannot be in the future.',
-    UtiliaLanguage.fr => 'La date ne peut pas être dans le futur.',
-    UtiliaLanguage.de => 'Das Datum darf nicht in der Zukunft liegen.',
-    UtiliaLanguage.it => 'La data non può essere nel futuro.',
-    UtiliaLanguage.pt => 'A data não pode estar no futuro.',
-    _ => 'La fecha no puede ser futura.',
-  };
+        UtiliaLanguage.en => 'The date cannot be in the future.',
+        UtiliaLanguage.fr => 'La date ne peut pas être dans le futur.',
+        UtiliaLanguage.de => 'Das Datum darf nicht in der Zukunft liegen.',
+        UtiliaLanguage.it => 'La data non può essere nel futuro.',
+        UtiliaLanguage.pt => 'A data não pode estar no futuro.',
+        _ => 'La fecha no puede ser futura.',
+      };
 
   String get _invalidUnitMessage => switch (widget.s.selectedLanguage) {
-    UtiliaLanguage.en => 'Select valid units.',
-    UtiliaLanguage.fr => 'Sélectionnez des unités valides.',
-    UtiliaLanguage.de => 'Gültige Einheiten auswählen.',
-    UtiliaLanguage.it => 'Seleziona unità valide.',
-    UtiliaLanguage.pt => 'Selecione unidades válidas.',
-    _ => 'Selecciona unidades válidas.',
-  };
+        UtiliaLanguage.en => 'Select valid units.',
+        UtiliaLanguage.fr => 'Sélectionnez des unités valides.',
+        UtiliaLanguage.de => 'Gültige Einheiten auswählen.',
+        UtiliaLanguage.it => 'Seleziona unità valide.',
+        UtiliaLanguage.pt => 'Selecione unidades válidas.',
+        _ => 'Selecciona unidades válidas.',
+      };
 
   Future<void> calculate() async {
     if (!_hasRequiredInputs()) {
@@ -439,7 +436,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
         break;
       case ToolType.gradeAverage:
         r = gradeAverage(
-          controllers[0].text
+          controllers[0]
+              .text
               .replaceAll(';', ',')
               .split(',')
               .map(parseNumber)
@@ -525,8 +523,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
     final type = widget.tool.type;
     if (type == ToolType.age ||
         type == ToolType.dateDifference ||
-        type == ToolType.countdown)
-      return value.toInt().toString();
+        type == ToolType.countdown) return value.toInt().toString();
     if (type == ToolType.gradeAverage || type == ToolType.bmi)
       return value.toStringAsFixed(2).replaceAll('.', ',');
     if (value == value.roundToDouble()) return value.toInt().toString();

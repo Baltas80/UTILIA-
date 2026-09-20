@@ -41,29 +41,29 @@ class _PaintCalculatorPageState extends State<PaintCalculatorPage> {
       };
 
   String get _coatsLabel => _t(
-    'Número de capas',
-    'Number of coats',
-    'Nombre de couches',
-    'Anzahl der Schichten',
-    'Numero di mani',
-    'Número de demãos',
-  );
+        'Número de capas',
+        'Number of coats',
+        'Nombre de couches',
+        'Anzahl der Schichten',
+        'Numero di mani',
+        'Número de demãos',
+      );
   String get _invalid => _t(
-    'Introduce valores válidos.',
-    'Enter valid values.',
-    'Saisissez des valeurs valides.',
-    'Gültige Werte eingeben.',
-    'Inserisci valori validi.',
-    'Introduza valores válidos.',
-  );
+        'Introduce valores válidos.',
+        'Enter valid values.',
+        'Saisissez des valeurs valides.',
+        'Gültige Werte eingeben.',
+        'Inserisci valori validi.',
+        'Introduza valores válidos.',
+      );
   String get _copied => _t(
-    'Resultado copiado',
-    'Result copied',
-    'Résultat copié',
-    'Ergebnis kopiert',
-    'Risultato copiato',
-    'Resultado copiado',
-  );
+        'Resultado copiado',
+        'Result copied',
+        'Résultat copié',
+        'Ergebnis kopiert',
+        'Risultato copiato',
+        'Resultado copiado',
+      );
 
   @override
   void dispose() {

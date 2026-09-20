@@ -33,9 +33,8 @@ void main() {
   });
 
   testWidgets('category page exposes the real tool list', (tester) async {
-    final categoryTools = tools
-        .where((tool) => tool.category == 'Dinero')
-        .toList();
+    final categoryTools =
+        tools.where((tool) => tool.category == 'Dinero').toList();
     const strings = UtiliaStrings(UtiliaLanguage.es);
 
     await tester.pumpWidget(

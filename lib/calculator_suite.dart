@@ -223,89 +223,89 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
   }
 
   Widget _degreeToggle() => Padding(
-    padding: const EdgeInsets.fromLTRB(18, 0, 18, 7),
-    child: Container(
-      height: 32,
-      decoration: BoxDecoration(
-        color: const Color(0xFF172638),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          _mode('DEG', degrees, () => setState(() => degrees = true)),
-          _mode('RAD', !degrees, () => setState(() => degrees = false)),
-        ],
-      ),
-    ),
-  );
-
-  Widget _mode(String label, bool selected, VoidCallback onTap) => Expanded(
-    child: GestureDetector(
-      onTap: onTap,
-      child: Container(
-        alignment: Alignment.center,
-        margin: const EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          color: selected ? UtiliaBrand.blue : Colors.transparent,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Text(
-          label,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w800,
-            fontSize: 10,
+        padding: const EdgeInsets.fromLTRB(18, 0, 18, 7),
+        child: Container(
+          height: 32,
+          decoration: BoxDecoration(
+            color: const Color(0xFF172638),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            children: [
+              _mode('DEG', degrees, () => setState(() => degrees = true)),
+              _mode('RAD', !degrees, () => setState(() => degrees = false)),
+            ],
           ),
         ),
-      ),
-    ),
-  );
+      );
 
-  Widget _display(bool compact, bool dark) => Container(
-    height: compact ? 112 : 142,
-    margin: const EdgeInsets.fromLTRB(18, 2, 18, 10),
-    padding: const EdgeInsets.fromLTRB(18, 13, 18, 12),
-    decoration: BoxDecoration(
-      color: dark ? const Color(0xFF101D2A) : Colors.white,
-      borderRadius: BorderRadius.circular(18),
-      border: dark ? null : Border.all(color: const Color(0xFFE6ECF4)),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Expanded(
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              reverse: true,
-              child: Text(
-                expression.isEmpty ? '0' : expression,
-                style: TextStyle(
-                  fontSize: compact ? 18 : 20,
-                  color: dark ? Colors.white70 : const Color(0xFF63748A),
-                  fontWeight: FontWeight.w500,
-                ),
+  Widget _mode(String label, bool selected, VoidCallback onTap) => Expanded(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            alignment: Alignment.center,
+            margin: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              color: selected ? UtiliaBrand.blue : Colors.transparent,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+                fontSize: 10,
               ),
             ),
           ),
         ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          reverse: true,
-          child: Text(
-            result,
-            style: TextStyle(
-              fontSize: compact ? 38 : 44,
-              height: .95,
-              fontWeight: FontWeight.w900,
-              color: dark ? Colors.white : UtiliaBrand.ink,
-            ),
-          ),
+      );
+
+  Widget _display(bool compact, bool dark) => Container(
+        height: compact ? 112 : 142,
+        margin: const EdgeInsets.fromLTRB(18, 2, 18, 10),
+        padding: const EdgeInsets.fromLTRB(18, 13, 18, 12),
+        decoration: BoxDecoration(
+          color: dark ? const Color(0xFF101D2A) : Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          border: dark ? null : Border.all(color: const Color(0xFFE6ECF4)),
         ),
-      ],
-    ),
-  );
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  reverse: true,
+                  child: Text(
+                    expression.isEmpty ? '0' : expression,
+                    style: TextStyle(
+                      fontSize: compact ? 18 : 20,
+                      color: dark ? Colors.white70 : const Color(0xFF63748A),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              reverse: true,
+              child: Text(
+                result,
+                style: TextStyle(
+                  fontSize: compact ? 38 : 44,
+                  height: .95,
+                  fontWeight: FontWeight.w900,
+                  color: dark ? Colors.white : UtiliaBrand.ink,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
 
   Widget _functionRow(List<String> values) {
     return SizedBox(
@@ -408,13 +408,11 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
 
   Widget _key(String value, bool compact, bool dark, {bool primary = false}) {
     final destructive = value == 'C';
-    final numeric =
-        RegExp(r'^\d$').hasMatch(value) ||
+    final numeric = RegExp(r'^\d$').hasMatch(value) ||
         value == ',' ||
         value == '%' ||
         value == '±';
-    final operator =
-        !numeric &&
+    final operator = !numeric &&
         value != 'C' &&
         value != '⌫' &&
         value != '(' &&
@@ -422,26 +420,26 @@ class _CalculatorSuitePageState extends State<CalculatorSuitePage> {
     final bg = primary
         ? UtiliaBrand.blue
         : dark
-        ? const Color(0xFF172637)
-        : Colors.white;
+            ? const Color(0xFF172637)
+            : Colors.white;
     final fg = primary
         ? Colors.white
         : destructive
-        ? const Color(0xFFE43E4E)
-        : dark
-        ? Colors.white
-        : UtiliaBrand.ink;
+            ? const Color(0xFFE43E4E)
+            : dark
+                ? Colors.white
+                : UtiliaBrand.ink;
     final fontSize = compact
         ? (numeric
-              ? 24.0
-              : operator
-              ? 17.0
-              : 19.0)
+            ? 24.0
+            : operator
+                ? 17.0
+                : 19.0)
         : (numeric
-              ? 25.0
-              : operator
-              ? 18.0
-              : 20.0);
+            ? 25.0
+            : operator
+                ? 18.0
+                : 20.0);
     return Padding(
       padding: const EdgeInsets.all(4),
       child: Material(
@@ -623,13 +621,13 @@ class CalculatorParser {
   }
 
   double _function(String name, double value) => switch (name) {
-    'sin' => math.sin(degrees ? value * math.pi / 180 : value),
-    'cos' => math.cos(degrees ? value * math.pi / 180 : value),
-    'tan' => math.tan(degrees ? value * math.pi / 180 : value),
-    'ln' => math.log(value),
-    'log' => math.log(value) / math.ln10,
-    _ => math.sqrt(value),
-  };
+        'sin' => math.sin(degrees ? value * math.pi / 180 : value),
+        'cos' => math.cos(degrees ? value * math.pi / 180 : value),
+        'tan' => math.tan(degrees ? value * math.pi / 180 : value),
+        'ln' => math.log(value),
+        'log' => math.log(value) / math.ln10,
+        _ => math.sqrt(value),
+      };
 
   double _factorial(double value) {
     if (value < 0 || value > 170 || value != value.roundToDouble()) {

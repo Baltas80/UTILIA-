@@ -24,22 +24,18 @@ class UtiliaBrand {
 
 ThemeData utiliaTheme(Brightness brightness) {
   final dark = brightness == Brightness.dark;
-  final scheme =
-      ColorScheme.fromSeed(
-        seedColor: UtiliaBrand.blue,
-        brightness: brightness,
-      ).copyWith(
-        primary: UtiliaBrand.blue,
-        onPrimary: Colors.white,
-        surface: dark ? const Color(0xFF0B1726) : Colors.white,
-        surfaceContainer: dark
-            ? const Color(0xFF101F31)
-            : const Color(0xFFF1F5FA),
-        surfaceContainerHighest: dark
-            ? const Color(0xFF1A2A3B)
-            : const Color(0xFFE9F0F8),
-        surfaceTint: Colors.transparent,
-      );
+  final scheme = ColorScheme.fromSeed(
+    seedColor: UtiliaBrand.blue,
+    brightness: brightness,
+  ).copyWith(
+    primary: UtiliaBrand.blue,
+    onPrimary: Colors.white,
+    surface: dark ? const Color(0xFF0B1726) : Colors.white,
+    surfaceContainer: dark ? const Color(0xFF101F31) : const Color(0xFFF1F5FA),
+    surfaceContainerHighest:
+        dark ? const Color(0xFF1A2A3B) : const Color(0xFFE9F0F8),
+    surfaceTint: Colors.transparent,
+  );
   final text = TextTheme(
     displaySmall: TextStyle(
       fontSize: 32,
@@ -79,9 +75,8 @@ ThemeData utiliaTheme(Brightness brightness) {
   return ThemeData(
     useMaterial3: true,
     colorScheme: scheme,
-    scaffoldBackgroundColor: dark
-        ? UtiliaBrand.darkBackground
-        : UtiliaBrand.lightBackground,
+    scaffoldBackgroundColor:
+        dark ? UtiliaBrand.darkBackground : UtiliaBrand.lightBackground,
     textTheme: text,
     splashFactory: InkSparkle.splashFactory,
     appBarTheme: AppBarTheme(
@@ -228,14 +223,14 @@ class UtiliaSectionTitle extends StatelessWidget {
   final Widget? action;
   @override
   Widget build(BuildContext context) => Row(
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      Expanded(
-        child: Text(title, style: Theme.of(context).textTheme.titleLarge),
-      ),
-      if (action != null) action!,
-    ],
-  );
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+          ),
+          if (action != null) action!,
+        ],
+      );
 }
 
 class UtiliaSoftIcon extends StatelessWidget {
@@ -250,18 +245,21 @@ class UtiliaSoftIcon extends StatelessWidget {
   final double size;
   @override
   Widget build(BuildContext context) => Container(
-    width: size,
-    height: size,
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [color.withValues(alpha: .20), color.withValues(alpha: .06)],
-      ),
-      borderRadius: BorderRadius.circular(size * .26),
-    ),
-    child: Icon(icon, color: color, size: size * .52),
-  );
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              color.withValues(alpha: .20),
+              color.withValues(alpha: .06)
+            ],
+          ),
+          borderRadius: BorderRadius.circular(size * .26),
+        ),
+        child: Icon(icon, color: color, size: size * .52),
+      );
 }
 
 class UtiliaGradientHeader extends StatelessWidget {
@@ -278,57 +276,60 @@ class UtiliaGradientHeader extends StatelessWidget {
   final IconData icon;
   @override
   Widget build(BuildContext context) => Container(
-    height: 150,
-    padding: const EdgeInsets.fromLTRB(18, 17, 18, 17),
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [color.withValues(alpha: .96), color.withValues(alpha: .72)],
-      ),
-      borderRadius: BorderRadius.circular(18),
-    ),
-    child: Stack(
-      children: [
-        Positioned(
-          right: -12,
-          top: -18,
-          child: Icon(
-            icon,
-            size: 112,
-            color: Colors.white.withValues(alpha: .17),
+        height: 150,
+        padding: const EdgeInsets.fromLTRB(18, 17, 18, 17),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              color.withValues(alpha: .96),
+              color.withValues(alpha: .72)
+            ],
           ),
+          borderRadius: BorderRadius.circular(18),
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.end,
+        child: Stack(
           children: [
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
+            Positioned(
+              right: -12,
+              top: -18,
+              child: Icon(
+                icon,
+                size: 112,
+                color: Colors.white.withValues(alpha: .17),
               ),
             ),
-            const SizedBox(height: 5),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 250),
-              child: Text(
-                subtitle,
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: .96),
-                  fontSize: 12,
-                  height: 1.2,
-                  fontWeight: FontWeight.w600,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
-              ),
+                const SizedBox(height: 5),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 250),
+                  child: Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: .96),
+                      fontSize: 12,
+                      height: 1.2,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
-      ],
-    ),
-  );
+      );
 }
 
 class UtiliaPill extends StatelessWidget {
@@ -343,20 +344,21 @@ class UtiliaPill extends StatelessWidget {
   final ValueChanged<bool>? onSelected;
   @override
   Widget build(BuildContext context) => FilterChip(
-    label: Text(label),
-    selected: selected,
-    onSelected: onSelected ?? (_) {},
-    showCheckmark: false,
-    side: BorderSide.none,
-    backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-    selectedColor: UtiliaBrand.blue,
-    labelStyle: TextStyle(
-      fontSize: 10,
-      fontWeight: FontWeight.w800,
-      color: selected ? Colors.white : Theme.of(context).colorScheme.onSurface,
-    ),
-    padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 0),
-  );
+        label: Text(label),
+        selected: selected,
+        onSelected: onSelected ?? (_) {},
+        showCheckmark: false,
+        side: BorderSide.none,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+        selectedColor: UtiliaBrand.blue,
+        labelStyle: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w800,
+          color:
+              selected ? Colors.white : Theme.of(context).colorScheme.onSurface,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 0),
+      );
 }
 
 class UtiliaCalculatorButton extends StatelessWidget {
@@ -379,13 +381,13 @@ class UtiliaCalculatorButton extends StatelessWidget {
     final bg = primary
         ? scheme.primary
         : dark
-        ? const Color(0xFF1A2A3B)
-        : scheme.surfaceContainerHighest;
+            ? const Color(0xFF1A2A3B)
+            : scheme.surfaceContainerHighest;
     final fg = primary
         ? scheme.onPrimary
         : destructive
-        ? scheme.error
-        : scheme.onSurface;
+            ? scheme.error
+            : scheme.onSurface;
     return Material(
       color: bg,
       borderRadius: BorderRadius.circular(13),
@@ -412,12 +414,12 @@ class UtiliaMountainArtwork extends StatelessWidget {
   final double borderRadius;
   @override
   Widget build(BuildContext context) => ClipRRect(
-    borderRadius: BorderRadius.circular(borderRadius),
-    child: CustomPaint(
-      painter: _MountainPainter(),
-      child: const SizedBox.expand(),
-    ),
-  );
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: CustomPaint(
+          painter: _MountainPainter(),
+          child: const SizedBox.expand(),
+        ),
+      );
 }
 
 class _MountainPainter extends CustomPainter {
