@@ -6,14 +6,17 @@ void main() {
   testWidgets('UTILIA meets Android tap target accessibility guideline',
       (tester) async {
     final semantics = tester.ensureSemantics();
-    addTearDown(semantics.dispose);
 
-    await tester.pumpWidget(const UtiliaPremiumApp());
-    await tester.pumpAndSettle();
+    try {
+      await tester.pumpWidget(const UtiliaPremiumApp());
+      await tester.pumpAndSettle();
 
-    await expectLater(
-      tester,
-      meetsGuideline(androidTapTargetGuideline),
-    );
+      await expectLater(
+        tester,
+        meetsGuideline(androidTapTargetGuideline),
+      );
+    } finally {
+      semantics.dispose();
+    }
   });
 }
