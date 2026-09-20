@@ -1,0 +1,38 @@
+name: UTILIA One-off Formatter
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    if: ${{ !contains(github.event.head_commit.message, '[utilia-format-fixed]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.35.7'
+          cache: false
+          pub-cache: false
+      - name: Format and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          dart format lib test
+          rm .github/workflows/oneoff-format.yml
+          if git diff --quiet; then
+            echo 'No formatting changes required.'
+            exit 0
+          fi
+          git config user.name 'UTILIA Release Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add lib test .github/workflows/oneoff-format.yml
+          git commit -m 'style: apply Dart formatter [utilia-format-fixed]'
+          git push
