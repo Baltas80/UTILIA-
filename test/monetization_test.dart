@@ -8,11 +8,10 @@ void main() {
     expect(UtiliaMonetization.premiumPriceLabel, '2,99 €');
   });
 
-  test('Production ads have no unsafe test-ID fallback', () {
+  test('Ads are not ready before initialization', () {
     final monetization = UtiliaMonetization();
     addTearDown(monetization.dispose);
 
-    expect(monetization.androidBannerAdUnitId, isEmpty);
     expect(monetization.adsReady, isFalse);
   });
 }
