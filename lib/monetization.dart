@@ -9,10 +9,11 @@ class UtiliaMonetization extends ChangeNotifier {
   static const premiumProductId = 'utilia_premium';
   static const premiumPriceLabel = '2,99 €';
 
-  // Production builds must inject a real AdMob banner unit ID. The Google
-  // sample/test ID is intentionally not used as a production fallback.
+  static const _testAndroidBannerId =
+      'ca-app-pub-3940256099942544/6300978111';
   static const _androidBannerId = String.fromEnvironment(
     'UTILIA_ADMOB_ANDROID_BANNER_ID',
+    defaultValue: _testAndroidBannerId,
   );
 
   final InAppPurchase _iap = InAppPurchase.instance;
@@ -27,7 +28,10 @@ class UtiliaMonetization extends ChangeNotifier {
 
   bool get isPremium => _premium;
   bool get storeAvailable => _storeAvailable;
-  bool get adsReady => _adsReady && !_premium && _androidBannerId.isNotEmpty;
+  bool get adsReady =>
+      _adsReady &&
+      !_premium &&
+      (!kReleaseMode || _androidBannerId != _testAndroidBannerId);
   bool get privacyOptionsRequired => _privacyOptionsRequired;
   ProductDetails? get premiumProduct => _premiumProduct;
   String get premiumPrice => _premiumProduct?.price ?? premiumPriceLabel;
@@ -132,7 +136,7 @@ class UtiliaMonetization extends ChangeNotifier {
   }
 
   Future<void> _prepareAds() async {
-    if (_androidBannerId.isEmpty) {
+    if (kReleaseMode && _androidBannerId == _testAndroidBannerId) {
       _adsReady = false;
       notifyListeners();
       return;
