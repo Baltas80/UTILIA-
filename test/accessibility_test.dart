@@ -25,7 +25,7 @@ void main() {
     }
 
     if (failure != null) {
-      Error.throwWithStackTrace(failure, failureStack!);
+      Error.throwWithStackTrace(failure, failureStack ?? StackTrace.current);
     }
   });
 }
