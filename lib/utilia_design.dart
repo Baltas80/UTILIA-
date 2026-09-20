@@ -495,3 +495,86 @@ class _MountainPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+
+
+class UtiliaGoldEdgeFrame extends StatelessWidget {
+  const UtiliaGoldEdgeFrame({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Stack(
+        fit: StackFit.expand,
+        children: [
+          child,
+          IgnorePointer(
+            child: CustomPaint(
+              painter: _UtiliaGoldEdgePainter(
+                dark: Theme.of(context).brightness == Brightness.dark,
+              ),
+            ),
+          ),
+        ],
+      );
+}
+
+class _UtiliaGoldEdgePainter extends CustomPainter {
+  const _UtiliaGoldEdgePainter({required this.dark});
+
+  final bool dark;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.width <= 0 || size.height <= 0) return;
+
+    const gold = Color(0xFFD7AE4B);
+    const highlight = Color(0xFFFFE7A3);
+    final alpha = dark ? 0.72 : 0.58;
+    final glowAlpha = dark ? 0.16 : 0.10;
+
+    final glowPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 5
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4)
+      ..color = gold.withValues(alpha: glowAlpha);
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(2.5, 2.5, size.width - 5, size.height - 5),
+        const Radius.circular(10),
+      ),
+      glowPaint,
+    );
+
+    final border = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2
+      ..shader = LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          highlight.withValues(alpha: alpha),
+          gold.withValues(alpha: alpha * .68),
+          Colors.transparent,
+          gold.withValues(alpha: alpha * .54),
+          highlight.withValues(alpha: alpha * .82),
+        ],
+        stops: const [0, .18, .48, .80, 1],
+      ).createShader(Offset.zero & size);
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(1, 1, size.width - 2, size.height - 2),
+        const Radius.circular(8),
+      ),
+      border,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _UtiliaGoldEdgePainter oldDelegate) =>
+      oldDelegate.dark != dark;
+}
