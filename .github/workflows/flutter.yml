@@ -86,8 +86,8 @@ jobs:
           grep -q 'android:usesCleartextTraffic="false"' android/app/src/main/AndroidManifest.xml
           echo 'Required production files and privacy hardening validated.'
 
-      - name: Format Dart source
-        run: dart format lib test
+      - name: Check Dart formatting
+        run: dart format --output=none --set-exit-if-changed lib test
 
       - name: Analyze
         run: flutter analyze --no-fatal-infos
