@@ -9,7 +9,9 @@ val signingStoreFile = System.getenv("UTILIA_KEYSTORE_FILE")
 val signingStorePassword = System.getenv("UTILIA_KEYSTORE_PASSWORD")
 val signingKeyAlias = System.getenv("UTILIA_KEY_ALIAS")
 val signingKeyPassword = System.getenv("UTILIA_KEY_PASSWORD")
+val testAdmobAppId = "ca-app-pub-3940256099942544~3347511713"
 val admobAppId = providers.gradleProperty("UTILIA_ADMOB_APP_ID")
+    .orElse(testAdmobAppId)
 val hasReleaseSigning = listOf(
     signingStoreFile,
     signingStorePassword,
@@ -37,12 +39,6 @@ android {
         targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        check(admobAppId.isPresent && admobAppId.get().isNotBlank()) {
-            "Production AdMob app ID is not configured. Set UTILIA_ADMOB_APP_ID."
-        }
-        check(!admobAppId.get().startsWith("ca-app-pub-3940256099942544~")) {
-            "Google sample AdMob app ID cannot be used for production builds."
-        }
         manifestPlaceholders["ADMOB_APP_ID"] = admobAppId.get()
     }
 
@@ -62,6 +58,12 @@ android {
             check(hasReleaseSigning) {
                 "Production release signing is not configured. Set UTILIA_KEYSTORE_FILE, " +
                     "UTILIA_KEYSTORE_PASSWORD, UTILIA_KEY_ALIAS and UTILIA_KEY_PASSWORD."
+            }
+            check(admobAppId.isPresent && admobAppId.get().isNotBlank()) {
+                "Production AdMob app ID is not configured. Set UTILIA_ADMOB_APP_ID."
+            }
+            check(admobAppId.get() != testAdmobAppId) {
+                "Google sample AdMob app ID cannot be used for production builds."
             }
             signingConfig = signingConfigs.getByName("release")
         }
