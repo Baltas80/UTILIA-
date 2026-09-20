@@ -162,7 +162,7 @@ jobs:
             -keystore "$UTILIA_KEYSTORE_FILE" \
             -alias "$UTILIA_KEY_ALIAS" \
             -storepass "$UTILIA_KEYSTORE_PASSWORD" 2>&1 |
-            sed -n 's/.*SHA256: *//p' | head -1)"
+            awk -F': ' '/SHA256:/ {print $2; exit}')"
           production_fingerprint="$(normalize_fingerprint "$production_fingerprint")"
           test -n "$production_fingerprint"
 
