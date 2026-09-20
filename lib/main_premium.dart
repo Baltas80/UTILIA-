@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'catalog.dart';
 import 'category_page.dart';
 import 'localization.dart';
+import 'monetization.dart';
 import 'models/tool.dart';
 import 'storage.dart';
 import 'utilia_design.dart';
@@ -18,12 +19,23 @@ class UtiliaPremiumApp extends StatefulWidget {
 
 class _UtiliaPremiumAppState extends State<UtiliaPremiumApp> {
   final storage = UtiliaStorage();
+  late final UtiliaMonetization monetization;
   bool darkMode = false;
   UtiliaLanguage language = UtiliaLanguage.system;
   @override
   void initState() {
     super.initState();
+    monetization = UtiliaMonetization();
     _load();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      monetization.initialize();
+    });
+  }
+
+  @override
+  void dispose() {
+    monetization.dispose();
+    super.dispose();
   }
 
   Future<void> _load() async {
@@ -71,6 +83,7 @@ class _UtiliaPremiumAppState extends State<UtiliaPremiumApp> {
           storage: storage,
           darkMode: darkMode,
           language: language,
+          monetization: monetization,
           onTheme: _theme,
           onLanguage: _language,
         ),
@@ -83,12 +96,14 @@ class UtiliaHomePage extends StatefulWidget {
     required this.storage,
     required this.darkMode,
     required this.language,
+    required this.monetization,
     required this.onTheme,
     required this.onLanguage,
   });
   final UtiliaStorage storage;
   final bool darkMode;
   final UtiliaLanguage language;
+  final UtiliaMonetization monetization;
   final Future<void> Function(bool) onTheme;
   final Future<void> Function(UtiliaLanguage) onLanguage;
   @override
@@ -212,9 +227,16 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: IndexedStack(
-          index: tab,
-          children: [_home(), _favorites(), _history(), _more()],
+        body: Column(
+          children: [
+            Expanded(
+              child: IndexedStack(
+                index: tab,
+                children: [_home(), _favorites(), _history(), _more()],
+              ),
+            ),
+            UtiliaBannerAd(monetization: widget.monetization),
+          ],
         ),
         bottomNavigationBar: NavigationBar(
           height: 64,
@@ -997,6 +1019,29 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
               ),
             ),
             const SizedBox(height: 10),
+            const SizedBox(height: 8),
+            _setting(
+              Icons.workspace_premium_outlined,
+              'UTILIA Premium',
+              widget.monetization.isPremium
+                  ? text(
+                      'Premium activo · sin anuncios',
+                      'Premium active · no ads',
+                      'Premium actif · sans publicités',
+                      'Premium aktiv · ohne Werbung',
+                      'Premium attivo · senza pubblicità',
+                      'Premium ativo · sem anúncios',
+                    )
+                  : text(
+                      'Elimina los anuncios para siempre · 2,99 €',
+                      'Remove ads forever · €2.99',
+                      'Supprimez les publicités pour toujours · 2,99 €',
+                      'Werbung dauerhaft entfernen · 2,99 €',
+                      'Rimuovi le pubblicità per sempre · 2,99 €',
+                      'Remova os anúncios para sempre · 2,99 €',
+                    ),
+              _showPremium,
+            ),
             _setting(
               Icons.settings_outlined,
               text(
@@ -1115,6 +1160,233 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
               'UTILIA v0.5.5',
               _showAbout,
             ),
+          ],
+        ),
+      );
+
+  Future<void> _showPremium() async {
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheetContext) => SafeArea(
+        child: AnimatedBuilder(
+          animation: widget.monetization,
+          builder: (context, _) => SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 28),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 52,
+                      height: 52,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFFFE7A3), Color(0xFFD7AE4B)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Icon(
+                        Icons.workspace_premium_rounded,
+                        color: Color(0xFF513B00),
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(width: 13),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'UTILIA Premium',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(fontSize: 22),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            widget.monetization.isPremium
+                                ? text(
+                                    'Premium activo',
+                                    'Premium active',
+                                    'Premium actif',
+                                    'Premium aktiv',
+                                    'Premium attivo',
+                                    'Premium ativo',
+                                  )
+                                : text(
+                                    'Una compra. Sin anuncios.',
+                                    'One purchase. No ads.',
+                                    'Un achat. Sans publicités.',
+                                    'Ein Kauf. Keine Werbung.',
+                                    'Un acquisto. Niente pubblicità.',
+                                    'Uma compra. Sem anúncios.',
+                                  ),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                _premiumBenefit(
+                  Icons.block_rounded,
+                  text(
+                    'Sin anuncios',
+                    'No ads',
+                    'Sans publicités',
+                    'Keine Werbung',
+                    'Senza pubblicità',
+                    'Sem anúncios',
+                  ),
+                ),
+                _premiumBenefit(
+                  Icons.all_inclusive_rounded,
+                  text(
+                    'Desbloqueo permanente',
+                    'Permanent unlock',
+                    'Déblocage permanent',
+                    'Dauerhafte Freischaltung',
+                    'Sblocco permanente',
+                    'Desbloqueio permanente',
+                  ),
+                ),
+                _premiumBenefit(
+                  Icons.sync_rounded,
+                  text(
+                    'Restauración de compra desde Google Play',
+                    'Restore purchases through Google Play',
+                    'Restauration des achats via Google Play',
+                    'Käufe über Google Play wiederherstellen',
+                    'Ripristino degli acquisti tramite Google Play',
+                    'Restaurar compras através do Google Play',
+                  ),
+                ),
+                const SizedBox(height: 16),
+                if (!widget.monetization.isPremium) ...[
+                  Text(
+                    widget.monetization.premiumPrice,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                          fontSize: 30,
+                          color: const Color(0xFFB4871B),
+                        ),
+                  ),
+                  const SizedBox(height: 8),
+                  FilledButton.icon(
+                    onPressed: widget.monetization.premiumProduct != null ||
+                            widget.monetization.storeAvailable
+                        ? () async {
+                            await widget.monetization.buyPremium();
+                          }
+                        : () async {
+                            await widget.monetization.restorePremium();
+                          },
+                    icon: const Icon(Icons.workspace_premium_rounded),
+                    label: Text(
+                      text(
+                        'Comprar Premium',
+                        'Buy Premium',
+                        'Acheter Premium',
+                        'Premium kaufen',
+                        'Acquista Premium',
+                        'Comprar Premium',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () => widget.monetization.restorePremium(),
+                    child: Text(
+                      text(
+                        'Restaurar compra',
+                        'Restore purchase',
+                        'Restaurer l’achat',
+                        'Kauf wiederherstellen',
+                        'Ripristina acquisto',
+                        'Restaurar compra',
+                      ),
+                    ),
+                  ),
+                ] else
+                  Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFD7AE4B).withValues(alpha: .12),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.check_circle_rounded,
+                          color: Color(0xFFB4871B),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            text(
+                              'Premium está activo. Los anuncios permanecerán desactivados.',
+                              'Premium is active. Ads will remain disabled.',
+                              'Premium est actif. Les publicités resteront désactivées.',
+                              'Premium ist aktiv. Werbung bleibt deaktiviert.',
+                              'Premium è attivo. Le pubblicità resteranno disattivate.',
+                              'Premium está ativo. Os anúncios permanecerão desativados.',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                if (widget.monetization.privacyOptionsRequired) ...[
+                  const SizedBox(height: 8),
+                  OutlinedButton(
+                    onPressed: () => widget.monetization.showPrivacyOptions(),
+                    child: Text(
+                      text(
+                        'Opciones de privacidad',
+                        'Privacy options',
+                        'Options de confidentialité',
+                        'Datenschutzoptionen',
+                        'Opzioni privacy',
+                        'Opções de privacidade',
+                      ),
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 8),
+                Text(
+                  text(
+                    'El pago se gestiona mediante Google Play. UTILIA no recibe los datos de tu tarjeta.',
+                    'Payment is handled by Google Play. UTILIA does not receive your card details.',
+                    'Le paiement est géré par Google Play. UTILIA ne reçoit pas les données de votre carte.',
+                    'Die Zahlung wird über Google Play abgewickelt. UTILIA erhält keine Kartendaten.',
+                    'Il pagamento è gestito da Google Play. UTILIA non riceve i dati della tua carta.',
+                    'O pagamento é processado pelo Google Play. A UTILIA não recebe os dados do seu cartão.',
+                  ),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _premiumBenefit(IconData icon, String label) => Padding(
+        padding: const EdgeInsets.only(bottom: 9),
+        child: Row(
+          children: [
+            Icon(icon, color: const Color(0xFFB4871B), size: 21),
+            const SizedBox(width: 9),
+            Expanded(child: Text(label)),
           ],
         ),
       );
