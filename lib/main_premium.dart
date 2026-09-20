@@ -751,7 +751,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                               children: [
                             Text('UTILIA',
                                 style: Theme.of(context).textTheme.titleLarge),
-                            Text('v0.5.4',
+                            Text('v0.5.5',
                                 style: Theme.of(context).textTheme.bodyMedium)
                           ])),
                       IconButton(
@@ -844,7 +844,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                 Icons.info_outline_rounded,
                 text('Acerca de', 'About', 'À propos', 'Über', 'Informazioni',
                     'Sobre'),
-                'UTILIA v0.5.4',
+                'UTILIA v0.5.5',
                 _showAbout)
           ]));
 
@@ -935,12 +935,12 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
             text('Novedades', 'What’s new', 'Nouveautés', 'Neuigkeiten',
                 'Novità', 'Novidades'),
             text(
-                'UTILIA v0.5.4 incluye herramientas, favoritos, historial, selector de idioma y modo oscuro. Seguimos preparando la aplicación para producción.',
-                'UTILIA v0.5.4 includes tools, favorites, history, language selection and dark mode. We are continuing to prepare the app for production.',
-                'UTILIA v0.5.4 inclut des outils, des favoris, un historique, le choix de la langue et le mode sombre. La préparation pour la production continue.',
-                'UTILIA v0.5.4 enthält Werkzeuge, Favoriten, Verlauf, Sprachauswahl und Dunkelmodus. Die Vorbereitung für die Produktion wird fortgesetzt.',
-                'UTILIA v0.5.4 include strumenti, preferiti, cronologia, selezione della lingua e modalità scura. La preparazione per la produzione continua.',
-                'UTILIA v0.5.4 inclui ferramentas, favoritos, histórico, seleção de idioma e modo escuro. A preparação para produção continua.'),
+                'UTILIA v0.5.5 incluye herramientas, favoritos, historial, selector de idioma y modo oscuro. Seguimos preparando la aplicación para producción.',
+                'UTILIA v0.5.5 includes tools, favorites, history, language selection and dark mode. We are continuing to prepare the app for production.',
+                'UTILIA v0.5.5 inclut des outils, des favoris, un historique, le choix de la langue et le mode sombre. La préparation pour la production continue.',
+                'UTILIA v0.5.5 enthält Werkzeuge, Favoriten, Verlauf, Sprachauswahl und Dunkelmodus. Die Vorbereitung für die Produktion wird fortgesetzt.',
+                'UTILIA v0.5.5 include strumenti, preferiti, cronologia, selezione della lingua e modalità scura. La preparazione per la produzione continua.',
+                'UTILIA v0.5.5 inclui ferramentas, favoritos, histórico, seleção de idioma e modo escuro. A preparação para produção continua.'),
             icon: Icons.new_releases_outlined));
   }
 
@@ -998,7 +998,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
 
   Future<void> _showPrivacy() async {
     final uri = Uri.parse(
-      'https://raw.githubusercontent.com/Baltas80/UTILIA-/master/docs/privacy-policy.html',
+      'https://baltas80.github.io/UTILIA-/privacy-policy.html',
     );
     final title = text(
       'Política de privacidad',
@@ -1074,7 +1074,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
     showAboutDialog(
         context: context,
         applicationName: 'UTILIA',
-        applicationVersion: '0.5.4',
+        applicationVersion: '0.5.5',
         applicationIcon: const UtiliaLogoMark(size: 56),
         applicationLegalese: '© 2026 UTILIA',
         children: [
