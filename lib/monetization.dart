@@ -28,7 +28,10 @@ class UtiliaMonetization extends ChangeNotifier {
 
   bool get isPremium => _premium;
   bool get storeAvailable => _storeAvailable;
-  bool get adsReady => _adsReady && !_premium;
+  bool get adsReady =>
+      _adsReady &&
+      !_premium &&
+      (!kReleaseMode || _androidBannerId != _testAndroidBannerId);
   bool get privacyOptionsRequired => _privacyOptionsRequired;
   ProductDetails? get premiumProduct => _premiumProduct;
   String get premiumPrice => _premiumProduct?.price ?? premiumPriceLabel;
@@ -133,6 +136,12 @@ class UtiliaMonetization extends ChangeNotifier {
   }
 
   Future<void> _prepareAds() async {
+    if (kReleaseMode && _androidBannerId == _testAndroidBannerId) {
+      _adsReady = false;
+      notifyListeners();
+      return;
+    }
+
     final completer = Completer<void>();
 
     try {
