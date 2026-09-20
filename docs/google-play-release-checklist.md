@@ -4,10 +4,10 @@
 
 - Aplicación: `UTILIA`
 - Application ID: `com.utilia.app.utilia`
-- Versión actual: `0.5.4+10`
+- Versión actual: `0.5.5+11`
 - `compileSdk`: 36
 - `targetSdk`: 36
-- Flutter CI: validación automática de análisis, tests y builds Android
+- Flutter CI: validación automática de formato, análisis, tests y builds Android
 - Política de privacidad: `docs/privacy-policy.html`
 - Ficha de Play: `docs/google-play-store-listing.md`
 - Data Safety: `docs/google-play-data-safety-draft.md`
@@ -15,12 +15,12 @@
 ## Antes de subir a Play Console
 
 1. Completar la verificación de identidad de la cuenta de desarrollador.
-2. Asegurar que el repositorio o la política de privacidad estén disponibles mediante una URL pública HTTPS.
+2. Asegurar que la política de privacidad esté disponible mediante una URL pública HTTPS.
 3. Configurar la clave de firma de lanzamiento de forma segura. Nunca subir el keystore ni contraseñas al repositorio.
 4. Generar el AAB de lanzamiento firmado con la clave correcta.
 5. Ejecutar una prueba interna en Google Play con el AAB firmado.
 6. Revisar la aplicación instalada desde Play y comprobar navegación, cálculos, idioma, favoritos, historial, compartir y modo oscuro.
-7. Capturar screenshots reales de la aplicación para la ficha de Play.
+7. Capturar screenshots reales de la aplicación para la ficha de Play, respetando las dimensiones y relación de aspecto admitidas por Play Console.
 8. Completar la ficha de tienda usando `docs/google-play-store-listing.md`.
 9. Completar Data Safety usando `docs/google-play-data-safety-draft.md` y verificarlo contra el AAB final.
 10. Revisar la declaración de permisos y el contenido de la ficha antes de producción.
@@ -42,7 +42,7 @@ El workflow `.github/workflows/flutter.yml` comprueba:
 
 - Flutter 3.35.7 estable.
 - Dependencias.
-- Formato Dart sin cambios pendientes.
+- Formato Dart sin cambios pendientes; el CI falla si el código necesita formatearse.
 - `flutter analyze`.
 - Tests.
 - `compileSdk = 36`.
