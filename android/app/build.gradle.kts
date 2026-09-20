@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
 
@@ -10,7 +10,6 @@ val signingStorePassword = System.getenv("UTILIA_KEYSTORE_PASSWORD")
 val signingKeyAlias = System.getenv("UTILIA_KEY_ALIAS")
 val signingKeyPassword = System.getenv("UTILIA_KEY_PASSWORD")
 val admobAppId = providers.gradleProperty("UTILIA_ADMOB_APP_ID")
-    .orElse("ca-app-pub-3940256099942544~3347511713")
 val hasReleaseSigning = listOf(
     signingStoreFile,
     signingStorePassword,
@@ -38,6 +37,12 @@ android {
         targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        check(admobAppId.isPresent && admobAppId.get().isNotBlank()) {
+            "Production AdMob app ID is not configured. Set UTILIA_ADMOB_APP_ID."
+        }
+        check(!admobAppId.get().startsWith("ca-app-pub-3940256099942544~")) {
+            "Google sample AdMob app ID cannot be used for production builds."
+        }
         manifestPlaceholders["ADMOB_APP_ID"] = admobAppId.get()
     }
 
