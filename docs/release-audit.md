@@ -7,11 +7,11 @@
 - Application ID: `com.utilia.app.utilia`
 - Flutter: `3.35.7` in CI
 - Release line: `0.5.5`
-- Final formatter commit: `3823db09ca1232ac78f44f3194d26fbcc794b048`
+- Package-aware formatter commit: `418de749b3752c4ae73e9e008f43de2cdfa61783`
 
 ## Verified in source/CI
 
-- Dart sources and tests have been normalized with the Flutter 3.35.7 formatter.
+- Dart sources and tests have been normalized with the Flutter 3.35.7 formatter after resolving the package language version with `flutter pub get`.
 - Production marker and tracked-secret scans pass in CI.
 - Required Android production files and cleartext/backup hardening checks pass in CI.
 - The public privacy-policy page exists at `docs/privacy-policy.html` and a root `privacy-policy.html` is also present for GitHub Pages publication.
