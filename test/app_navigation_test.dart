@@ -15,56 +15,53 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  testWidgets(
-    'home navigation exposes all primary destinations',
-    (tester) async {
-      SharedPreferences.setMockInitialValues({'language': 'es'});
-      await tester.pumpWidget(const UtiliaPremiumApp());
-      await tester.pumpAndSettle();
+  testWidgets('home navigation exposes all primary destinations', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({'language': 'es'});
+    await tester.pumpWidget(const UtiliaPremiumApp());
+    await tester.pumpAndSettle();
 
-      final navigationBar = find.byType(NavigationBar);
-      expect(navigationBar, findsOneWidget);
+    final navigationBar = find.byType(NavigationBar);
+    expect(navigationBar, findsOneWidget);
 
-      final homeItems = find.descendant(
-        of: navigationBar,
-        matching: find.byType(NavigationDestination),
-      );
-      expect(homeItems, findsNWidgets(4));
-    },
-  );
+    final homeItems = find.descendant(
+      of: navigationBar,
+      matching: find.byType(NavigationDestination),
+    );
+    expect(homeItems, findsNWidgets(4));
+  });
 
-  testWidgets(
-    'category page exposes the real tool list',
-    (tester) async {
-      final categoryTools =
-          tools.where((tool) => tool.category == 'Dinero').toList();
-      const strings = UtiliaStrings(UtiliaLanguage.es);
+  testWidgets('category page exposes the real tool list', (tester) async {
+    final categoryTools = tools
+        .where((tool) => tool.category == 'Dinero')
+        .toList();
+    const strings = UtiliaStrings(UtiliaLanguage.es);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: UtiliaCategoryPage(
-            category: 'Dinero',
-            tools: categoryTools,
-            favorites: <ToolType>{},
-            onFavorite: (_) async {},
-            storage: UtiliaStorage(),
-            onHistory: () async {},
-            s: strings,
-          ),
+    await tester.pumpWidget(
+      MaterialApp(
+        home: UtiliaCategoryPage(
+          category: 'Dinero',
+          tools: categoryTools,
+          favorites: <ToolType>{},
+          onFavorite: (_) async {},
+          storage: UtiliaStorage(),
+          onHistory: () async {},
+          s: strings,
         ),
-      );
-      await tester.pumpAndSettle();
+      ),
+    );
+    await tester.pumpAndSettle();
 
-      expect(find.text('Porcentaje'), findsOneWidget);
-      expect(find.text('Descuentos'), findsOneWidget);
-      expect(find.text('Préstamos'), findsOneWidget);
+    expect(find.text('Porcentaje'), findsOneWidget);
+    expect(find.text('Descuentos'), findsOneWidget);
+    expect(find.text('Préstamos'), findsOneWidget);
 
-      await tester.scrollUntilVisible(
-        find.text('Interés compuesto'),
-        300,
-        scrollable: find.byType(Scrollable).first,
-      );
-      expect(find.text('Interés compuesto'), findsOneWidget);
-    },
-  );
+    await tester.scrollUntilVisible(
+      find.text('Interés compuesto'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Interés compuesto'), findsOneWidget);
+  });
 }

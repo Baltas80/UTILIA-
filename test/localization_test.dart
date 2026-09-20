@@ -13,7 +13,9 @@ void main() {
       expect(s.privacyLink, isNotEmpty);
       expect(s.toolName('percentage', 'Percentage'), isNotEmpty);
       expect(
-          s.toolDescription('percentage', 'Calculate percentage'), isNotEmpty);
+        s.toolDescription('percentage', 'Calculate percentage'),
+        isNotEmpty,
+      );
     }
   });
 

@@ -22,17 +22,18 @@ enum ToolType {
   gradeAverage,
   ruleOfThree,
   calculator,
-  scientificCalculator
+  scientificCalculator,
 }
 
 class UtiliaTool {
-  const UtiliaTool(
-      {required this.name,
-      required this.description,
-      required this.category,
-      required this.icon,
-      required this.tint,
-      required this.type});
+  const UtiliaTool({
+    required this.name,
+    required this.description,
+    required this.category,
+    required this.icon,
+    required this.tint,
+    required this.type,
+  });
   final String name;
   final String description;
   final String category;

@@ -8,12 +8,13 @@ import 'models/tool.dart';
 import 'storage.dart';
 
 class CalculatorPage extends StatefulWidget {
-  const CalculatorPage(
-      {super.key,
-      required this.tool,
-      required this.storage,
-      this.onHistory,
-      required this.s});
+  const CalculatorPage({
+    super.key,
+    required this.tool,
+    required this.storage,
+    this.onHistory,
+    required this.s,
+  });
   final UtiliaTool tool;
   final UtiliaStorage storage;
   final Future<void> Function()? onHistory;
@@ -59,20 +60,21 @@ class _CalculatorPageState extends State<CalculatorPage> {
       _ => 2,
     };
     return List.generate(
-        count,
-        (i) => widget.tool.type == ToolType.electricity && i == 3
-            ? _priceLabel
-            : widget.s.inputLabel(id, i));
+      count,
+      (i) => widget.tool.type == ToolType.electricity && i == 3
+          ? _priceLabel
+          : widget.s.inputLabel(id, i),
+    );
   }
 
   String get _priceLabel => switch (widget.s.selectedLanguage) {
-        UtiliaLanguage.en => 'Price per kWh (€)',
-        UtiliaLanguage.fr => 'Prix du kWh (€)',
-        UtiliaLanguage.de => 'Preis pro kWh (€)',
-        UtiliaLanguage.it => 'Prezzo per kWh (€)',
-        UtiliaLanguage.pt => 'Preço do kWh (€)',
-        _ => 'Precio del kWh (€)',
-      };
+    UtiliaLanguage.en => 'Price per kWh (€)',
+    UtiliaLanguage.fr => 'Prix du kWh (€)',
+    UtiliaLanguage.de => 'Preis pro kWh (€)',
+    UtiliaLanguage.it => 'Prezzo per kWh (€)',
+    UtiliaLanguage.pt => 'Preço do kWh (€)',
+    _ => 'Precio del kWh (€)',
+  };
 
   DateTime? _date(String v) {
     final p = v.trim().split('/');
@@ -86,53 +88,137 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   String _unit(
-          String es, String en, String fr, String de, String it, String pt) =>
-      switch (widget.s.selectedLanguage) {
-        UtiliaLanguage.en => en,
-        UtiliaLanguage.fr => fr,
-        UtiliaLanguage.de => de,
-        UtiliaLanguage.it => it,
-        UtiliaLanguage.pt => pt,
-        _ => es,
-      };
+    String es,
+    String en,
+    String fr,
+    String de,
+    String it,
+    String pt,
+  ) => switch (widget.s.selectedLanguage) {
+    UtiliaLanguage.en => en,
+    UtiliaLanguage.fr => fr,
+    UtiliaLanguage.de => de,
+    UtiliaLanguage.it => it,
+    UtiliaLanguage.pt => pt,
+    _ => es,
+  };
 
   Map<String, String> get _unitOptions => widget.tool.type == ToolType.length
       ? {
-          'mm': _unit('Milímetros (mm)', 'Millimeters (mm)', 'Millimètres (mm)',
-              'Millimeter (mm)', 'Millimetri (mm)', 'Milímetros (mm)'),
+          'mm': _unit(
+            'Milímetros (mm)',
+            'Millimeters (mm)',
+            'Millimètres (mm)',
+            'Millimeter (mm)',
+            'Millimetri (mm)',
+            'Milímetros (mm)',
+          ),
           'cm': _unit(
-              'Centímetros (cm)',
-              'Centimeters (cm)',
-              'Centimètres (cm)',
-              'Zentimeter (cm)',
-              'Centimetri (cm)',
-              'Centímetros (cm)'),
-          'm': _unit('Metros (m)', 'Meters (m)', 'Mètres (m)', 'Meter (m)',
-              'Metri (m)', 'Metros (m)'),
-          'km': _unit('Kilómetros (km)', 'Kilometers (km)', 'Kilomètres (km)',
-              'Kilometer (km)', 'Chilometri (km)', 'Quilómetros (km)'),
-          'in': _unit('Pulgadas (in)', 'Inches (in)', 'Pouces (in)',
-              'Zoll (in)', 'Pollici (in)', 'Polegadas (in)'),
-          'ft': _unit('Pies (ft)', 'Feet (ft)', 'Pieds (ft)', 'Fuß (ft)',
-              'Piedi (ft)', 'Pés (ft)'),
-          'yd': _unit('Yardas (yd)', 'Yards (yd)', 'Yards (yd)', 'Yards (yd)',
-              'Iarde (yd)', 'Jardas (yd)'),
-          'mi': _unit('Millas (mi)', 'Miles (mi)', 'Miles (mi)', 'Meilen (mi)',
-              'Miglia (mi)', 'Milhas (mi)'),
+            'Centímetros (cm)',
+            'Centimeters (cm)',
+            'Centimètres (cm)',
+            'Zentimeter (cm)',
+            'Centimetri (cm)',
+            'Centímetros (cm)',
+          ),
+          'm': _unit(
+            'Metros (m)',
+            'Meters (m)',
+            'Mètres (m)',
+            'Meter (m)',
+            'Metri (m)',
+            'Metros (m)',
+          ),
+          'km': _unit(
+            'Kilómetros (km)',
+            'Kilometers (km)',
+            'Kilomètres (km)',
+            'Kilometer (km)',
+            'Chilometri (km)',
+            'Quilómetros (km)',
+          ),
+          'in': _unit(
+            'Pulgadas (in)',
+            'Inches (in)',
+            'Pouces (in)',
+            'Zoll (in)',
+            'Pollici (in)',
+            'Polegadas (in)',
+          ),
+          'ft': _unit(
+            'Pies (ft)',
+            'Feet (ft)',
+            'Pieds (ft)',
+            'Fuß (ft)',
+            'Piedi (ft)',
+            'Pés (ft)',
+          ),
+          'yd': _unit(
+            'Yardas (yd)',
+            'Yards (yd)',
+            'Yards (yd)',
+            'Yards (yd)',
+            'Iarde (yd)',
+            'Jardas (yd)',
+          ),
+          'mi': _unit(
+            'Millas (mi)',
+            'Miles (mi)',
+            'Miles (mi)',
+            'Meilen (mi)',
+            'Miglia (mi)',
+            'Milhas (mi)',
+          ),
         }
       : {
-          'mg': _unit('Miligramos (mg)', 'Milligrams (mg)', 'Milligrammes (mg)',
-              'Milligramm (mg)', 'Milligrammi (mg)', 'Miligramas (mg)'),
-          'g': _unit('Gramos (g)', 'Grams (g)', 'Grammes (g)', 'Gramm (g)',
-              'Grammi (g)', 'Gramas (g)'),
-          'kg': _unit('Kilogramos (kg)', 'Kilograms (kg)', 'Kilogrammes (kg)',
-              'Kilogramm (kg)', 'Chilogrammi (kg)', 'Quilogramas (kg)'),
-          't': _unit('Toneladas (t)', 'Tonnes (t)', 'Tonnes (t)', 'Tonnen (t)',
-              'Tonnellate (t)', 'Toneladas (t)'),
-          'oz': _unit('Onzas (oz)', 'Ounces (oz)', 'Onces (oz)', 'Unzen (oz)',
-              'Once (oz)', 'Onças (oz)'),
-          'lb': _unit('Libras (lb)', 'Pounds (lb)', 'Livres (lb)', 'Pfund (lb)',
-              'Libbre (lb)', 'Libras (lb)'),
+          'mg': _unit(
+            'Miligramos (mg)',
+            'Milligrams (mg)',
+            'Milligrammes (mg)',
+            'Milligramm (mg)',
+            'Milligrammi (mg)',
+            'Miligramas (mg)',
+          ),
+          'g': _unit(
+            'Gramos (g)',
+            'Grams (g)',
+            'Grammes (g)',
+            'Gramm (g)',
+            'Grammi (g)',
+            'Gramas (g)',
+          ),
+          'kg': _unit(
+            'Kilogramos (kg)',
+            'Kilograms (kg)',
+            'Kilogrammes (kg)',
+            'Kilogramm (kg)',
+            'Chilogrammi (kg)',
+            'Quilogramas (kg)',
+          ),
+          't': _unit(
+            'Toneladas (t)',
+            'Tonnes (t)',
+            'Tonnes (t)',
+            'Tonnen (t)',
+            'Tonnellate (t)',
+            'Toneladas (t)',
+          ),
+          'oz': _unit(
+            'Onzas (oz)',
+            'Ounces (oz)',
+            'Onces (oz)',
+            'Unzen (oz)',
+            'Once (oz)',
+            'Onças (oz)',
+          ),
+          'lb': _unit(
+            'Libras (lb)',
+            'Pounds (lb)',
+            'Livres (lb)',
+            'Pfund (lb)',
+            'Libbre (lb)',
+            'Libras (lb)',
+          ),
         };
 
   bool get _isConverter =>
@@ -140,11 +226,11 @@ class _CalculatorPageState extends State<CalculatorPage> {
       widget.tool.type == ToolType.weight;
 
   bool _needsTextInput(int index) => switch (widget.tool.type) {
-        ToolType.age || ToolType.dateDifference => true,
-        ToolType.length || ToolType.weight => index > 0,
-        ToolType.gradeAverage => true,
-        _ => false,
-      };
+    ToolType.age || ToolType.dateDifference => true,
+    ToolType.length || ToolType.weight => index > 0,
+    ToolType.gradeAverage => true,
+    _ => false,
+  };
 
   bool _hasRequiredInputs() {
     for (var i = 0; i < labels.length; i++) {
@@ -168,8 +254,11 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   bool _validGradeList(String value) {
-    final parts =
-        value.replaceAll(';', ',').split(',').map((e) => e.trim()).toList();
+    final parts = value
+        .replaceAll(';', ',')
+        .split(',')
+        .map((e) => e.trim())
+        .toList();
     return parts.isNotEmpty &&
         parts.every((part) => part.isNotEmpty && _validNumber(part));
   }
@@ -178,7 +267,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
     if (widget.tool.type == ToolType.gradeAverage)
       return _validGradeList(controllers[0].text);
     if (widget.tool.type == ToolType.age ||
-        widget.tool.type == ToolType.dateDifference) return true;
+        widget.tool.type == ToolType.dateDifference)
+      return true;
     for (var i = 0; i < labels.length; i++) {
       if (_isConverter && i > 0) continue;
       if (!_validNumber(controllers[i].text)) return false;
@@ -242,49 +332,49 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   String get _missingFieldsMessage => switch (widget.s.selectedLanguage) {
-        UtiliaLanguage.en => 'Complete all fields.',
-        UtiliaLanguage.fr => 'Remplissez tous les champs.',
-        UtiliaLanguage.de => 'Füllen Sie alle Felder aus.',
-        UtiliaLanguage.it => 'Completa tutti i campi.',
-        UtiliaLanguage.pt => 'Preencha todos os campos.',
-        _ => 'Completa todos los campos.',
-      };
+    UtiliaLanguage.en => 'Complete all fields.',
+    UtiliaLanguage.fr => 'Remplissez tous les champs.',
+    UtiliaLanguage.de => 'Füllen Sie alle Felder aus.',
+    UtiliaLanguage.it => 'Completa tutti i campi.',
+    UtiliaLanguage.pt => 'Preencha todos os campos.',
+    _ => 'Completa todos los campos.',
+  };
 
   String get _invalidNumberMessage => switch (widget.s.selectedLanguage) {
-        UtiliaLanguage.en => 'Enter valid numbers.',
-        UtiliaLanguage.fr => 'Saisissez des nombres valides.',
-        UtiliaLanguage.de => 'Gültige Zahlen eingeben.',
-        UtiliaLanguage.it => 'Inserisci numeri validi.',
-        UtiliaLanguage.pt => 'Introduza números válidos.',
-        _ => 'Introduce números válidos.',
-      };
+    UtiliaLanguage.en => 'Enter valid numbers.',
+    UtiliaLanguage.fr => 'Saisissez des nombres valides.',
+    UtiliaLanguage.de => 'Gültige Zahlen eingeben.',
+    UtiliaLanguage.it => 'Inserisci numeri validi.',
+    UtiliaLanguage.pt => 'Introduza números válidos.',
+    _ => 'Introduce números válidos.',
+  };
 
   String get _invalidValueMessage => switch (widget.s.selectedLanguage) {
-        UtiliaLanguage.en => 'Check the values entered.',
-        UtiliaLanguage.fr => 'Vérifiez les valeurs saisies.',
-        UtiliaLanguage.de => 'Überprüfen Sie die eingegebenen Werte.',
-        UtiliaLanguage.it => 'Controlla i valori inseriti.',
-        UtiliaLanguage.pt => 'Verifique os valores introduzidos.',
-        _ => 'Revisa los valores introducidos.',
-      };
+    UtiliaLanguage.en => 'Check the values entered.',
+    UtiliaLanguage.fr => 'Vérifiez les valeurs saisies.',
+    UtiliaLanguage.de => 'Überprüfen Sie die eingegebenen Werte.',
+    UtiliaLanguage.it => 'Controlla i valori inseriti.',
+    UtiliaLanguage.pt => 'Verifique os valores introduzidos.',
+    _ => 'Revisa los valores introducidos.',
+  };
 
   String get _futureDateMessage => switch (widget.s.selectedLanguage) {
-        UtiliaLanguage.en => 'The date cannot be in the future.',
-        UtiliaLanguage.fr => 'La date ne peut pas être dans le futur.',
-        UtiliaLanguage.de => 'Das Datum darf nicht in der Zukunft liegen.',
-        UtiliaLanguage.it => 'La data non può essere nel futuro.',
-        UtiliaLanguage.pt => 'A data não pode estar no futuro.',
-        _ => 'La fecha no puede ser futura.',
-      };
+    UtiliaLanguage.en => 'The date cannot be in the future.',
+    UtiliaLanguage.fr => 'La date ne peut pas être dans le futur.',
+    UtiliaLanguage.de => 'Das Datum darf nicht in der Zukunft liegen.',
+    UtiliaLanguage.it => 'La data non può essere nel futuro.',
+    UtiliaLanguage.pt => 'A data não pode estar no futuro.',
+    _ => 'La fecha no puede ser futura.',
+  };
 
   String get _invalidUnitMessage => switch (widget.s.selectedLanguage) {
-        UtiliaLanguage.en => 'Select valid units.',
-        UtiliaLanguage.fr => 'Sélectionnez des unités valides.',
-        UtiliaLanguage.de => 'Gültige Einheiten auswählen.',
-        UtiliaLanguage.it => 'Seleziona unità valide.',
-        UtiliaLanguage.pt => 'Selecione unidades válidas.',
-        _ => 'Selecciona unidades válidas.',
-      };
+    UtiliaLanguage.en => 'Select valid units.',
+    UtiliaLanguage.fr => 'Sélectionnez des unités valides.',
+    UtiliaLanguage.de => 'Gültige Einheiten auswählen.',
+    UtiliaLanguage.it => 'Seleziona unità valide.',
+    UtiliaLanguage.pt => 'Selecione unidades válidas.',
+    _ => 'Selecciona unidades válidas.',
+  };
 
   Future<void> calculate() async {
     if (!_hasRequiredInputs()) {
@@ -348,12 +438,13 @@ class _CalculatorPageState extends State<CalculatorPage> {
         r = bmi(x, y);
         break;
       case ToolType.gradeAverage:
-        r = gradeAverage(controllers[0]
-            .text
-            .replaceAll(';', ',')
-            .split(',')
-            .map(parseNumber)
-            .toList());
+        r = gradeAverage(
+          controllers[0].text
+              .replaceAll(';', ',')
+              .split(',')
+              .map(parseNumber)
+              .toList(),
+        );
         break;
       case ToolType.ruleOfThree:
         r = ruleOfThree(x, y, z);
@@ -425,7 +516,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
     await widget.storage.addHistory({
       'tool': widget.s.toolName(widget.tool.type.name, widget.tool.name),
       'result': '${_formatResult(r)}${u.isEmpty ? '' : ' $u'}',
-      'timestamp': DateTime.now().toIso8601String()
+      'timestamp': DateTime.now().toIso8601String(),
     });
     await widget.onHistory?.call();
   }
@@ -434,7 +525,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
     final type = widget.tool.type;
     if (type == ToolType.age ||
         type == ToolType.dateDifference ||
-        type == ToolType.countdown) return value.toInt().toString();
+        type == ToolType.countdown)
+      return value.toInt().toString();
     if (type == ToolType.gradeAverage || type == ToolType.bmi)
       return value.toStringAsFixed(2).replaceAll('.', ',');
     if (value == value.roundToDouble()) return value.toInt().toString();
@@ -447,21 +539,28 @@ class _CalculatorPageState extends State<CalculatorPage> {
   Future<void> _copy() async {
     if (result == null) return;
     final value = '${_formatResult(result!)}${unit.isEmpty ? '' : ' $unit'}';
-    await Clipboard.setData(ClipboardData(
+    await Clipboard.setData(
+      ClipboardData(
         text:
-            '${widget.s.toolName(widget.tool.type.name, widget.tool.name)}: $value'));
+            '${widget.s.toolName(widget.tool.type.name, widget.tool.name)}: $value',
+      ),
+    );
     if (mounted)
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(widget.s.copied)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(widget.s.copied)));
   }
 
   Future<void> _share() async {
     if (result == null) return;
     final value = '${_formatResult(result!)}${unit.isEmpty ? '' : ' $unit'}';
-    await SharePlus.instance.share(ShareParams(
+    await SharePlus.instance.share(
+      ShareParams(
         text:
             '${widget.s.toolName(widget.tool.type.name, widget.tool.name)}: $value',
-        subject: 'UTILIA'));
+        subject: 'UTILIA',
+      ),
+    );
   }
 
   @override
@@ -470,16 +569,19 @@ class _CalculatorPageState extends State<CalculatorPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back_rounded)),
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_rounded),
+        ),
         title: Text(title),
         actions: [
           IconButton(
-              onPressed: result == null ? null : _copy,
-              icon: const Icon(Icons.copy_rounded)),
+            onPressed: result == null ? null : _copy,
+            icon: const Icon(Icons.copy_rounded),
+          ),
           IconButton(
-              onPressed: result == null ? null : _share,
-              icon: const Icon(Icons.share_rounded)),
+            onPressed: result == null ? null : _share,
+            icon: const Icon(Icons.share_rounded),
+          ),
           const SizedBox(width: 8),
         ],
       ),
@@ -487,9 +589,12 @@ class _CalculatorPageState extends State<CalculatorPage> {
         padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
         children: [
           Text(
-              widget.s.toolDescription(
-                  widget.tool.type.name, widget.tool.description),
-              style: Theme.of(context).textTheme.bodyLarge),
+            widget.s.toolDescription(
+              widget.tool.type.name,
+              widget.tool.description,
+            ),
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
           const SizedBox(height: 22),
           ...List.generate(labels.length, (i) {
             if (_isConverter && i > 0) {
@@ -501,8 +606,12 @@ class _CalculatorPageState extends State<CalculatorPage> {
                   initialValue: value,
                   decoration: InputDecoration(labelText: labels[i]),
                   items: _unitOptions.entries
-                      .map((entry) => DropdownMenuItem<String>(
-                          value: entry.key, child: Text(entry.value)))
+                      .map(
+                        (entry) => DropdownMenuItem<String>(
+                          value: entry.key,
+                          child: Text(entry.value),
+                        ),
+                      )
                       .toList(),
                   onChanged: (selected) {
                     setState(() {
@@ -525,7 +634,9 @@ class _CalculatorPageState extends State<CalculatorPage> {
                 keyboardType: _needsTextInput(i)
                     ? TextInputType.text
                     : const TextInputType.numberWithOptions(
-                        decimal: true, signed: true),
+                        decimal: true,
+                        signed: true,
+                      ),
                 textInputAction: i == labels.length - 1
                     ? TextInputAction.done
                     : TextInputAction.next,
@@ -535,9 +646,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
           }),
           const SizedBox(height: 4),
           FilledButton.icon(
-              onPressed: calculate,
-              icon: const Icon(Icons.auto_awesome_rounded),
-              label: Text(widget.s.calculate)),
+            onPressed: calculate,
+            icon: const Icon(Icons.auto_awesome_rounded),
+            label: Text(widget.s.calculate),
+          ),
           if (result != null) ...[
             const SizedBox(height: 18),
             _resultCard(context),
@@ -553,32 +665,47 @@ class _CalculatorPageState extends State<CalculatorPage> {
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [scheme.primaryContainer, scheme.secondaryContainer]),
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [scheme.primaryContainer, scheme.secondaryContainer],
+        ),
         borderRadius: BorderRadius.circular(26),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Container(
-              width: 38,
-              height: 38,
-              decoration:
-                  BoxDecoration(color: scheme.primary, shape: BoxShape.circle),
-              child: Icon(Icons.check_rounded, color: scheme.onPrimary)),
-          const SizedBox(width: 12),
-          Text(widget.s.result, style: Theme.of(context).textTheme.titleLarge)
-        ]),
-        const SizedBox(height: 15),
-        Text('${_formatResult(result!)}${unit.isEmpty ? '' : ' $unit'}',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: scheme.primary,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.check_rounded, color: scheme.onPrimary),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                widget.s.result,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ],
+          ),
+          const SizedBox(height: 15),
+          Text(
+            '${_formatResult(result!)}${unit.isEmpty ? '' : ' $unit'}',
             style: TextStyle(
-                fontSize: 38,
-                height: 1,
-                fontWeight: FontWeight.w900,
-                color: scheme.onSurface)),
-        const SizedBox(height: 14),
-        Text(widget.s.result, style: Theme.of(context).textTheme.bodyMedium),
-      ]),
+              fontSize: 38,
+              height: 1,
+              fontWeight: FontWeight.w900,
+              color: scheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 14),
+          Text(widget.s.result, style: Theme.of(context).textTheme.bodyMedium),
+        ],
+      ),
     );
   }
 }

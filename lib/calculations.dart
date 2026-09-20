@@ -151,7 +151,8 @@ double loanPayment(double principal, double annualRate, int months) {
 double ageInYears(DateTime birthDate, [DateTime? today]) {
   final now = today ?? DateTime.now();
   var years = now.year - birthDate.year;
-  final birthdayPassed = now.month > birthDate.month ||
+  final birthdayPassed =
+      now.month > birthDate.month ||
       (now.month == birthDate.month && now.day >= birthDate.day);
   if (!birthdayPassed) years--;
   return years < 0 ? 0 : years.toDouble();

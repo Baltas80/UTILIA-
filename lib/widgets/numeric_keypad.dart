@@ -49,10 +49,7 @@ class UtiliaNumericKeypad extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: _ActionButton(
-                    label: 'C',
-                    onPressed: onClear,
-                  ),
+                  child: _ActionButton(label: 'C', onPressed: onClear),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -113,10 +110,7 @@ class _NumberButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
-          textStyle: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w800,
-          ),
+          textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
         ),
         child: Text(label),
       ),
@@ -125,11 +119,7 @@ class _NumberButton extends StatelessWidget {
 }
 
 class _ActionButton extends StatelessWidget {
-  const _ActionButton({
-    this.label,
-    this.icon,
-    required this.onPressed,
-  });
+  const _ActionButton({this.label, this.icon, required this.onPressed});
 
   final String? label;
   final IconData? icon;

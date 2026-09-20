@@ -6,146 +6,219 @@ class UtiliaStrings {
   const UtiliaStrings(this.selectedLanguage);
   final UtiliaLanguage selectedLanguage;
   static UtiliaLanguage fromCode(String? code) => switch (code) {
-        'en' => UtiliaLanguage.en,
-        'fr' => UtiliaLanguage.fr,
-        'de' => UtiliaLanguage.de,
-        'it' => UtiliaLanguage.it,
-        'pt' => UtiliaLanguage.pt,
-        'es' => UtiliaLanguage.es,
-        _ => UtiliaLanguage.system
-      };
+    'en' => UtiliaLanguage.en,
+    'fr' => UtiliaLanguage.fr,
+    'de' => UtiliaLanguage.de,
+    'it' => UtiliaLanguage.it,
+    'pt' => UtiliaLanguage.pt,
+    'es' => UtiliaLanguage.es,
+    _ => UtiliaLanguage.system,
+  };
   static String code(UtiliaLanguage v) => switch (v) {
-        UtiliaLanguage.system => 'system',
-        UtiliaLanguage.es => 'es',
-        UtiliaLanguage.en => 'en',
-        UtiliaLanguage.fr => 'fr',
-        UtiliaLanguage.de => 'de',
-        UtiliaLanguage.it => 'it',
-        UtiliaLanguage.pt => 'pt'
-      };
+    UtiliaLanguage.system => 'system',
+    UtiliaLanguage.es => 'es',
+    UtiliaLanguage.en => 'en',
+    UtiliaLanguage.fr => 'fr',
+    UtiliaLanguage.de => 'de',
+    UtiliaLanguage.it => 'it',
+    UtiliaLanguage.pt => 'pt',
+  };
   static Locale? locale(UtiliaLanguage v) =>
       v == UtiliaLanguage.system ? null : Locale(code(v));
   static UtiliaLanguage effective(UtiliaLanguage selected, Locale platform) =>
       selected == UtiliaLanguage.system
-          ? fromCode(platform.languageCode)
-          : selected;
+      ? fromCode(platform.languageCode)
+      : selected;
   String get languageName => switch (selectedLanguage) {
-        UtiliaLanguage.system => 'Automático',
-        UtiliaLanguage.es => 'Español',
-        UtiliaLanguage.en => 'English',
-        UtiliaLanguage.fr => 'Français',
-        UtiliaLanguage.de => 'Deutsch',
-        UtiliaLanguage.it => 'Italiano',
-        UtiliaLanguage.pt => 'Português'
-      };
+    UtiliaLanguage.system => 'Automático',
+    UtiliaLanguage.es => 'Español',
+    UtiliaLanguage.en => 'English',
+    UtiliaLanguage.fr => 'Français',
+    UtiliaLanguage.de => 'Deutsch',
+    UtiliaLanguage.it => 'Italiano',
+    UtiliaLanguage.pt => 'Português',
+  };
   String get slogan => _t(
-      'Pequeñas herramientas.\nGrandes soluciones.',
-      'Small tools.\nBig solutions.',
-      'Petits outils.\nGrandes solutions.',
-      'Kleine Werkzeuge.\nGroße Lösungen.',
-      'Piccoli strumenti.\nGrandi soluzioni.',
-      'Pequenas ferramentas.\nGrandes soluções.');
+    'Pequeñas herramientas.\nGrandes soluciones.',
+    'Small tools.\nBig solutions.',
+    'Petits outils.\nGrandes solutions.',
+    'Kleine Werkzeuge.\nGroße Lösungen.',
+    'Piccoli strumenti.\nGrandi soluzioni.',
+    'Pequenas ferramentas.\nGrandes soluções.',
+  );
   String get search => _t(
-      'Buscar herramientas...',
-      'Search tools...',
-      'Rechercher des outils...',
-      'Werkzeuge suchen...',
-      'Cerca strumenti...',
-      'Pesquisar ferramentas...');
+    'Buscar herramientas...',
+    'Search tools...',
+    'Rechercher des outils...',
+    'Werkzeuge suchen...',
+    'Cerca strumenti...',
+    'Pesquisar ferramentas...',
+  );
   String get noResults => _t(
-      'No hay resultados',
-      'No results found',
-      'Aucun résultat',
-      'Keine Ergebnisse',
-      'Nessun risultato',
-      'Sem resultados');
+    'No hay resultados',
+    'No results found',
+    'Aucun résultat',
+    'Keine Ergebnisse',
+    'Nessun risultato',
+    'Sem resultados',
+  );
   String get privacyLink => _t(
-      'Abrir política de privacidad',
-      'Open privacy policy',
-      'Ouvrir la politique de confidentialité',
-      'Datenschutzerklärung öffnen',
-      'Apri la privacy policy',
-      'Abrir política de privacidade');
-  String get categories => _t('Categorías', 'Categories', 'Catégories',
-      'Kategorien', 'Categorie', 'Categorias');
-  String get results => _t('Resultados', 'Results', 'Résultats', 'Ergebnisse',
-      'Risultati', 'Resultados');
+    'Abrir política de privacidad',
+    'Open privacy policy',
+    'Ouvrir la politique de confidentialité',
+    'Datenschutzerklärung öffnen',
+    'Apri la privacy policy',
+    'Abrir política de privacidade',
+  );
+  String get categories => _t(
+    'Categorías',
+    'Categories',
+    'Catégories',
+    'Kategorien',
+    'Categorie',
+    'Categorias',
+  );
+  String get results => _t(
+    'Resultados',
+    'Results',
+    'Résultats',
+    'Ergebnisse',
+    'Risultati',
+    'Resultados',
+  );
   String get home => _t('Inicio', 'Home', 'Accueil', 'Start', 'Home', 'Início');
-  String get favorites => _t('Favoritos', 'Favorites', 'Favoris', 'Favoriten',
-      'Preferiti', 'Favoritos');
-  String get history => _t('Historial', 'History', 'Historique', 'Verlauf',
-      'Cronologia', 'Histórico');
+  String get favorites => _t(
+    'Favoritos',
+    'Favorites',
+    'Favoris',
+    'Favoriten',
+    'Preferiti',
+    'Favoritos',
+  );
+  String get history => _t(
+    'Historial',
+    'History',
+    'Historique',
+    'Verlauf',
+    'Cronologia',
+    'Histórico',
+  );
   String get more => _t('Más', 'More', 'Plus', 'Mehr', 'Altro', 'Mais');
-  String get preferences => _t('Preferencias', 'Preferences', 'Préférences',
-      'Einstellungen', 'Preferenze', 'Preferências');
-  String get darkMode => _t('Modo oscuro', 'Dark mode', 'Mode sombre',
-      'Dunkelmodus', 'Modalità scura', 'Modo escuro');
+  String get preferences => _t(
+    'Preferencias',
+    'Preferences',
+    'Préférences',
+    'Einstellungen',
+    'Preferenze',
+    'Preferências',
+  );
+  String get darkMode => _t(
+    'Modo oscuro',
+    'Dark mode',
+    'Mode sombre',
+    'Dunkelmodus',
+    'Modalità scura',
+    'Modo escuro',
+  );
   String get savedDevice => _t(
-      'Guardar preferencia en el dispositivo',
-      'Save preference on this device',
-      'Enregistrer sur cet appareil',
-      'Auf diesem Gerät speichern',
-      'Salva sul dispositivo',
-      'Guardar no dispositivo');
+    'Guardar preferencia en el dispositivo',
+    'Save preference on this device',
+    'Enregistrer sur cet appareil',
+    'Auf diesem Gerät speichern',
+    'Salva sul dispositivo',
+    'Guardar no dispositivo',
+  );
   String get languageLabel =>
       _t('Idioma', 'Language', 'Langue', 'Sprache', 'Lingua', 'Idioma');
   String get calculate => _t(
-      'Calcular', 'Calculate', 'Calculer', 'Berechnen', 'Calcola', 'Calcular');
+    'Calcular',
+    'Calculate',
+    'Calculer',
+    'Berechnen',
+    'Calcola',
+    'Calcular',
+  );
   String get result => _t(
-      'Resultado', 'Result', 'Résultat', 'Ergebnis', 'Risultato', 'Resultado');
+    'Resultado',
+    'Result',
+    'Résultat',
+    'Ergebnis',
+    'Risultato',
+    'Resultado',
+  );
   String get copied => _t(
-      'Resultado copiado',
-      'Result copied',
-      'Résultat copié',
-      'Ergebnis kopiert',
-      'Risultato copiato',
-      'Resultado copiado');
+    'Resultado copiado',
+    'Result copied',
+    'Résultat copié',
+    'Ergebnis kopiert',
+    'Risultato copiato',
+    'Resultado copiado',
+  );
   String get clearHistory => _t(
-      'Borrar historial',
-      'Clear history',
-      'Effacer l’historique',
-      'Verlauf löschen',
-      'Cancella cronologia',
-      'Apagar histórico');
+    'Borrar historial',
+    'Clear history',
+    'Effacer l’historique',
+    'Verlauf löschen',
+    'Cancella cronologia',
+    'Apagar histórico',
+  );
   String get emptyFavorites => _t(
-      'Favoritos\nToca el corazón de una herramienta para añadirla.',
-      'Favorites\nTap a tool’s heart to add it.',
-      'Favoris\nTouchez le cœur d’un outil pour l’ajouter.',
-      'Favoriten\nTippen Sie auf das Herz eines Werkzeugs, um es hinzuzufügen.',
-      'Preferiti\nTocca il cuore di uno strumento per aggiungerlo.',
-      'Favoritos\nToque no coração de uma ferramenta para a adicionar.');
+    'Favoritos\nToca el corazón de una herramienta para añadirla.',
+    'Favorites\nTap a tool’s heart to add it.',
+    'Favoris\nTouchez le cœur d’un outil pour l’ajouter.',
+    'Favoriten\nTippen Sie auf das Herz eines Werkzeugs, um es hinzuzufügen.',
+    'Preferiti\nTocca il cuore di uno strumento per aggiungerlo.',
+    'Favoritos\nToque no coração de uma ferramenta para a adicionar.',
+  );
   String get emptyHistory => _t(
-      'Historial\nTus cálculos aparecerán aquí.',
-      'History\nYour calculations will appear here.',
-      'Historique\nVos calculs apparaîtront ici.',
-      'Verlauf\nIhre Berechnungen erscheinen hier.',
-      'Cronologia\nI tuoi calcoli appariranno qui.',
-      'Histórico\nOs seus cálculos aparecerão aqui.');
-  String toolsCount(int n) => _t('$n herramientas', '$n tools', '$n outils',
-      '$n Werkzeuge', '$n strumenti', '$n ferramentas');
+    'Historial\nTus cálculos aparecerán aquí.',
+    'History\nYour calculations will appear here.',
+    'Historique\nVos calculs apparaîtront ici.',
+    'Verlauf\nIhre Berechnungen erscheinen hier.',
+    'Cronologia\nI tuoi calcoli appariranno qui.',
+    'Histórico\nOs seus cálculos aparecerão aqui.',
+  );
+  String toolsCount(int n) => _t(
+    '$n herramientas',
+    '$n tools',
+    '$n outils',
+    '$n Werkzeuge',
+    '$n strumenti',
+    '$n ferramentas',
+  );
   String get invalidDate => _t(
-      'Introduce una fecha válida.',
-      'Enter a valid date.',
-      'Saisissez une date valide.',
-      'Geben Sie ein gültiges Datum ein.',
-      'Inserisci una data valida.',
-      'Introduza uma data válida.');
+    'Introduce una fecha válida.',
+    'Enter a valid date.',
+    'Saisissez une date valide.',
+    'Geben Sie ein gültiges Datum ein.',
+    'Inserisci una data valida.',
+    'Introduza uma data válida.',
+  );
   String category(String id) => switch (id) {
-        'Dinero' =>
-          _t('Dinero', 'Money', 'Argent', 'Geld', 'Denaro', 'Dinheiro'),
-        'Tiempo' => _t('Tiempo', 'Time', 'Temps', 'Zeit', 'Tempo', 'Tempo'),
-        'Casa' => _t('Casa', 'Home', 'Maison', 'Haus', 'Casa', 'Casa'),
-        'Coche' => _t('Coche', 'Car', 'Voiture', 'Auto', 'Auto', 'Carro'),
-        'Conversores' => _t('Conversores', 'Converters', 'Convertisseurs',
-            'Umrechner', 'Convertitori', 'Conversores'),
-        'Salud' =>
-          _t('Salud', 'Health', 'Santé', 'Gesundheit', 'Salute', 'Saúde'),
-        'Estudio' =>
-          _t('Estudio', 'Study', 'Études', 'Lernen', 'Studio', 'Estudo'),
-        'Varios' => _t('Varios', 'Miscellaneous', 'Divers', 'Sonstiges',
-            'Varie', 'Vários'),
-        _ => id,
-      };
+    'Dinero' => _t('Dinero', 'Money', 'Argent', 'Geld', 'Denaro', 'Dinheiro'),
+    'Tiempo' => _t('Tiempo', 'Time', 'Temps', 'Zeit', 'Tempo', 'Tempo'),
+    'Casa' => _t('Casa', 'Home', 'Maison', 'Haus', 'Casa', 'Casa'),
+    'Coche' => _t('Coche', 'Car', 'Voiture', 'Auto', 'Auto', 'Carro'),
+    'Conversores' => _t(
+      'Conversores',
+      'Converters',
+      'Convertisseurs',
+      'Umrechner',
+      'Convertitori',
+      'Conversores',
+    ),
+    'Salud' => _t('Salud', 'Health', 'Santé', 'Gesundheit', 'Salute', 'Saúde'),
+    'Estudio' => _t('Estudio', 'Study', 'Études', 'Lernen', 'Studio', 'Estudo'),
+    'Varios' => _t(
+      'Varios',
+      'Miscellaneous',
+      'Divers',
+      'Sonstiges',
+      'Varie',
+      'Vários',
+    ),
+    _ => id,
+  };
   String toolName(String id, String fallback) => _tool(id, fallback, 0);
   String toolDescription(String id, String fallback) => _tool(id, fallback, 1);
   String _t(String es, String en, String fr, String de, String it, String pt) =>
@@ -155,7 +228,7 @@ class UtiliaStrings {
         UtiliaLanguage.de => de,
         UtiliaLanguage.it => it,
         UtiliaLanguage.pt => pt,
-        _ => es
+        _ => es,
       };
 
   static const _tools = <String, List<String>>{
@@ -171,7 +244,7 @@ class UtiliaStrings {
       'Percentuale',
       'Calcolare una percentuale',
       'Percentagem',
-      'Calcular uma percentagem de um valor'
+      'Calcular uma percentagem de um valor',
     ],
     'discount': [
       'Descuentos',
@@ -185,7 +258,7 @@ class UtiliaStrings {
       'Sconti',
       'Calcolare il prezzo finale dopo uno sconto',
       'Descontos',
-      'Calcular o preço final após um desconto'
+      'Calcular o preço final após um desconto',
     ],
     'iva': [
       'IVA',
@@ -199,7 +272,7 @@ class UtiliaStrings {
       'IVA',
       'Aggiungere l’IVA a un prezzo',
       'IVA',
-      'Adicionar IVA a um preço'
+      'Adicionar IVA a um preço',
     ],
     'tip': [
       'Propinas',
@@ -213,7 +286,7 @@ class UtiliaStrings {
       'Mance',
       'Calcolare una mancia e dividere il totale',
       'Gorjetas',
-      'Calcular uma gorjeta e dividir o total'
+      'Calcular uma gorjeta e dividir o total',
     ],
     'loan': [
       'Préstamos',
@@ -227,7 +300,7 @@ class UtiliaStrings {
       'Prestiti',
       'Calcolare una rata mensile',
       'Empréstimos',
-      'Calcular uma prestação mensal'
+      'Calcular uma prestação mensal',
     ],
     'compoundInterest': [
       'Interés compuesto',
@@ -241,7 +314,7 @@ class UtiliaStrings {
       'Interesse composto',
       'Calcolare la crescita con interesse composto',
       'Juros compostos',
-      'Calcular crescimento com juros compostos'
+      'Calcular crescimento com juros compostos',
     ],
     'age': [
       'Edad',
@@ -255,7 +328,7 @@ class UtiliaStrings {
       'Età',
       'Calcolare l’età dalla data di nascita',
       'Idade',
-      'Calcular a idade a partir de uma data de nascimento'
+      'Calcular a idade a partir de uma data de nascimento',
     ],
     'dateDifference': [
       'Diferencia de fechas',
@@ -269,7 +342,7 @@ class UtiliaStrings {
       'Differenza date',
       'Calcolare i giorni tra due date',
       'Diferença de datas',
-      'Calcular os dias entre duas datas'
+      'Calcular os dias entre duas datas',
     ],
     'workHours': [
       'Horas trabajadas',
@@ -283,7 +356,7 @@ class UtiliaStrings {
       'Ore lavorate',
       'Calcolare le ore lavorate dopo le pause',
       'Horas trabalhadas',
-      'Calcular horas trabalhadas após pausas'
+      'Calcular horas trabalhadas após pausas',
     ],
     'countdown': [
       'Cuenta atrás',
@@ -297,7 +370,7 @@ class UtiliaStrings {
       'Conto alla rovescia',
       'Convertire ore, minuti e secondi in secondi',
       'Contagem regressiva',
-      'Converter horas, minutos e segundos em segundos'
+      'Converter horas, minutos e segundos em segundos',
     ],
     'area': [
       'Superficie',
@@ -311,7 +384,7 @@ class UtiliaStrings {
       'Area',
       'Calcolare una superficie rettangolare',
       'Área',
-      'Calcular uma área retangular'
+      'Calcular uma área retangular',
     ],
     'paint': [
       'Pintura',
@@ -325,7 +398,7 @@ class UtiliaStrings {
       'Vernice',
       'Stimare i litri di vernice necessari',
       'Tinta',
-      'Estimar litros de tinta necessários'
+      'Estimar litros de tinta necessários',
     ],
     'electricity': [
       'Consumo eléctrico',
@@ -339,7 +412,7 @@ class UtiliaStrings {
       'Elettricità',
       'Stimare il costo dell’elettricità',
       'Eletricidade',
-      'Estimar o custo da eletricidade'
+      'Estimar o custo da eletricidade',
     ],
     'fuel': [
       'Combustible',
@@ -353,7 +426,7 @@ class UtiliaStrings {
       'Carburante',
       'Calcolare il costo del carburante di un viaggio',
       'Combustível',
-      'Calcular o custo de combustível de uma viagem'
+      'Calcular o custo de combustível de uma viagem',
     ],
     'costPerKm': [
       'Coste por km',
@@ -367,7 +440,7 @@ class UtiliaStrings {
       'Costo al km',
       'Calcolare il costo per chilometro',
       'Custo por km',
-      'Calcular o custo por quilómetro'
+      'Calcular o custo por quilómetro',
     ],
     'length': [
       'Conversor de longitud',
@@ -381,7 +454,7 @@ class UtiliaStrings {
       'Convertitore di lunghezza',
       'Convertire tra unità di lunghezza',
       'Conversor de comprimento',
-      'Converter entre unidades de comprimento'
+      'Converter entre unidades de comprimento',
     ],
     'weight': [
       'Conversor de peso',
@@ -395,7 +468,7 @@ class UtiliaStrings {
       'Convertitore di peso',
       'Convertire tra unità di peso',
       'Conversor de peso',
-      'Converter entre unidades de peso'
+      'Converter entre unidades de peso',
     ],
     'bmi': [
       'IMC',
@@ -409,7 +482,7 @@ class UtiliaStrings {
       'IMC',
       'Calcolare l’indice di massa corporea',
       'IMC',
-      'Calcular o índice de massa corporal'
+      'Calcular o índice de massa corporal',
     ],
     'gradeAverage': [
       'Media de notas',
@@ -423,7 +496,7 @@ class UtiliaStrings {
       'Media dei voti',
       'Calcolare la media di più voti',
       'Média das notas',
-      'Calcular a média de várias notas'
+      'Calcular a média de várias notas',
     ],
     'ruleOfThree': [
       'Regla de tres',
@@ -437,7 +510,7 @@ class UtiliaStrings {
       'Regola del tre',
       'Risolvere un calcolo proporzionale',
       'Regra de três',
-      'Resolver um cálculo proporcional'
+      'Resolver um cálculo proporcional',
     ],
     'calculator': [
       'Calculadora',
@@ -451,7 +524,7 @@ class UtiliaStrings {
       'Calcolatrice',
       'Calcolatrice rapida con tastierino numerico',
       'Calculadora',
-      'Calculadora rápida com teclado numérico'
+      'Calculadora rápida com teclado numérico',
     ],
     'scientificCalculator': [
       'Calculadora científica',
@@ -465,7 +538,7 @@ class UtiliaStrings {
       'Calcolatrice scientifica',
       'Funzioni trigonometriche e matematiche avanzate',
       'Calculadora científica',
-      'Funções trigonométricas e matemáticas avançadas'
+      'Funções trigonométricas e matemáticas avançadas',
     ],
   };
 
@@ -478,7 +551,7 @@ class UtiliaStrings {
       UtiliaLanguage.de => 6,
       UtiliaLanguage.it => 8,
       UtiliaLanguage.pt => 10,
-      _ => 0
+      _ => 0,
     };
     return v[offset + field];
   }
@@ -653,7 +726,8 @@ class UtiliaStrings {
       UtiliaLanguage.pt => 5,
       _ => 0,
     };
-    final values = (labels[id] ??
+    final values =
+        (labels[id] ??
         const [
           ['Valor'],
           ['Value'],

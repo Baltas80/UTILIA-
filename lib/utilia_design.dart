@@ -379,13 +379,13 @@ class UtiliaCalculatorButton extends StatelessWidget {
     final bg = primary
         ? scheme.primary
         : dark
-            ? const Color(0xFF1A2A3B)
-            : scheme.surfaceContainerHighest;
+        ? const Color(0xFF1A2A3B)
+        : scheme.surfaceContainerHighest;
     final fg = primary
         ? scheme.onPrimary
         : destructive
-            ? scheme.error
-            : scheme.onSurface;
+        ? scheme.error
+        : scheme.onSurface;
     return Material(
       color: bg,
       borderRadius: BorderRadius.circular(13),

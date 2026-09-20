@@ -17,8 +17,10 @@ void main() {
 
     test('supports degree and radian trigonometry', () {
       expect(ScientificEngine.evaluate('sin(90)'), closeTo(1, 1e-12));
-      expect(ScientificEngine.evaluate('sin(pi/2)', degrees: false),
-          closeTo(1, 1e-12));
+      expect(
+        ScientificEngine.evaluate('sin(pi/2)', degrees: false),
+        closeTo(1, 1e-12),
+      );
       expect(ScientificEngine.evaluate('asin(1)'), closeTo(90, 1e-12));
     });
 
@@ -36,12 +38,18 @@ void main() {
       expect(() => ScientificEngine.evaluate('2/0'), throwsFormatException);
       expect(() => ScientificEngine.evaluate('(2+3'), throwsFormatException);
       expect(
-          () => ScientificEngine.evaluate('unknown(2)'), throwsFormatException);
+        () => ScientificEngine.evaluate('unknown(2)'),
+        throwsFormatException,
+      );
       expect(() => ScientificEngine.evaluate('2+'), throwsFormatException);
       expect(
-          () => ScientificEngine.evaluate('sqrt(-1)'), throwsFormatException);
+        () => ScientificEngine.evaluate('sqrt(-1)'),
+        throwsFormatException,
+      );
       expect(
-          () => ScientificEngine.evaluate('2^(10000)'), throwsFormatException);
+        () => ScientificEngine.evaluate('2^(10000)'),
+        throwsFormatException,
+      );
     });
   });
 }
