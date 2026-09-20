@@ -226,19 +226,21 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
       s.toolDescription(tool.type.name, tool.description);
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: Column(
-          children: [
-            Expanded(
-              child: IndexedStack(
-                index: tab,
-                children: [_home(), _favorites(), _history(), _more()],
+  Widget build(BuildContext context) => AnimatedBuilder(
+        animation: widget.monetization,
+        builder: (context, _) => Scaffold(
+          body: Column(
+            children: [
+              Expanded(
+                child: IndexedStack(
+                  index: tab,
+                  children: [_home(), _favorites(), _history(), _more()],
+                ),
               ),
-            ),
-            UtiliaBannerAd(monetization: widget.monetization),
-          ],
-        ),
-        bottomNavigationBar: NavigationBar(
+              UtiliaBannerAd(monetization: widget.monetization),
+            ],
+          ),
+          bottomNavigationBar: NavigationBar(
           height: 64,
           selectedIndex: tab,
           onDestinationSelected: (v) => setState(() => tab = v),
@@ -266,7 +268,8 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
             ),
           ],
         ),
-      );
+      ),
+  );
 
   Widget _brand() => Padding(
         padding: const EdgeInsets.fromLTRB(18, 9, 12, 9),
