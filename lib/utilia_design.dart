@@ -25,98 +25,124 @@ class UtiliaBrand {
 ThemeData utiliaTheme(Brightness brightness) {
   final dark = brightness == Brightness.dark;
   final scheme =
-      ColorScheme.fromSeed(seedColor: UtiliaBrand.blue, brightness: brightness)
-          .copyWith(
-    primary: UtiliaBrand.blue,
-    onPrimary: Colors.white,
-    surface: dark ? const Color(0xFF0B1726) : Colors.white,
-    surfaceContainer: dark ? const Color(0xFF101F31) : const Color(0xFFF1F5FA),
-    surfaceContainerHighest:
-        dark ? const Color(0xFF1A2A3B) : const Color(0xFFE9F0F8),
-    surfaceTint: Colors.transparent,
-  );
+      ColorScheme.fromSeed(
+        seedColor: UtiliaBrand.blue,
+        brightness: brightness,
+      ).copyWith(
+        primary: UtiliaBrand.blue,
+        onPrimary: Colors.white,
+        surface: dark ? const Color(0xFF0B1726) : Colors.white,
+        surfaceContainer: dark
+            ? const Color(0xFF101F31)
+            : const Color(0xFFF1F5FA),
+        surfaceContainerHighest: dark
+            ? const Color(0xFF1A2A3B)
+            : const Color(0xFFE9F0F8),
+        surfaceTint: Colors.transparent,
+      );
   final text = TextTheme(
     displaySmall: TextStyle(
-        fontSize: 32,
-        fontWeight: FontWeight.w900,
-        letterSpacing: -1.2,
-        color: scheme.onSurface),
+      fontSize: 32,
+      fontWeight: FontWeight.w900,
+      letterSpacing: -1.2,
+      color: scheme.onSurface,
+    ),
     headlineSmall: TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.w900,
-        letterSpacing: -.6,
-        color: scheme.onSurface),
+      fontSize: 24,
+      fontWeight: FontWeight.w900,
+      letterSpacing: -.6,
+      color: scheme.onSurface,
+    ),
     titleLarge: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.w900,
-        letterSpacing: -.2,
-        color: scheme.onSurface),
+      fontSize: 18,
+      fontWeight: FontWeight.w900,
+      letterSpacing: -.2,
+      color: scheme.onSurface,
+    ),
     titleMedium: TextStyle(
-        fontSize: 14, fontWeight: FontWeight.w800, color: scheme.onSurface),
+      fontSize: 14,
+      fontWeight: FontWeight.w800,
+      color: scheme.onSurface,
+    ),
     bodyLarge: TextStyle(fontSize: 14, height: 1.3, color: scheme.onSurface),
-    bodyMedium:
-        TextStyle(fontSize: 11.5, height: 1.25, color: scheme.onSurfaceVariant),
+    bodyMedium: TextStyle(
+      fontSize: 11.5,
+      height: 1.25,
+      color: scheme.onSurfaceVariant,
+    ),
     labelLarge: TextStyle(
-        fontSize: 10.5, fontWeight: FontWeight.w800, color: scheme.onSurface),
+      fontSize: 10.5,
+      fontWeight: FontWeight.w800,
+      color: scheme.onSurface,
+    ),
   );
   return ThemeData(
     useMaterial3: true,
     colorScheme: scheme,
-    scaffoldBackgroundColor:
-        dark ? UtiliaBrand.darkBackground : UtiliaBrand.lightBackground,
+    scaffoldBackgroundColor: dark
+        ? UtiliaBrand.darkBackground
+        : UtiliaBrand.lightBackground,
     textTheme: text,
     splashFactory: InkSparkle.splashFactory,
     appBarTheme: AppBarTheme(
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        toolbarHeight: 56,
-        titleTextStyle: text.titleLarge,
-        iconTheme: IconThemeData(color: scheme.onSurface, size: 22)),
+      backgroundColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      toolbarHeight: 56,
+      titleTextStyle: text.titleLarge,
+      iconTheme: IconThemeData(color: scheme.onSurface, size: 22),
+    ),
     cardTheme: CardThemeData(
-        elevation: 0,
-        margin: EdgeInsets.zero,
-        color: dark ? const Color(0xFF101E2E) : Colors.white,
-        surfaceTintColor: Colors.transparent,
-        shadowColor: Colors.black.withValues(alpha: .07),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      color: dark ? const Color(0xFF101E2E) : Colors.white,
+      surfaceTintColor: Colors.transparent,
+      shadowColor: Colors.black.withValues(alpha: .07),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+    ),
     navigationBarTheme: NavigationBarThemeData(
-        height: 64,
-        elevation: 0,
-        backgroundColor: dark ? const Color(0xFF081421) : Colors.white,
-        indicatorColor:
-            dark ? const Color(0xFF173D68) : const Color(0xFFDCEBFF),
-        labelTextStyle:
-            WidgetStatePropertyAll(text.labelLarge!.copyWith(fontSize: 9)),
-        iconTheme: WidgetStatePropertyAll(
-            IconThemeData(size: 21, color: scheme.onSurfaceVariant))),
+      height: 64,
+      elevation: 0,
+      backgroundColor: dark ? const Color(0xFF081421) : Colors.white,
+      indicatorColor: dark ? const Color(0xFF173D68) : const Color(0xFFDCEBFF),
+      labelTextStyle: WidgetStatePropertyAll(
+        text.labelLarge!.copyWith(fontSize: 9),
+      ),
+      iconTheme: WidgetStatePropertyAll(
+        IconThemeData(size: 21, color: scheme.onSurfaceVariant),
+      ),
+    ),
     iconButtonTheme: IconButtonThemeData(
-        style: IconButton.styleFrom(
-            minimumSize: const Size(56, 56),
-            maximumSize: const Size(56, 56),
-        ),
+      style: IconButton.styleFrom(
+        minimumSize: const Size(56, 56),
+        maximumSize: const Size(56, 56),
+      ),
     ),
     filledButtonTheme: FilledButtonThemeData(
-        style: FilledButton.styleFrom(
-            minimumSize: const Size.fromHeight(48),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-            textStyle: const TextStyle(fontWeight: FontWeight.w800))),
+      style: FilledButton.styleFrom(
+        minimumSize: const Size.fromHeight(48),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        textStyle: const TextStyle(fontWeight: FontWeight.w800),
+      ),
+    ),
     inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: dark ? const Color(0xFF111F30) : Colors.white,
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(13),
-            borderSide: BorderSide.none),
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(13),
-            borderSide: BorderSide.none),
-        focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(13),
-            borderSide: BorderSide(color: scheme.primary, width: 1.5)),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 15, vertical: 14)),
+      filled: true,
+      fillColor: dark ? const Color(0xFF111F30) : Colors.white,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(13),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(13),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(13),
+        borderSide: BorderSide(color: scheme.primary, width: 1.5),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
+    ),
   );
 }
 
@@ -129,22 +155,26 @@ class UtiliaLogoMark extends StatelessWidget {
     final mark = CustomPaint(size: Size.square(size), painter: _LogoPainter());
     if (!boxed) return SizedBox(width: size, height: size, child: mark);
     return Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-            gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [UtiliaBrand.blue, UtiliaBrand.violet]),
-            borderRadius: BorderRadius.circular(size * .25),
-            boxShadow: [
-              BoxShadow(
-                  color: UtiliaBrand.blue.withValues(alpha: .20),
-                  blurRadius: 12,
-                  offset: const Offset(0, 5))
-            ]),
-        padding: EdgeInsets.all(size * .18),
-        child: CustomPaint(painter: _LogoPainter(invert: true)));
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [UtiliaBrand.blue, UtiliaBrand.violet],
+        ),
+        borderRadius: BorderRadius.circular(size * .25),
+        boxShadow: [
+          BoxShadow(
+            color: UtiliaBrand.blue.withValues(alpha: .20),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      padding: EdgeInsets.all(size * .18),
+      child: CustomPaint(painter: _LogoPainter(invert: true)),
+    );
   }
 }
 
@@ -158,19 +188,31 @@ class _LogoPainter extends CustomPainter {
       ..strokeWidth = size.width * .19
       ..strokeCap = StrokeCap.round;
     paint.shader = LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: invert
-                ? [Colors.white, Colors.white]
-                : [UtiliaBrand.blue, UtiliaBrand.blueDark])
-        .createShader(Offset.zero & size);
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: invert
+          ? [Colors.white, Colors.white]
+          : [UtiliaBrand.blue, UtiliaBrand.blueDark],
+    ).createShader(Offset.zero & size);
     final path = Path()
       ..moveTo(size.width * .23, size.height * .18)
       ..lineTo(size.width * .23, size.height * .57)
-      ..cubicTo(size.width * .23, size.height * .82, size.width * .38,
-          size.height * .88, size.width * .50, size.height * .88)
-      ..cubicTo(size.width * .62, size.height * .88, size.width * .77,
-          size.height * .82, size.width * .77, size.height * .57)
+      ..cubicTo(
+        size.width * .23,
+        size.height * .82,
+        size.width * .38,
+        size.height * .88,
+        size.width * .50,
+        size.height * .88,
+      )
+      ..cubicTo(
+        size.width * .62,
+        size.height * .88,
+        size.width * .77,
+        size.height * .82,
+        size.width * .77,
+        size.height * .57,
+      )
       ..lineTo(size.width * .77, size.height * .18);
     canvas.drawPath(path, paint);
   }
@@ -185,120 +227,147 @@ class UtiliaSectionTitle extends StatelessWidget {
   final String title;
   final Widget? action;
   @override
-  Widget build(BuildContext context) =>
-      Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        Expanded(
-            child: Text(title, style: Theme.of(context).textTheme.titleLarge)),
-        if (action != null) action!
-      ]);
+  Widget build(BuildContext context) => Row(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Expanded(
+        child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+      ),
+      if (action != null) action!,
+    ],
+  );
 }
 
 class UtiliaSoftIcon extends StatelessWidget {
-  const UtiliaSoftIcon(
-      {super.key, required this.icon, required this.color, this.size = 48});
+  const UtiliaSoftIcon({
+    super.key,
+    required this.icon,
+    required this.color,
+    this.size = 48,
+  });
   final IconData icon;
   final Color color;
   final double size;
   @override
   Widget build(BuildContext context) => Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                color.withValues(alpha: .20),
-                color.withValues(alpha: .06)
-              ]),
-          borderRadius: BorderRadius.circular(size * .26)),
-      child: Icon(icon, color: color, size: size * .52));
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [color.withValues(alpha: .20), color.withValues(alpha: .06)],
+      ),
+      borderRadius: BorderRadius.circular(size * .26),
+    ),
+    child: Icon(icon, color: color, size: size * .52),
+  );
 }
 
 class UtiliaGradientHeader extends StatelessWidget {
-  const UtiliaGradientHeader(
-      {super.key,
-      required this.title,
-      required this.subtitle,
-      required this.color,
-      required this.icon});
+  const UtiliaGradientHeader({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.color,
+    required this.icon,
+  });
   final String title;
   final String subtitle;
   final Color color;
   final IconData icon;
   @override
   Widget build(BuildContext context) => Container(
-      height: 150,
-      padding: const EdgeInsets.fromLTRB(18, 17, 18, 17),
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                color.withValues(alpha: .96),
-                color.withValues(alpha: .72)
-              ]),
-          borderRadius: BorderRadius.circular(18)),
-      child: Stack(children: [
+    height: 150,
+    padding: const EdgeInsets.fromLTRB(18, 17, 18, 17),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [color.withValues(alpha: .96), color.withValues(alpha: .72)],
+      ),
+      borderRadius: BorderRadius.circular(18),
+    ),
+    child: Stack(
+      children: [
         Positioned(
-            right: -12,
-            top: -18,
-            child: Icon(icon,
-                size: 112, color: Colors.white.withValues(alpha: .17))),
+          right: -12,
+          top: -18,
+          child: Icon(
+            icon,
+            size: 112,
+            color: Colors.white.withValues(alpha: .17),
+          ),
+        ),
         Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(title,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w900)),
-              const SizedBox(height: 5),
-              ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 250),
-                  child: Text(subtitle,
-                      style: TextStyle(
-                          color: Colors.white.withValues(alpha: .96),
-                          fontSize: 12,
-                          height: 1.2,
-                          fontWeight: FontWeight.w600)))
-            ])
-      ]));
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(height: 5),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 250),
+              child: Text(
+                subtitle,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: .96),
+                  fontSize: 12,
+                  height: 1.2,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }
 
 class UtiliaPill extends StatelessWidget {
-  const UtiliaPill(
-      {super.key, required this.label, this.selected = false, this.onSelected});
+  const UtiliaPill({
+    super.key,
+    required this.label,
+    this.selected = false,
+    this.onSelected,
+  });
   final String label;
   final bool selected;
   final ValueChanged<bool>? onSelected;
   @override
   Widget build(BuildContext context) => FilterChip(
-      label: Text(label),
-      selected: selected,
-      onSelected: onSelected ?? (_) {},
-      showCheckmark: false,
-      side: BorderSide.none,
-      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-      selectedColor: UtiliaBrand.blue,
-      labelStyle: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w800,
-          color: selected
-              ? Colors.white
-              : Theme.of(context).colorScheme.onSurface),
-      padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 0));
+    label: Text(label),
+    selected: selected,
+    onSelected: onSelected ?? (_) {},
+    showCheckmark: false,
+    side: BorderSide.none,
+    backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+    selectedColor: UtiliaBrand.blue,
+    labelStyle: TextStyle(
+      fontSize: 10,
+      fontWeight: FontWeight.w800,
+      color: selected ? Colors.white : Theme.of(context).colorScheme.onSurface,
+    ),
+    padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 0),
+  );
 }
 
 class UtiliaCalculatorButton extends StatelessWidget {
-  const UtiliaCalculatorButton(
-      {super.key,
-      required this.label,
-      required this.onPressed,
-      this.primary = false,
-      this.destructive = false,
-      this.dark = false});
+  const UtiliaCalculatorButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    this.primary = false,
+    this.destructive = false,
+    this.dark = false,
+  });
   final String label;
   final VoidCallback onPressed;
   final bool primary;
@@ -318,17 +387,23 @@ class UtiliaCalculatorButton extends StatelessWidget {
             ? scheme.error
             : scheme.onSurface;
     return Material(
-        color: bg,
+      color: bg,
+      borderRadius: BorderRadius.circular(13),
+      child: InkWell(
         borderRadius: BorderRadius.circular(13),
-        child: InkWell(
-            borderRadius: BorderRadius.circular(13),
-            onTap: onPressed,
-            child: Center(
-                child: Text(label,
-                    style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.w700,
-                        color: fg)))));
+        onTap: onPressed,
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 19,
+              fontWeight: FontWeight.w700,
+              color: fg,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -337,9 +412,12 @@ class UtiliaMountainArtwork extends StatelessWidget {
   final double borderRadius;
   @override
   Widget build(BuildContext context) => ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius),
-      child: CustomPaint(
-          painter: _MountainPainter(), child: const SizedBox.expand()));
+    borderRadius: BorderRadius.circular(borderRadius),
+    child: CustomPaint(
+      painter: _MountainPainter(),
+      child: const SizedBox.expand(),
+    ),
+  );
 }
 
 class _MountainPainter extends CustomPainter {
@@ -347,20 +425,19 @@ class _MountainPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
     canvas.drawRect(
-        rect,
-        Paint()
-          ..shader = const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF79C8FF),
-                Color(0xFFFFC68B),
-                Color(0xFF173E68)
-              ]).createShader(rect));
+      rect,
+      Paint()
+        ..shader = const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF79C8FF), Color(0xFFFFC68B), Color(0xFF173E68)],
+        ).createShader(rect),
+    );
     canvas.drawCircle(
-        Offset(size.width * .79, size.height * .20),
-        size.shortestSide * .12,
-        Paint()..color = Colors.white.withValues(alpha: .58));
+      Offset(size.width * .79, size.height * .20),
+      size.shortestSide * .12,
+      Paint()..color = Colors.white.withValues(alpha: .58),
+    );
     final far = Path()
       ..moveTo(0, size.height * .75)
       ..lineTo(size.width * .22, size.height * .51)
@@ -373,7 +450,9 @@ class _MountainPainter extends CustomPainter {
       ..lineTo(0, size.height)
       ..close();
     canvas.drawPath(
-        far, Paint()..color = const Color(0xFF315F82).withValues(alpha: .90));
+      far,
+      Paint()..color = const Color(0xFF315F82).withValues(alpha: .90),
+    );
     final near = Path()
       ..moveTo(0, size.height * .82)
       ..lineTo(size.width * .28, size.height * .61)
@@ -385,7 +464,9 @@ class _MountainPainter extends CustomPainter {
       ..lineTo(0, size.height)
       ..close();
     canvas.drawPath(
-        near, Paint()..color = const Color(0xFF143752).withValues(alpha: .96));
+      near,
+      Paint()..color = const Color(0xFF143752).withValues(alpha: .96),
+    );
     final snow = Path()
       ..moveTo(size.width * .50, size.height * .28)
       ..lineTo(size.width * .43, size.height * .43)
@@ -403,7 +484,9 @@ class _MountainPainter extends CustomPainter {
         ..lineTo(x + size.width * .05, y)
         ..close();
       canvas.drawPath(
-          p, Paint()..color = const Color(0xFF0B2941).withValues(alpha: .85));
+        p,
+        Paint()..color = const Color(0xFF0B2941).withValues(alpha: .85),
+      );
     }
   }
 
