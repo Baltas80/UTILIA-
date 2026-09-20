@@ -1,0 +1,36 @@
+name: UTILIA Package Formatter
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    if: ${{ !contains(github.event.head_commit.message, '[utilia-format-package]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.35.7'
+          cache: false
+          pub-cache: false
+      - name: Resolve package language versions
+        run: flutter pub get
+      - name: Format and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          dart format lib test
+          rm .github/workflows/oneoff-format-package.yml
+          git config user.name 'UTILIA Release Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add lib test .github/workflows/oneoff-format-package.yml
+          git commit -m 'style: finalize package-aware Dart formatting [utilia-format-package]'
+          git push
