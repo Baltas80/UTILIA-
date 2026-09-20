@@ -195,7 +195,7 @@ jobs:
           echo 'APK and AAB are signed by the configured production upload key.'
 
       - name: Upload Android validation artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: utilia-release-builds
           if-no-files-found: error
