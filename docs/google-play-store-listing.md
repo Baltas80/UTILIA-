@@ -9,16 +9,16 @@ Pequeñas herramientas para cálculos cotidianos, rápidas, claras y útiles.
 ## Descripción completa
 UTILIA reúne herramientas prácticas para resolver cálculos cotidianos desde el móvil, de forma rápida y sencilla.
 
-Incluye herramientas para:
+Incluye 22 herramientas organizadas en categorías:
 
-- Dinero: porcentajes, descuentos, IVA, propinas y préstamos.
-- Tiempo: edad y diferencia entre fechas.
-- Casa: cálculos de superficie y otras utilidades.
-- Coche: combustible y consumo.
-- Conversores: longitud y peso.
-- Salud: IMC.
-- Estudio: media de notas y regla de tres.
-- Varios: utilidades adicionales.
+- Dinero: 6 herramientas — porcentajes, descuentos, IVA, propinas, préstamos e interés compuesto.
+- Tiempo: 4 herramientas — edad, diferencia de fechas, horas trabajadas y cuenta atrás.
+- Casa: 3 herramientas — superficie, pintura y consumo eléctrico.
+- Coche: 2 herramientas — combustible y coste por kilómetro.
+- Conversores: 2 herramientas — longitud y peso.
+- Salud: 1 herramienta — IMC.
+- Estudio: 1 herramienta — media de notas.
+- Varios: 3 herramientas — regla de tres, calculadora y calculadora científica.
 
 UTILIA está diseñada para que cada cálculo sea directo: introduces los datos, obtienes el resultado y, cuando resulta útil, puedes compartirlo mediante la función de compartir de Android.
 
