@@ -22,6 +22,8 @@ jobs:
       UTILIA_KEYSTORE_PASSWORD: ${{ secrets.UTILIA_KEYSTORE_PASSWORD }}
       UTILIA_KEY_ALIAS: ${{ secrets.UTILIA_KEY_ALIAS }}
       UTILIA_KEY_PASSWORD: ${{ secrets.UTILIA_KEY_PASSWORD }}
+      UTILIA_ADMOB_APP_ID: ${{ secrets.UTILIA_ADMOB_APP_ID }}
+      UTILIA_ADMOB_ANDROID_BANNER_ID: ${{ secrets.UTILIA_ADMOB_ANDROID_BANNER_ID }}
 
     steps:
       - name: Checkout
@@ -86,6 +88,16 @@ jobs:
           grep -q 'android:usesCleartextTraffic="false"' android/app/src/main/AndroidManifest.xml
           echo 'Required production files and privacy hardening validated.'
 
+      - name: Check production AdMob configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$UTILIA_ADMOB_APP_ID"
+          test -n "$UTILIA_ADMOB_ANDROID_BANNER_ID"
+          test "$UTILIA_ADMOB_APP_ID" != 'ca-app-pub-3940256099942544~3347511713'
+          test "$UTILIA_ADMOB_ANDROID_BANNER_ID" != 'ca-app-pub-3940256099942544/6300978111'
+          echo 'Production AdMob identifiers are configured without exposing their values.'
+
       - name: Check Dart formatting
         run: dart format --output=none --set-exit-if-changed lib test
 
@@ -138,10 +150,10 @@ jobs:
           echo 'Production upload keystore is valid.'
 
       - name: Build release APK
-        run: flutter build apk --release
+        run: flutter build apk --release --dart-define=UTILIA_ADMOB_ANDROID_BANNER_ID="$UTILIA_ADMOB_ANDROID_BANNER_ID" -- -PUTILIA_ADMOB_APP_ID="$UTILIA_ADMOB_APP_ID"
 
       - name: Build release App Bundle
-        run: flutter build appbundle --release
+        run: flutter build appbundle --release --dart-define=UTILIA_ADMOB_ANDROID_BANNER_ID="$UTILIA_ADMOB_ANDROID_BANNER_ID" -- -PUTILIA_ADMOB_APP_ID="$UTILIA_ADMOB_APP_ID"
 
       - name: Verify release artifacts and signatures
         shell: bash
