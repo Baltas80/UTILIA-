@@ -91,6 +91,12 @@ ThemeData utiliaTheme(Brightness brightness) {
             WidgetStatePropertyAll(text.labelLarge!.copyWith(fontSize: 9)),
         iconTheme: WidgetStatePropertyAll(
             IconThemeData(size: 21, color: scheme.onSurfaceVariant))),
+    iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(
+            minimumSize: const Size(56, 56),
+            maximumSize: const Size(56, 56),
+        ),
+    ),
     filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
             minimumSize: const Size.fromHeight(48),
