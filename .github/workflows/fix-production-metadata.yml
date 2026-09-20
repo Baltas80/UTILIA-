@@ -1,0 +1,34 @@
+name: UTILIA Production Metadata Fix
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: ${{ !contains(github.event.head_commit.message, '[utilia-metadata-fixed]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Apply production metadata fixes
+        shell: bash
+        run: |
+          set -euo pipefail
+          sed -i 's/0\.5\.4/0.5.5/g' lib/main_premium.dart
+          sed -i 's#https://raw.githubusercontent.com/Baltas80/UTILIA-/master/docs/privacy-policy.html#https://baltas80.github.io/UTILIA-/privacy-policy.html#g' lib/main_premium.dart
+          rm .github/workflows/fix-production-metadata.yml
+          if git diff --quiet -- lib/main_premium.dart .github/workflows/fix-production-metadata.yml; then
+            echo 'No metadata changes required.'
+            exit 0
+          fi
+          git config user.name 'UTILIA Release Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add lib/main_premium.dart .github/workflows/fix-production-metadata.yml
+          git commit -m 'fix: align production metadata [utilia-metadata-fixed]'
+          git push
