@@ -4,78 +4,92 @@
 
 - Aplicación: `UTILIA`
 - Application ID: `com.utilia.app.utilia`
-- Versión actual: `0.5.5+11`
+- Versión de lanzamiento prevista: `0.6.0+12`
 - `compileSdk`: 36
 - `targetSdk`: 36
-- Flutter CI: validación automática de formato, análisis, tests y builds Android
+- Premium: compra única `2,99 €`, producto `utilia_premium`
+- Gratis: publicidad mediante Google Mobile Ads con consentimiento
 - Política de privacidad: `docs/privacy-policy.html`
 - Ficha de Play: `docs/google-play-store-listing.md`
 - Data Safety: `docs/google-play-data-safety-draft.md`
 
-## Antes de subir a Play Console
+## Estado de código
 
-1. Completar la verificación de identidad de la cuenta de desarrollador.
-2. Asegurar que la política de privacidad esté disponible mediante una URL pública HTTPS.
-3. Configurar la clave de firma de lanzamiento de forma segura. Nunca subir el keystore ni contraseñas al repositorio.
-4. Generar el AAB de lanzamiento firmado con la clave correcta.
-5. Ejecutar una prueba interna en Google Play con el AAB firmado.
-6. Revisar la aplicación instalada desde Play y comprobar navegación, cálculos, idioma, favoritos, historial, compartir y modo oscuro.
-7. Capturar screenshots reales de la aplicación para la ficha de Play, respetando las dimensiones y relación de aspecto admitidas por Play Console.
-8. Completar la ficha de tienda usando `docs/google-play-store-listing.md`.
-9. Completar Data Safety usando `docs/google-play-data-safety-draft.md` y verificarlo contra el AAB final.
-10. Revisar la declaración de permisos y el contenido de la ficha antes de producción.
+- Premium integrado en la aplicación.
+- Restauración de compras integrada.
+- Los anuncios se desactivan cuando Premium está activo.
+- Borde dorado sutil integrado en la versión Premium.
+- Firma release configurada mediante secretos, sin claves privadas en Git.
+- CI valida formato, análisis, tests, Android, firma, APK y AAB.
+
+## Antes de publicar la versión Premium
+
+1. Crear en Play Console el producto de compra única no consumible `utilia_premium`.
+2. Establecer el precio de lanzamiento en `2,99 €` y comprobar que el producto está activo.
+3. Configurar los identificadores reales de AdMob en los secretos de GitHub:
+   - `UTILIA_ADMOB_APP_ID`
+   - `UTILIA_ADMOB_ANDROID_BANNER_ID`
+4. Mantener los identificadores de prueba de Google únicamente para desarrollo/pruebas.
+5. Ejecutar CI y exigir resultado correcto.
+6. Generar el AAB release firmado.
+7. Subir el AAB a una prueba interna de Play Console y comprobar compra/restauración de Premium.
+8. Comprobar que una cuenta gratuita muestra publicidad y que una cuenta Premium no muestra publicidad.
+9. Comprobar que la compra restaurada mantiene Premium después de reinstalar/iniciar sesión con la misma cuenta de Google Play.
+10. Revisar política de privacidad y Data Safety contra el comportamiento real de esta versión.
+11. Capturar screenshots reales de la versión final.
+12. Completar la ficha de Play y preparar el lanzamiento a producción cuando Google Play lo permita.
 
 ## Firma de Android
 
-El proyecto admite variables de entorno para una firma de release:
+El proyecto usa:
 
 - `UTILIA_KEYSTORE_FILE`
 - `UTILIA_KEYSTORE_PASSWORD`
 - `UTILIA_KEY_ALIAS`
 - `UTILIA_KEY_PASSWORD`
 
-Cuando estas variables están completas, Gradle usa la configuración `release`. Si faltan, el build `release` falla deliberadamente. No existe fallback a la firma de depuración. El AAB destinado a Google Play debe generarse con la clave de subida configurada para producción.
+El keystore y las contraseñas no deben entrar en Git. Si falta cualquier credencial de firma, el build release debe fallar deliberadamente.
 
 ## CI
 
 El workflow `.github/workflows/flutter.yml` comprueba:
 
-- Flutter 3.35.7 estable.
+- Flutter estable fijado.
 - Dependencias.
-- Formato Dart sin cambios pendientes; el CI falla si el código necesita formatearse.
+- Formato Dart.
 - `flutter analyze`.
 - Tests.
-- `compileSdk = 36`.
-- `targetSdk = 36`.
-- Application ID.
-- Build de APK release.
-- Build de AAB release.
-- Existencia y tamaño no nulo de ambos artefactos.
-- Verificación de firma del APK mediante `apksigner`.
-- Verificación de firma del AAB mediante `jarsigner`/`keytool`.
-- Coincidencia de la huella SHA-256 de los artefactos con la clave de producción configurada.
+- Application ID y configuración Android.
+- `compileSdk`, `targetSdk` y Java 17.
+- Ausencia de secretos conocidos y marcadores de desarrollo.
+- Firma de producción.
+- APK release.
+- AAB release.
+- Verificación de firmas y huellas SHA-256.
+- Artefactos de validación.
 
-Los artefactos generados por CI se consideran **artefactos de validación** hasta que se confirme que el AAB está firmado con la clave de lanzamiento destinada a Google Play.
+La rama `release-hardening` contiene además el endurecimiento para impedir que un build de producción utilice los IDs de prueba de AdMob.
 
 ## Bloqueadores externos
 
-Estos pasos no pueden completarse únicamente desde el repositorio:
+No dependen del código:
 
-- Verificación de identidad de Google Play Console.
-- Alojamiento público de la política de privacidad.
-- Gestión de la clave de firma y credenciales.
-- Capturas reales del dispositivo.
-- Carga del AAB en Play Console.
-- Cuestionarios y formularios de Play Console.
+- Configuración de los IDs reales de AdMob en los secretos de GitHub.
+- Creación/activación del producto `utilia_premium` en Play Console.
+- Screenshots reales de la versión final.
+- Formularios de Play Console.
+- Finalización del período de prueba cerrada exigido por Google Play.
 
 ## Criterio de salida
 
-UTILIA se considera preparada para producción cuando:
+UTILIA queda lista para subir a producción cuando:
 
-- el CI termina correctamente;
-- el AAB final está firmado correctamente;
-- Play Console acepta el AAB en una prueba interna;
-- Data Safety coincide con el comportamiento real del AAB;
-- la política de privacidad es accesible públicamente;
-- la ficha contiene screenshots reales y textos definitivos;
-- las pruebas internas no muestran errores funcionales o de interfaz.
+- CI termina correctamente.
+- AAB final está firmado y verificado.
+- AdMob de producción está configurado.
+- `utilia_premium` está activo en Play Console.
+- Compra y restauración de Premium están verificadas.
+- Anuncios funcionan para usuarios gratuitos y desaparecen para Premium.
+- Data Safety y privacidad coinciden con el AAB final.
+- Screenshots corresponden exactamente a la versión final.
+- Google Play habilita el acceso a producción tras completar la prueba cerrada.
