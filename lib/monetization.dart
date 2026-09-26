@@ -241,7 +241,7 @@ class _UtiliaBannerAdState extends State<UtiliaBannerAd> {
     _loading = true;
     final ad = BannerAd(
       adUnitId: widget.monetization.androidBannerAdUnitId,
-      request: const AdRequest(),
+      request: AdRequest(),
       size: AdSize.banner,
       listener: BannerAdListener(
         onAdLoaded: (ad) {
