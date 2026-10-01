@@ -7,4 +7,11 @@ void main() {
     expect(UtiliaMonetization.premiumProductId, 'utilia_premium');
     expect(UtiliaMonetization.premiumPriceLabel, '2,99 €');
   });
+
+  test('Ads are not ready before initialization', () {
+    final monetization = UtiliaMonetization();
+    addTearDown(monetization.dispose);
+
+    expect(monetization.adsReady, isFalse);
+  });
 }
