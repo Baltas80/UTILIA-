@@ -160,26 +160,41 @@ jobs:
           test "$expected_version_code" = "12"
           test "$expected_version_name" = "0.6.0"
 
-          aab_metadata="$(mktemp)"
-          unzip -p "$aab_path" \
-            'BUNDLE-METADATA/com.android.tools.build.gradle/app-metadata.properties' \
-            > "$aab_metadata"
-          test -s "$aab_metadata"
+          bundle_metadata="build/app/outputs/bundle/release/output-metadata.json"
+          test -s "$bundle_metadata"
 
-          aab_application_id="$(sed -n 's/^applicationId=//p' "$aab_metadata" | head -1)"
-          aab_version_code="$(sed -n 's/^versionCode=//p' "$aab_metadata" | head -1)"
-          aab_version_name="$(sed -n 's/^versionName=//p' "$aab_metadata" | head -1)"
-          aab_variant="$(sed -n 's/^variant=//p' "$aab_metadata" | head -1)"
+          python3 - "$bundle_metadata" "$aab_path" "$expected_version_code" "$expected_version_name" <<'PY'
+import json
+import pathlib
+import sys
 
-          echo "AAB applicationId: $aab_application_id"
-          echo "AAB versionCode:   $aab_version_code"
-          echo "AAB versionName:   $aab_version_name"
-          echo "AAB variant:       $aab_variant"
+metadata_path, aab_path, expected_code, expected_name = sys.argv[1:]
+metadata = json.loads(pathlib.Path(metadata_path).read_text())
 
-          test "$aab_application_id" = "com.utilia.app.utilia"
-          test "$aab_version_code" = "$expected_version_code"
-          test "$aab_version_name" = "$expected_version_name"
-          test "$aab_variant" = "release"
+assert metadata["artifactType"]["type"] == "BUNDLE"
+assert metadata["applicationId"] == "com.utilia.app.utilia"
+assert metadata["variantName"] == "release"
+
+elements = metadata.get("elements", [])
+assert len(elements) == 1, f"expected one AAB output, found {len(elements)}"
+element = elements[0]
+
+assert element["type"] == "SINGLE"
+assert str(element["versionCode"]) == expected_code
+assert element["versionName"] == expected_name
+assert element["outputFile"] == pathlib.Path(aab_path).name
+
+print(f"AAB applicationId: {metadata['applicationId']}")
+print(f"AAB versionCode:   {element['versionCode']}")
+print(f"AAB versionName:   {element['versionName']}")
+print(f"AAB variant:       {metadata['variantName']}")
+print("AAB output metadata validated.")
+PY
+
+          unzip -t "$aab_path" >/dev/null
+          unzip -l "$aab_path" | grep -q 'base/manifest/AndroidManifest.xml'
+          unzip -l "$aab_path" | grep -q 'BundleConfig.pb'
+          echo 'AAB archive structure validated.'
 
           normalize_fingerprint() {
             printf '%s' "$1" | tr -d ' :\t\r\n' | tr '[:upper:]' '[:lower:]'
