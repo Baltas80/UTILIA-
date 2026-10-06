@@ -6,7 +6,7 @@
 - Branch: `master`
 - Application ID: `com.utilia.app.utilia`
 - Flutter: `3.35.7` in CI
-- Release line: `0.5.5`
+- Release line: `0.6.1+13`
 - Package-aware formatter commit: `418de749b3752c4ae73e9e008f43de2cdfa61783`
 
 ## Verified in source/CI
@@ -16,7 +16,7 @@
 - Required Android production files and cleartext/backup hardening checks pass in CI.
 - The public privacy-policy page exists at `docs/privacy-policy.html` and a root `privacy-policy.html` is also present for GitHub Pages publication.
 - The in-app privacy-policy link uses the GitHub Pages URL.
-- The release UI displays version `0.5.5`.
+- The release line is `0.6.1+13` and the Android versionCode is `13`.
 
 ## Remaining release gate
 
