@@ -9,8 +9,9 @@ class UtiliaMonetization extends ChangeNotifier {
   static const premiumProductId = 'utilia_premium';
   static const premiumPriceLabel = '2,99 €';
 
-  static const _testAndroidBannerId =
+  static const testAndroidBannerAdUnitId =
       'ca-app-pub-3940256099942544/6300978111';
+  static const _testAndroidBannerId = testAndroidBannerAdUnitId;
   static const _androidBannerId = String.fromEnvironment(
     'UTILIA_ADMOB_ANDROID_BANNER_ID',
     defaultValue: _testAndroidBannerId,
