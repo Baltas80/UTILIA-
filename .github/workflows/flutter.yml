@@ -151,8 +151,35 @@ jobs:
           apk_path="build/app/outputs/flutter-apk/app-release.apk"
           aab_path="build/app/outputs/bundle/release/app-release.aab"
 
+          pubspec_version="$(sed -n 's/^version: //p' pubspec.yaml | head -1)"
+          expected_version_name="${pubspec_version%+*}"
+          expected_version_code="${pubspec_version#*+}"
+
           test -s "$apk_path"
           test -s "$aab_path"
+          test "$expected_version_code" = "12"
+          test "$expected_version_name" = "0.6.0"
+
+          aab_metadata="$(mktemp)"
+          unzip -p "$aab_path" \
+            'BUNDLE-METADATA/com.android.tools.build.gradle/app-metadata.properties' \
+            > "$aab_metadata"
+          test -s "$aab_metadata"
+
+          aab_application_id="$(sed -n 's/^applicationId=//p' "$aab_metadata" | head -1)"
+          aab_version_code="$(sed -n 's/^versionCode=//p' "$aab_metadata" | head -1)"
+          aab_version_name="$(sed -n 's/^versionName=//p' "$aab_metadata" | head -1)"
+          aab_variant="$(sed -n 's/^variant=//p' "$aab_metadata" | head -1)"
+
+          echo "AAB applicationId: $aab_application_id"
+          echo "AAB versionCode:   $aab_version_code"
+          echo "AAB versionName:   $aab_version_name"
+          echo "AAB variant:       $aab_variant"
+
+          test "$aab_application_id" = "com.utilia.app.utilia"
+          test "$aab_version_code" = "$expected_version_code"
+          test "$aab_version_name" = "$expected_version_name"
+          test "$aab_variant" = "release"
 
           normalize_fingerprint() {
             printf '%s' "$1" | tr -d ' :\t\r\n' | tr '[:upper:]' '[:lower:]'
