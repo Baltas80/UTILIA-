@@ -4,7 +4,7 @@
 
 - Aplicación: `UTILIA`
 - Application ID: `com.utilia.app.utilia`
-- Versión de lanzamiento prevista: `0.6.0+12`
+- Versión de lanzamiento prevista: `0.6.1+13`
 - `compileSdk`: 36
 - `targetSdk`: 36
 - Premium: compra única `2,99 €`, producto `utilia_premium`
