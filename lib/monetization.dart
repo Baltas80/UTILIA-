@@ -138,7 +138,7 @@ class UtiliaMonetization extends ChangeNotifier {
 
     try {
       ConsentInformation.instance.requestConsentInfoUpdate(
-        const ConsentRequestParameters(),
+        ConsentRequestParameters(),
         () async {
           try {
             await ConsentForm.loadAndShowConsentFormIfRequired((_) {});
