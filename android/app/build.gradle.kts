@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
 
@@ -60,6 +60,11 @@ android {
             }
             signingConfig = signingConfigs.getByName("release")
         }
+    }
+
+    dependencies {
+        // Pin the Android Play Billing client used by the Flutter IAP implementation.
+        implementation("com.android.billingclient:billing-ktx:9.1.0")
     }
 }
 
