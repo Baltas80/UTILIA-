@@ -26,6 +26,8 @@ class UtiliaMonetization extends ChangeNotifier {
   bool _premium = false;
   bool _adsReady = false;
   bool _privacyOptionsRequired = false;
+  PurchaseStatus? _purchaseStatus;
+  String? _purchaseErrorMessage;
 
   bool get isPremium => _premium;
   bool get storeAvailable => _storeAvailable;
@@ -33,6 +35,9 @@ class UtiliaMonetization extends ChangeNotifier {
   bool get privacyOptionsRequired => _privacyOptionsRequired;
   ProductDetails? get premiumProduct => _premiumProduct;
   String get premiumPrice => _premiumProduct?.price ?? premiumPriceLabel;
+  PurchaseStatus? get purchaseStatus => _purchaseStatus;
+  bool get purchasePending => _purchaseStatus == PurchaseStatus.pending;
+  String? get purchaseErrorMessage => _purchaseErrorMessage;
 
   Future<void> initialize() async {
     if (_initialized) return;
@@ -75,12 +80,23 @@ class UtiliaMonetization extends ChangeNotifier {
     for (final purchase in purchases) {
       if (purchase.productID != premiumProductId) continue;
 
-      if (purchase.status == PurchaseStatus.purchased ||
+      _purchaseStatus = purchase.status;
+
+      if (purchase.status == PurchaseStatus.pending) {
+        _purchaseErrorMessage = null;
+      } else if (purchase.status == PurchaseStatus.purchased ||
           purchase.status == PurchaseStatus.restored) {
         _premium = true;
         _adsReady = false;
-        notifyListeners();
+        _purchaseErrorMessage = null;
+      } else if (purchase.status == PurchaseStatus.error) {
+        _purchaseErrorMessage =
+            purchase.error?.message ?? 'No se pudo completar la compra.';
+      } else if (purchase.status == PurchaseStatus.canceled) {
+        _purchaseErrorMessage = null;
       }
+
+      notifyListeners();
 
       if (purchase.pendingCompletePurchase) {
         try {
@@ -91,29 +107,54 @@ class UtiliaMonetization extends ChangeNotifier {
   }
 
   Future<bool> buyPremium() async {
+    _purchaseErrorMessage = null;
+
     if (!_storeAvailable || _premiumProduct == null) {
       await _refreshProduct();
     }
 
     final product = _premiumProduct;
-    if (product == null) return false;
+    if (product == null) {
+      _purchaseStatus = PurchaseStatus.error;
+      _purchaseErrorMessage = 'El producto Premium no está disponible.';
+      notifyListeners();
+      return false;
+    }
 
     try {
-      return await _iap.buyNonConsumable(
+      final started = await _iap.buyNonConsumable(
         purchaseParam: PurchaseParam(productDetails: product),
       );
+      if (started) {
+        _purchaseStatus = PurchaseStatus.pending;
+      } else {
+        _purchaseStatus = PurchaseStatus.error;
+        _purchaseErrorMessage = 'No se pudo iniciar la compra.';
+      }
+      notifyListeners();
+      return started;
     } catch (_) {
+      _purchaseStatus = PurchaseStatus.error;
+      _purchaseErrorMessage = 'No se pudo iniciar la compra.';
+      notifyListeners();
       return false;
     }
   }
 
   Future<void> restorePremium() async {
+    _purchaseErrorMessage = null;
     try {
       _storeAvailable = await _iap.isAvailable();
       if (_storeAvailable) {
         await _iap.restorePurchases();
+      } else {
+        _purchaseStatus = PurchaseStatus.error;
+        _purchaseErrorMessage = 'Google Play no está disponible.';
       }
-    } catch (_) {}
+    } catch (_) {
+      _purchaseStatus = PurchaseStatus.error;
+      _purchaseErrorMessage = 'No se pudo restaurar la compra.';
+    }
     notifyListeners();
   }
 
