@@ -43,6 +43,7 @@ Durante desarrollo y pruebas se utilizan identificadores de prueba de Google. An
 
 - ID de aplicación AdMob para Android mediante la propiedad Gradle `UTILIA_ADMOB_APP_ID`.
 - ID de unidad de anuncio banner mediante `--dart-define=UTILIA_ADMOB_ANDROID_BANNER_ID=...`.
+- ID de unidad de anuncio intersticial mediante `--dart-define=UTILIA_ADMOB_ANDROID_INTERSTITIAL_ID=...`.
 
 Las credenciales privadas no forman parte de este repositorio.
 
