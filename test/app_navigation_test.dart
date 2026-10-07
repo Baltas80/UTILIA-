@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:utilia/catalog.dart';
 import 'package:utilia/category_page.dart';
 import 'package:utilia/localization.dart';
+import 'package:utilia/monetization.dart';
 import 'package:utilia/main_premium.dart';
 import 'package:utilia/models/tool.dart';
 import 'package:utilia/storage.dart';
@@ -36,6 +37,7 @@ void main() {
     final categoryTools =
         tools.where((tool) => tool.category == 'Dinero').toList();
     const strings = UtiliaStrings(UtiliaLanguage.es);
+    final monetization = UtiliaMonetization();
 
     await tester.pumpWidget(
       MaterialApp(
@@ -47,6 +49,7 @@ void main() {
           storage: UtiliaStorage(),
           onHistory: () async {},
           s: strings,
+          monetization: monetization,
         ),
       ),
     );
