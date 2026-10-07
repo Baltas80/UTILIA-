@@ -14,16 +14,23 @@ class UtiliaMonetization extends ChangeNotifier {
   static const _androidBannerId = String.fromEnvironment(
     'UTILIA_ADMOB_ANDROID_BANNER_ID',
   );
+  static const _androidInterstitialId = String.fromEnvironment(
+    'UTILIA_ADMOB_ANDROID_INTERSTITIAL_ID',
+  );
+  static const _interstitialCooldown = Duration(minutes: 10);
 
   final InAppPurchase _iap = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>>? _purchaseSubscription;
   ProductDetails? _premiumProduct;
+  InterstitialAd? _interstitialAd;
 
   bool _initialized = false;
   bool _storeAvailable = false;
   bool _premium = false;
   bool _adsReady = false;
   bool _privacyOptionsRequired = false;
+  bool _interstitialLoading = false;
+  DateTime? _lastInterstitialShownAt;
 
   bool get isPremium => _premium;
   bool get storeAvailable => _storeAvailable;
@@ -77,6 +84,7 @@ class UtiliaMonetization extends ChangeNotifier {
           purchase.status == PurchaseStatus.restored) {
         _premium = true;
         _adsReady = false;
+        _disposeInterstitial();
         notifyListeners();
       }
 
@@ -151,6 +159,7 @@ class UtiliaMonetization extends ChangeNotifier {
             if (canRequestAds && !_premium) {
               await MobileAds.instance.initialize();
               _adsReady = true;
+              _loadInterstitial();
             }
           } catch (_) {
             _adsReady = false;
@@ -172,6 +181,74 @@ class UtiliaMonetization extends ChangeNotifier {
     await completer.future;
   }
 
+  void _loadInterstitial() {
+    if (_premium ||
+        !_adsReady ||
+        _androidInterstitialId.isEmpty ||
+        _interstitialAd != null ||
+        _interstitialLoading) {
+      return;
+    }
+
+    _interstitialLoading = true;
+    InterstitialAd.load(
+      adUnitId: _androidInterstitialId,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          _interstitialLoading = false;
+          _interstitialAd = ad;
+          notifyListeners();
+        },
+        onAdFailedToLoad: (_) {
+          _interstitialLoading = false;
+        },
+      ),
+    );
+  }
+
+  Future<void> showInterstitialIfEligible() async {
+    if (_premium ||
+        !_adsReady ||
+        defaultTargetPlatform != TargetPlatform.android ||
+        _androidInterstitialId.isEmpty) {
+      return;
+    }
+
+    final now = DateTime.now();
+    final lastShown = _lastInterstitialShownAt;
+    if (lastShown != null &&
+        now.difference(lastShown) < _interstitialCooldown) {
+      return;
+    }
+
+    final ad = _interstitialAd;
+    if (ad == null) {
+      _loadInterstitial();
+      return;
+    }
+
+    _interstitialAd = null;
+    _lastInterstitialShownAt = now;
+    ad.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (ad) {
+        ad.dispose();
+        _loadInterstitial();
+      },
+      onAdFailedToShowFullScreenContent: (ad, _) {
+        ad.dispose();
+        _loadInterstitial();
+      },
+    );
+    ad.show();
+  }
+
+  void _disposeInterstitial() {
+    _interstitialAd?.dispose();
+    _interstitialAd = null;
+    _interstitialLoading = false;
+  }
+
   Future<void> showPrivacyOptions() async {
     try {
       await ConsentForm.showPrivacyOptionsForm((_) {});
@@ -183,6 +260,7 @@ class UtiliaMonetization extends ChangeNotifier {
   @override
   void dispose() {
     _purchaseSubscription?.cancel();
+    _disposeInterstitial();
     super.dispose();
   }
 }
@@ -201,6 +279,7 @@ class UtiliaBannerAd extends StatefulWidget {
 
 class _UtiliaBannerAdState extends State<UtiliaBannerAd> {
   BannerAd? _bannerAd;
+  AdSize? _bannerSize;
   bool _loading = false;
 
   @override
@@ -221,7 +300,7 @@ class _UtiliaBannerAdState extends State<UtiliaBannerAd> {
     _sync();
   }
 
-  void _sync() {
+  Future<void> _sync() async {
     if (!mounted) return;
 
     if (widget.monetization.isPremium) {
@@ -237,11 +316,20 @@ class _UtiliaBannerAdState extends State<UtiliaBannerAd> {
       return;
     }
 
+    final width = MediaQuery.sizeOf(context).width.truncate();
+    if (width <= 0) return;
+
     _loading = true;
+    final size = await AdSize.getLargeAnchoredAdaptiveBannerAdSize(width);
+    if (!mounted || size == null) {
+      _loading = false;
+      return;
+    }
+
     final ad = BannerAd(
       adUnitId: widget.monetization.androidBannerAdUnitId,
-      request: AdRequest(),
-      size: AdSize.banner,
+      request: const AdRequest(),
+      size: size,
       listener: BannerAdListener(
         onAdLoaded: (ad) {
           if (!mounted) {
@@ -250,6 +338,7 @@ class _UtiliaBannerAdState extends State<UtiliaBannerAd> {
           }
           setState(() {
             _bannerAd = ad as BannerAd;
+            _bannerSize = size;
             _loading = false;
           });
         },
@@ -267,6 +356,7 @@ class _UtiliaBannerAdState extends State<UtiliaBannerAd> {
   void _disposeAd() {
     _bannerAd?.dispose();
     _bannerAd = null;
+    _bannerSize = null;
     _loading = false;
   }
 
@@ -279,12 +369,14 @@ class _UtiliaBannerAdState extends State<UtiliaBannerAd> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.monetization.isPremium || _bannerAd == null) {
+    if (widget.monetization.isPremium ||
+        _bannerAd == null ||
+        _bannerSize == null) {
       return const SizedBox.shrink();
     }
 
     return SizedBox(
-      height: AdSize.banner.height.toDouble(),
+      height: _bannerSize!.height.toDouble(),
       width: double.infinity,
       child: Center(child: AdWidget(ad: _bannerAd!)),
     );
