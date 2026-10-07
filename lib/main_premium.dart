@@ -736,6 +736,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
               storage: widget.storage,
               onHistory: _load,
               s: s,
+              monetization: widget.monetization,
             ),
           ),
         ),
