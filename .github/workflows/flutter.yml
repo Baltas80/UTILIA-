@@ -121,6 +121,7 @@ jobs:
           set -euo pipefail
           test -n "$UTILIA_ADMOB_APP_ID"
           test -n "$UTILIA_ADMOB_ANDROID_BANNER_ID"
+          test -n "$UTILIA_ADMOB_ANDROID_INTERSTITIAL_ID"
           test "$UTILIA_ADMOB_APP_ID" != "ca-app-pub-3940256099942544~3347511713"
           test "$UTILIA_ADMOB_ANDROID_BANNER_ID" != "ca-app-pub-3940256099942544/6300978111"
           test "$UTILIA_ADMOB_ANDROID_INTERSTITIAL_ID" != "ca-app-pub-3940256099942544/1033173712"
@@ -162,7 +163,8 @@ jobs:
         run: |
           flutter build appbundle --release \
             -PUTILIA_ADMOB_APP_ID="$UTILIA_ADMOB_APP_ID" \
-            --dart-define=UTILIA_ADMOB_ANDROID_BANNER_ID="$UTILIA_ADMOB_ANDROID_BANNER_ID"
+            --dart-define=UTILIA_ADMOB_ANDROID_BANNER_ID="$UTILIA_ADMOB_ANDROID_BANNER_ID" \
+            --dart-define=UTILIA_ADMOB_ANDROID_INTERSTITIAL_ID="$UTILIA_ADMOB_ANDROID_INTERSTITIAL_ID"
 
       - name: Verify release artifacts and signatures
         shell: bash
