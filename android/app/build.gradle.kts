@@ -9,14 +9,20 @@ val signingStoreFile = System.getenv("UTILIA_KEYSTORE_FILE")
 val signingStorePassword = System.getenv("UTILIA_KEYSTORE_PASSWORD")
 val signingKeyAlias = System.getenv("UTILIA_KEY_ALIAS")
 val signingKeyPassword = System.getenv("UTILIA_KEY_PASSWORD")
-val admobAppId = providers.gradleProperty("UTILIA_ADMOB_APP_ID")
-    .orElse("ca-app-pub-3940256099942544~3347511713")
+val admobAppId = providers.gradleProperty("UTILIA_ADMOB_APP_ID").orNull
 val hasReleaseSigning = listOf(
     signingStoreFile,
     signingStorePassword,
     signingKeyAlias,
     signingKeyPassword,
 ).all { !it.isNullOrBlank() }
+
+check(!admobAppId.isNullOrBlank()) {
+    "UTILIA_ADMOB_APP_ID must be configured for every Android build."
+}
+check(admobAppId != "ca-app-pub-3940256099942544~3347511713") {
+    "Google test AdMob App ID is not permitted in UTILIA builds."
+}
 
 android {
     namespace = "com.utilia.app.utilia"
@@ -38,7 +44,7 @@ android {
         targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        manifestPlaceholders["ADMOB_APP_ID"] = admobAppId.get()
+        manifestPlaceholders["ADMOB_APP_ID"] = admobAppId
     }
 
     signingConfigs {
