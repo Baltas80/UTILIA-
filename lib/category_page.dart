@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'calculator_suite.dart';
 import 'localization.dart';
+import 'monetization.dart';
 import 'models/tool.dart';
 import 'paint_calculator_page.dart';
 import 'storage.dart';
@@ -18,6 +19,7 @@ class UtiliaCategoryPage extends StatefulWidget {
     required this.storage,
     required this.onHistory,
     required this.s,
+    required this.monetization,
   });
   final String category;
   final List<UtiliaTool> tools;
@@ -26,6 +28,7 @@ class UtiliaCategoryPage extends StatefulWidget {
   final UtiliaStorage storage;
   final Future<void> Function() onHistory;
   final UtiliaStrings s;
+  final UtiliaMonetization monetization;
   @override
   State<UtiliaCategoryPage> createState() => _UtiliaCategoryPageState();
 }
@@ -305,6 +308,7 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
             widget.storage,
             widget.onHistory,
             widget.s,
+            monetization: widget.monetization,
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 9),
@@ -369,18 +373,21 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
       ),
     );
   }
+
+  await monetization?.showInterstitialIfEligible();
 }
 
-void openUtiliaTool(
+Future<void> openUtiliaTool(
   BuildContext context,
   UtiliaTool tool,
   UtiliaStorage storage,
   Future<void> Function()? refresh,
-  UtiliaStrings s,
-) {
+  UtiliaStrings s, {
+  UtiliaMonetization? monetization,
+}) async {
   if (tool.type == ToolType.calculator ||
       tool.type == ToolType.scientificCalculator) {
-    Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => CalculatorSuitePage(
@@ -392,7 +399,7 @@ void openUtiliaTool(
       ),
     );
   } else if (tool.type == ToolType.paint) {
-    Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => PaintCalculatorPage(
@@ -404,7 +411,7 @@ void openUtiliaTool(
       ),
     );
   } else {
-    Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => CalculatorPage(
