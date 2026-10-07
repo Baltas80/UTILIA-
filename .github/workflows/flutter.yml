@@ -24,6 +24,7 @@ jobs:
       UTILIA_KEY_PASSWORD: ${{ secrets.UTILIA_KEY_PASSWORD }}
       UTILIA_ADMOB_APP_ID: ${{ secrets.UTILIA_ADMOB_APP_ID }}
       UTILIA_ADMOB_ANDROID_BANNER_ID: ${{ secrets.UTILIA_ADMOB_ANDROID_BANNER_ID }}
+      UTILIA_ADMOB_ANDROID_INTERSTITIAL_ID: ${{ secrets.UTILIA_ADMOB_ANDROID_INTERSTITIAL_ID }}
 
     steps:
       - name: Checkout
@@ -108,7 +109,7 @@ jobs:
           grep -q 'targetSdk = 36' android/app/build.gradle.kts
           grep -q 'sourceCompatibility = JavaVersion.VERSION_17' android/app/build.gradle.kts
           grep -q 'targetCompatibility = JavaVersion.VERSION_17' android/app/build.gradle.kts
-          grep -q 'jvmTarget = JavaVersion.VERSION_17.toString()' android/app/build.gradle.kts
+          grep -q 'jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)' android/app/build.gradle.kts
           grep -q 'applicationId = "com.utilia.app.utilia"' android/app/build.gradle.kts
           grep -Eq '^version: [0-9]+\.[0-9]+\.[0-9]+\+[0-9]+$' pubspec.yaml
           grep -q 'android:exported="true"' android/app/src/main/AndroidManifest.xml
@@ -122,6 +123,7 @@ jobs:
           test -n "$UTILIA_ADMOB_ANDROID_BANNER_ID"
           test "$UTILIA_ADMOB_APP_ID" != "ca-app-pub-3940256099942544~3347511713"
           test "$UTILIA_ADMOB_ANDROID_BANNER_ID" != "ca-app-pub-3940256099942544/6300978111"
+          test "$UTILIA_ADMOB_ANDROID_INTERSTITIAL_ID" != "ca-app-pub-3940256099942544/1033173712"
           echo 'Production AdMob identifiers are configured and are not Google test IDs.'
 
       - name: Prepare production signing keystore
@@ -153,7 +155,8 @@ jobs:
         run: |
           flutter build apk --release \
             -PUTILIA_ADMOB_APP_ID="$UTILIA_ADMOB_APP_ID" \
-            --dart-define=UTILIA_ADMOB_ANDROID_BANNER_ID="$UTILIA_ADMOB_ANDROID_BANNER_ID"
+            --dart-define=UTILIA_ADMOB_ANDROID_BANNER_ID="$UTILIA_ADMOB_ANDROID_BANNER_ID" \
+            --dart-define=UTILIA_ADMOB_ANDROID_INTERSTITIAL_ID="$UTILIA_ADMOB_ANDROID_INTERSTITIAL_ID"
 
       - name: Build release App Bundle
         run: |
