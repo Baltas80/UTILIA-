@@ -11,10 +11,8 @@ class UtiliaMonetization extends ChangeNotifier {
 
   static const testAndroidBannerAdUnitId =
       'ca-app-pub-3940256099942544/6300978111';
-  static const _testAndroidBannerId = testAndroidBannerAdUnitId;
   static const _androidBannerId = String.fromEnvironment(
     'UTILIA_ADMOB_ANDROID_BANNER_ID',
-    defaultValue: _testAndroidBannerId,
   );
 
   final InAppPurchase _iap = InAppPurchase.instance;
