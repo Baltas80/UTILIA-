@@ -374,7 +374,6 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
     );
   }
 
-  await monetization?.showInterstitialIfEligible();
 }
 
 Future<void> openUtiliaTool(
@@ -423,4 +422,6 @@ Future<void> openUtiliaTool(
       ),
     );
   }
+
+  await monetization?.showInterstitialIfEligible();
 }
