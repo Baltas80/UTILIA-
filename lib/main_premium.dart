@@ -685,7 +685,14 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
         margin: EdgeInsets.zero,
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: () => openUtiliaTool(context, tool, widget.storage, _load, s),
+          onTap: () => openUtiliaTool(
+            context,
+            tool,
+            widget.storage,
+            _load,
+            s,
+            monetization: widget.monetization,
+          ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(7, 10, 7, 8),
             child: Column(
@@ -844,7 +851,14 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
       child: Card(
         child: InkWell(
           borderRadius: BorderRadius.circular(17),
-          onTap: () => openUtiliaTool(context, tool, widget.storage, _load, s),
+          onTap: () => openUtiliaTool(
+            context,
+            tool,
+            widget.storage,
+            _load,
+            s,
+            monetization: widget.monetization,
+          ),
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Row(
