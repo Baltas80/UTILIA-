@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -1286,29 +1287,66 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                   ),
                   const SizedBox(height: 8),
                   FilledButton.icon(
-                    onPressed: widget.monetization.premiumProduct != null ||
-                            widget.monetization.storeAvailable
-                        ? () async {
-                            await widget.monetization.buyPremium();
-                          }
+                    onPressed: widget.monetization.purchasePending
+                        ? null
                         : () async {
-                            await widget.monetization.restorePremium();
+                            await widget.monetization.buyPremium();
                           },
                     icon: const Icon(Icons.workspace_premium_rounded),
                     label: Text(
-                      text(
-                        'Comprar Premium',
-                        'Buy Premium',
-                        'Acheter Premium',
-                        'Premium kaufen',
-                        'Acquista Premium',
-                        'Comprar Premium',
-                      ),
+                      widget.monetization.purchasePending
+                          ? text(
+                              'Procesando compra…',
+                              'Processing purchase…',
+                              'Achat en cours…',
+                              'Kauf wird verarbeitet…',
+                              'Acquisto in corso…',
+                              'A processar compra…',
+                            )
+                          : text(
+                              'Comprar Premium',
+                              'Buy Premium',
+                              'Acheter Premium',
+                              'Premium kaufen',
+                              'Acquista Premium',
+                              'Comprar Premium',
+                            ),
                     ),
                   ),
+                  if (widget.monetization.purchaseStatus ==
+                      PurchaseStatus.error) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      text(
+                        'No se pudo completar la compra. Comprueba Google Play e inténtalo de nuevo.',
+                        'The purchase could not be completed. Check Google Play and try again.',
+                        'L’achat n’a pas pu être finalisé. Vérifiez Google Play et réessayez.',
+                        'Der Kauf konnte nicht abgeschlossen werden. Prüfen Sie Google Play und versuchen Sie es erneut.',
+                        'Non è stato possibile completare l’acquisto. Controlla Google Play e riprova.',
+                        'Não foi possível concluir a compra. Verifique o Google Play e tente novamente.',
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ] else if (widget.monetization.purchaseStatus ==
+                      PurchaseStatus.canceled) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      text(
+                        'Compra cancelada.',
+                        'Purchase canceled.',
+                        'Achat annulé.',
+                        'Kauf abgebrochen.',
+                        'Acquisto annullato.',
+                        'Compra cancelada.',
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                   const SizedBox(height: 8),
                   TextButton(
-                    onPressed: () => widget.monetization.restorePremium(),
+                    onPressed: widget.monetization.purchasePending
+                        ? null
+                        : () => widget.monetization.restorePremium(),
                     child: Text(
                       text(
                         'Restaurar compra',
