@@ -6,9 +6,14 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 class UtiliaMonetization extends ChangeNotifier {
-  static const premiumProductId = 'utilia_premium';
-  static const premiumPriceLabel = '2,99 €';
+  static const noAdsProductId = 'utilia_no_ads';
+  static const monthlyProductId = 'utilia_premium_monthly';
+  static const annualProductId = 'utilia_premium_annual';
 
+  // Kept for users who bought the old one-time Premium product.
+  static const legacyPremiumProductId = 'utilia_premium';
+
+  static const noAdsPriceLabel = '2,99 €';
   static const testAndroidBannerAdUnitId =
       'ca-app-pub-3940256099942544/6300978111';
   static const _androidBannerId = String.fromEnvironment(
@@ -19,25 +24,60 @@ class UtiliaMonetization extends ChangeNotifier {
   );
   static const _interstitialCooldown = Duration(minutes: 10);
 
+  static const _productIds = <String>{
+    noAdsProductId,
+    monthlyProductId,
+    annualProductId,
+    legacyPremiumProductId,
+  };
+
   final InAppPurchase _iap = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>>? _purchaseSubscription;
-  ProductDetails? _premiumProduct;
-  InterstitialAd? _interstitialAd;
 
+  ProductDetails? _noAdsProduct;
+  ProductDetails? _monthlyProduct;
+  ProductDetails? _annualProduct;
+
+  InterstitialAd? _interstitialAd;
   bool _initialized = false;
   bool _storeAvailable = false;
-  bool _premium = false;
+  bool _noAdsOwned = false;
+  bool _monthlyOwned = false;
+  bool _annualOwned = false;
+  bool _legacyPremiumOwned = false;
   bool _adsReady = false;
   bool _privacyOptionsRequired = false;
   bool _interstitialLoading = false;
   DateTime? _lastInterstitialShownAt;
 
-  bool get isPremium => _premium;
+  bool get isPremium =>
+      _noAdsOwned ||
+      _monthlyOwned ||
+      _annualOwned ||
+      _legacyPremiumOwned;
+
+  bool get isNoAds => _noAdsOwned || _legacyPremiumOwned;
+  bool get isMonthly => _monthlyOwned;
+  bool get isAnnual => _annualOwned;
+  bool get hasSubscription => _monthlyOwned || _annualOwned;
   bool get storeAvailable => _storeAvailable;
-  bool get adsReady => _adsReady && !_premium;
+  bool get adsReady => _adsReady && !isPremium;
   bool get privacyOptionsRequired => _privacyOptionsRequired;
-  ProductDetails? get premiumProduct => _premiumProduct;
-  String get premiumPrice => _premiumProduct?.price ?? premiumPriceLabel;
+
+  ProductDetails? get noAdsProduct => _noAdsProduct;
+  ProductDetails? get monthlyProduct => _monthlyProduct;
+  ProductDetails? get annualProduct => _annualProduct;
+
+  String get noAdsPrice => _noAdsProduct?.price ?? noAdsPriceLabel;
+  String get monthlyPrice => _monthlyProduct?.price ?? '—';
+  String get annualPrice => _annualProduct?.price ?? '—';
+
+  String get premiumSummary {
+    if (isNoAds) return 'Sin anuncios para siempre · 2,99 €';
+    if (isMonthly) return 'Premium mensual · activo';
+    if (isAnnual) return 'Premium anual · activo';
+    return 'Premium mensual · anual · No Ads';
+  }
 
   Future<void> initialize() async {
     if (_initialized) return;
@@ -50,17 +90,8 @@ class UtiliaMonetization extends ChangeNotifier {
 
     try {
       _storeAvailable = await _iap.isAvailable();
-
       if (_storeAvailable) {
-        final response =
-            await _iap.queryProductDetails(<String>{premiumProductId});
-        for (final product in response.productDetails) {
-          if (product.id == premiumProductId) {
-            _premiumProduct = product;
-            break;
-          }
-        }
-
+        await _refreshProducts();
         await _iap.restorePurchases();
       }
     } catch (_) {
@@ -69,8 +100,25 @@ class UtiliaMonetization extends ChangeNotifier {
 
     notifyListeners();
 
-    if (!_premium) {
+    if (!isPremium) {
       await _prepareAds();
+    }
+  }
+
+  Future<void> _refreshProducts() async {
+    final response = await _iap.queryProductDetails(_productIds);
+    for (final product in response.productDetails) {
+      switch (product.id) {
+        case noAdsProductId:
+          _noAdsProduct = product;
+          break;
+        case monthlyProductId:
+          _monthlyProduct = product;
+          break;
+        case annualProductId:
+          _annualProduct = product;
+          break;
+      }
     }
   }
 
@@ -78,14 +126,19 @@ class UtiliaMonetization extends ChangeNotifier {
     List<PurchaseDetails> purchases,
   ) async {
     for (final purchase in purchases) {
-      if (purchase.productID != premiumProductId) continue;
-
-      if (purchase.status == PurchaseStatus.purchased ||
-          purchase.status == PurchaseStatus.restored) {
-        _premium = true;
-        _adsReady = false;
-        _disposeInterstitial();
-        notifyListeners();
+      switch (purchase.productID) {
+        case noAdsProductId:
+          _noAdsOwned = _isEntitled(purchase);
+          break;
+        case monthlyProductId:
+          _monthlyOwned = _isEntitled(purchase);
+          break;
+        case annualProductId:
+          _annualOwned = _isEntitled(purchase);
+          break;
+        case legacyPremiumProductId:
+          _legacyPremiumOwned = _isEntitled(purchase);
+          break;
       }
 
       if (purchase.pendingCompletePurchase) {
@@ -94,23 +147,50 @@ class UtiliaMonetization extends ChangeNotifier {
         } catch (_) {}
       }
     }
+
+    if (isPremium) {
+      _disposeInterstitial();
+    }
+    notifyListeners();
+
+    if (!isPremium && _initialized) {
+      await _prepareAds();
+    }
   }
 
-  Future<bool> buyPremium() async {
-    if (!_storeAvailable || _premiumProduct == null) {
-      await _refreshProduct();
+  bool _isEntitled(PurchaseDetails purchase) =>
+      purchase.status == PurchaseStatus.purchased ||
+      purchase.status == PurchaseStatus.restored;
+
+  Future<bool> buyNoAds() => _buy(() => _noAdsProduct);
+  Future<bool> buyMonthly() => _buy(() => _monthlyProduct);
+  Future<bool> buyAnnual() => _buy(() => _annualProduct);
+
+  Future<bool> _buy(ProductDetails? Function() getter) async {
+    if (!_storeAvailable || getter() == null) {
+      await _refreshStore();
     }
 
-    final product = _premiumProduct;
-    if (product == null) return false;
+    final selected = getter();
+    if (selected == null) return false;
 
     try {
       return await _iap.buyNonConsumable(
-        purchaseParam: PurchaseParam(productDetails: product),
+        purchaseParam: PurchaseParam(productDetails: selected),
       );
     } catch (_) {
       return false;
     }
+  }
+
+  Future<void> _refreshStore() async {
+    try {
+      _storeAvailable = await _iap.isAvailable();
+      if (_storeAvailable) {
+        await _refreshProducts();
+      }
+    } catch (_) {}
+    notifyListeners();
   }
 
   Future<void> restorePremium() async {
@@ -121,22 +201,6 @@ class UtiliaMonetization extends ChangeNotifier {
       }
     } catch (_) {}
     notifyListeners();
-  }
-
-  Future<void> _refreshProduct() async {
-    try {
-      _storeAvailable = await _iap.isAvailable();
-      if (!_storeAvailable) return;
-
-      final response =
-          await _iap.queryProductDetails(<String>{premiumProductId});
-      for (final product in response.productDetails) {
-        if (product.id == premiumProductId) {
-          _premiumProduct = product;
-          break;
-        }
-      }
-    } catch (_) {}
   }
 
   Future<void> _prepareAds() async {
@@ -156,7 +220,7 @@ class UtiliaMonetization extends ChangeNotifier {
 
             final canRequestAds =
                 await ConsentInformation.instance.canRequestAds();
-            if (canRequestAds && !_premium) {
+            if (canRequestAds && !isPremium) {
               await MobileAds.instance.initialize();
               _adsReady = true;
               _loadInterstitial();
@@ -182,7 +246,7 @@ class UtiliaMonetization extends ChangeNotifier {
   }
 
   void _loadInterstitial() {
-    if (_premium ||
+    if (isPremium ||
         !_adsReady ||
         _androidInterstitialId.isEmpty ||
         _interstitialAd != null ||
@@ -208,7 +272,7 @@ class UtiliaMonetization extends ChangeNotifier {
   }
 
   Future<void> showInterstitialIfEligible() async {
-    if (_premium ||
+    if (isPremium ||
         !_adsReady ||
         defaultTargetPlatform != TargetPlatform.android ||
         _androidInterstitialId.isEmpty) {
