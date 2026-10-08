@@ -1014,7 +1014,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           Text(
-                            'v0.6.0',
+                            'v0.7.0',
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
@@ -1046,23 +1046,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
             _setting(
               Icons.workspace_premium_outlined,
               'UTILIA Premium',
-              widget.monetization.isPremium
-                  ? text(
-                      'Premium activo · sin anuncios',
-                      'Premium active · no ads',
-                      'Premium actif · sans publicités',
-                      'Premium aktiv · ohne Werbung',
-                      'Premium attivo · senza pubblicità',
-                      'Premium ativo · sem anúncios',
-                    )
-                  : text(
-                      'Elimina los anuncios para siempre · 2,99 €',
-                      'Remove ads forever · €2.99',
-                      'Supprimez les publicités pour toujours · 2,99 €',
-                      'Werbung dauerhaft entfernen · 2,99 €',
-                      'Rimuovi le pubblicità per sempre · 2,99 €',
-                      'Remova os anúncios para sempre · 2,99 €',
-                    ),
+              widget.monetization.premiumSummary,
               _showPremium,
             ),
             _setting(
@@ -1180,7 +1164,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                 'Informazioni',
                 'Sobre',
               ),
-              'UTILIA v0.6.0',
+              'UTILIA v0.7.0',
               _showAbout,
             ),
           ],
@@ -1193,215 +1177,169 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
       showDragHandle: true,
       isScrollControlled: true,
       builder: (sheetContext) => SafeArea(
-        child: AnimatedBuilder(
-          animation: widget.monetization,
-          builder: (context, _) => SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 4, 20, 28),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 52,
-                      height: 52,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFFFE7A3), Color(0xFFD7AE4B)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: const Icon(
-                        Icons.workspace_premium_rounded,
-                        color: Color(0xFF513B00),
-                        size: 28,
-                      ),
-                    ),
-                    const SizedBox(width: 13),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'UTILIA Premium',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(fontSize: 22),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            widget.monetization.isPremium
-                                ? text(
-                                    'Premium activo',
-                                    'Premium active',
-                                    'Premium actif',
-                                    'Premium aktiv',
-                                    'Premium attivo',
-                                    'Premium ativo',
-                                  )
-                                : text(
-                                    'Una compra. Sin anuncios.',
-                                    'One purchase. No ads.',
-                                    'Un achat. Sans publicités.',
-                                    'Ein Kauf. Keine Werbung.',
-                                    'Un acquisto. Niente pubblicità.',
-                                    'Uma compra. Sem anúncios.',
-                                  ),
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                _premiumBenefit(
-                  Icons.block_rounded,
-                  text(
-                    'Sin anuncios',
-                    'No ads',
-                    'Sans publicités',
-                    'Keine Werbung',
-                    'Senza pubblicità',
-                    'Sem anúncios',
-                  ),
-                ),
-                _premiumBenefit(
-                  Icons.all_inclusive_rounded,
-                  text(
-                    'Desbloqueo permanente',
-                    'Permanent unlock',
-                    'Déblocage permanent',
-                    'Dauerhafte Freischaltung',
-                    'Sblocco permanente',
-                    'Desbloqueio permanente',
-                  ),
-                ),
-                _premiumBenefit(
-                  Icons.sync_rounded,
-                  text(
-                    'Restauración de compra desde Google Play',
-                    'Restore purchases through Google Play',
-                    'Restauration des achats via Google Play',
-                    'Käufe über Google Play wiederherstellen',
-                    'Ripristino degli acquisti tramite Google Play',
-                    'Restaurar compras através do Google Play',
-                  ),
-                ),
-                const SizedBox(height: 16),
-                if (!widget.monetization.isPremium) ...[
-                  Text(
-                    widget.monetization.premiumPrice,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                          fontSize: 30,
-                          color: const Color(0xFFB4871B),
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  FilledButton.icon(
-                    onPressed: widget.monetization.premiumProduct != null ||
-                            widget.monetization.storeAvailable
-                        ? () async {
-                            await widget.monetization.buyPremium();
-                          }
-                        : () async {
-                            await widget.monetization.restorePremium();
-                          },
-                    icon: const Icon(Icons.workspace_premium_rounded),
-                    label: Text(
-                      text(
-                        'Comprar Premium',
-                        'Buy Premium',
-                        'Acheter Premium',
-                        'Premium kaufen',
-                        'Acquista Premium',
-                        'Comprar Premium',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: () => widget.monetization.restorePremium(),
-                    child: Text(
-                      text(
-                        'Restaurar compra',
-                        'Restore purchase',
-                        'Restaurer l’achat',
-                        'Kauf wiederherstellen',
-                        'Ripristina acquisto',
-                        'Restaurar compra',
-                      ),
-                    ),
-                  ),
-                ] else
-                  Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFD7AE4B).withValues(alpha: .12),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.check_circle_rounded,
-                          color: Color(0xFFB4871B),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            text(
-                              'Premium está activo. Los anuncios permanecerán desactivados.',
-                              'Premium is active. Ads will remain disabled.',
-                              'Premium est actif. Les publicités resteront désactivées.',
-                              'Premium ist aktiv. Werbung bleibt deaktiviert.',
-                              'Premium è attivo. Le pubblicità resteranno disattivate.',
-                              'Premium está ativo. Os anúncios permanecerão desativados.',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                if (widget.monetization.privacyOptionsRequired) ...[
-                  const SizedBox(height: 8),
-                  OutlinedButton(
-                    onPressed: () => widget.monetization.showPrivacyOptions(),
-                    child: Text(
-                      text(
-                        'Opciones de privacidad',
-                        'Privacy options',
-                        'Options de confidentialité',
-                        'Datenschutzoptionen',
-                        'Opzioni privacy',
-                        'Opções de privacidade',
-                      ),
-                    ),
-                  ),
-                ],
+        child: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(
+            20, 8, 20, 24 + MediaQuery.viewInsetsOf(sheetContext).bottom,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text('UTILIA Premium',
+                  style: Theme.of(context).textTheme.headlineSmall),
+              const SizedBox(height: 4),
+              Text(
+                widget.monetization.isPremium
+                    ? text('Premium activo · sin anuncios', 'Premium active · no ads',
+                        'Premium actif · sans publicités', 'Premium aktiv · ohne Werbung',
+                        'Premium attivo · senza pubblicità', 'Premium ativo · sem anúncios')
+                    : text('Elige tu modalidad', 'Choose your plan', 'Choisissez votre formule',
+                        'Wählen Sie Ihren Tarif', 'Scegli il tuo piano', 'Escolha o seu plano'),
+              ),
+              const SizedBox(height: 16),
+              _premiumBenefit(Icons.block_rounded,
+                  text('Sin anuncios', 'No ads', 'Sans publicités', 'Keine Werbung',
+                      'Senza pubblicità', 'Sem anúncios')),
+              _premiumBenefit(Icons.sync_rounded,
+                  text('Restauración desde Google Play', 'Restore from Google Play',
+                      'Restauration via Google Play', 'Wiederherstellung über Google Play',
+                      'Ripristino da Google Play', 'Restaurar através do Google Play')),
+              const SizedBox(height: 12),
+              _planCard(
+                context,
+                icon: Icons.calendar_month_rounded,
+                title: text('Premium mensual', 'Monthly Premium', 'Premium mensuel',
+                    'Premium monatlich', 'Premium mensile', 'Premium mensal'),
+                subtitle: text('Renovación automática mensual.',
+                    'Automatic monthly renewal.', 'Renouvellement mensuel automatique.',
+                    'Automatische monatliche Verlängerung.',
+                    'Rinnovo mensile automatico.', 'Renovação mensal automática.'),
+                price: widget.monetization.monthlyPrice,
+                buttonLabel: text('Suscribirme', 'Subscribe', 'S’abonner', 'Abonnieren',
+                    'Abbonati', 'Subscrever'),
+                active: widget.monetization.isMonthly,
+                onPressed: widget.monetization.isMonthly
+                    ? null
+                    : () => widget.monetization.buyMonthly(),
+              ),
+              const SizedBox(height: 10),
+              _planCard(
+                context,
+                icon: Icons.event_available_rounded,
+                title: text('Premium anual', 'Annual Premium', 'Premium annuel',
+                    'Premium jährlich', 'Premium annuale', 'Premium anual'),
+                subtitle: text('Renovación automática anual.',
+                    'Automatic annual renewal.', 'Renouvellement annuel automatique.',
+                    'Automatische jährliche Verlängerung.',
+                    'Rinnovo annuale automatico.', 'Renovação anual automática.'),
+                price: widget.monetization.annualPrice,
+                buttonLabel: text('Suscribirme', 'Subscribe', 'S’abonner', 'Abonnieren',
+                    'Abbonati', 'Subscrever'),
+                active: widget.monetization.isAnnual,
+                onPressed: widget.monetization.isAnnual
+                    ? null
+                    : () => widget.monetization.buyAnnual(),
+              ),
+              const SizedBox(height: 10),
+              _planCard(
+                context,
+                icon: Icons.block_rounded,
+                title: text('No Ads · de por vida', 'No Ads · lifetime',
+                    'Sans publicités · à vie', 'Keine Werbung · dauerhaft',
+                    'Niente pubblicità · per sempre', 'Sem anúncios · para sempre'),
+                subtitle: text('Una sola compra. Sin renovaciones.',
+                    'One purchase. No renewals.', 'Un seul achat. Sans renouvellement.',
+                    'Ein Kauf. Keine Verlängerung.',
+                    'Un solo acquisto. Nessun rinnovo.', 'Uma compra. Sem renovação.'),
+                price: widget.monetization.noAdsPrice,
+                buttonLabel: text('Comprar para siempre', 'Buy for life',
+                    'Acheter à vie', 'Für immer kaufen', 'Acquista per sempre',
+                    'Comprar para sempre'),
+                active: widget.monetization.isNoAds,
+                onPressed: widget.monetization.isNoAds
+                    ? null
+                    : () => widget.monetization.buyNoAds(),
+              ),
+              const SizedBox(height: 10),
+              OutlinedButton(
+                onPressed: () => widget.monetization.restorePremium(),
+                child: Text(text('Restaurar compras', 'Restore purchases',
+                    'Restaurer les achats', 'Käufe wiederherstellen',
+                    'Ripristina acquisti', 'Restaurar compras')),
+              ),
+              if (widget.monetization.privacyOptionsRequired) ...[
                 const SizedBox(height: 8),
-                Text(
-                  text(
-                    'El pago se gestiona mediante Google Play. UTILIA no recibe los datos de tu tarjeta.',
-                    'Payment is handled by Google Play. UTILIA does not receive your card details.',
-                    'Le paiement est géré par Google Play. UTILIA ne reçoit pas les données de votre carte.',
-                    'Die Zahlung wird über Google Play abgewickelt. UTILIA erhält keine Kartendaten.',
-                    'Il pagamento è gestito da Google Play. UTILIA non riceve i dati della tua carta.',
-                    'O pagamento é processado pelo Google Play. A UTILIA não recebe os dados do seu cartão.',
-                  ),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                OutlinedButton(
+                  onPressed: () => widget.monetization.showPrivacyOptions(),
+                  child: Text(text('Opciones de privacidad', 'Privacy options',
+                      'Options de confidentialité', 'Datenschutzoptionen',
+                      'Opzioni privacy', 'Opções de privacidade')),
                 ),
               ],
-            ),
+              const SizedBox(height: 8),
+              Text(
+                text(
+                  'Las suscripciones se renuevan automáticamente hasta que las canceles en Google Play. El pago y la gestión se realizan mediante Google Play.',
+                  'Subscriptions renew automatically until canceled in Google Play. Payment and management are handled by Google Play.',
+                  'Les abonnements se renouvellent automatiquement jusqu’à leur annulation dans Google Play. Le paiement et la gestion sont assurés par Google Play.',
+                  'Abonnements verlängern sich automatisch, bis sie in Google Play gekündigt werden. Zahlung und Verwaltung erfolgen über Google Play.',
+                  'Gli abbonamenti si rinnovano automaticamente finché non vengono annullati su Google Play. Il pagamento e la gestione sono effettuati tramite Google Play.',
+                  'As subscrições renovam-se automaticamente até serem canceladas no Google Play. O pagamento e a gestão são feitos pelo Google Play.',
+                ),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
           ),
         ),
       ),
     );
   }
+
+  Widget _planCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required String price,
+    required String buttonLabel,
+    required bool active,
+    required Future<void> Function()? onPressed,
+  }) =>
+      Card(
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Row(
+            children: [
+              UtiliaSoftIcon(icon: icon, color: UtiliaBrand.blue, size: 48),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w800)),
+                    const SizedBox(height: 3),
+                    Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
+                    const SizedBox(height: 6),
+                    Text(price,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.w900,
+                            color: const Color(0xFFB4871B))),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              FilledButton(
+                onPressed: onPressed,
+                child: Text(active
+                    ? text('Activo', 'Active', 'Actif', 'Aktiv', 'Attivo', 'Ativo')
+                    : buttonLabel),
+              ),
+            ],
+          ),
+        ),
+      );
 
   Widget _premiumBenefit(IconData icon, String label) => Padding(
         padding: const EdgeInsets.only(bottom: 9),
@@ -1553,12 +1491,12 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
           'Novidades',
         ),
         text(
-          'UTILIA v0.6.0 incluye herramientas, favoritos, historial, selector de idioma, modo oscuro, Premium de compra única y publicidad con consentimiento.',
-          'UTILIA v0.6.0 includes tools, favorites, history, language selection, dark mode, a one-time Premium purchase and consent-based advertising.',
-          'UTILIA v0.6.0 inclut des outils, des favoris, un historique, le choix de la langue, le mode sombre, un achat Premium unique et des publicités avec consentement.',
-          'UTILIA v0.6.0 enthält Werkzeuge, Favoriten, Sprachauswahl, Dunkelmodus, einen einmaligen Premium-Kauf und zustimmungsbasierte Werbung.',
-          'UTILIA v0.6.0 include strumenti, preferiti, cronologia, selezione della lingua, modalità scura, un acquisto Premium una tantum e pubblicità con consenso.',
-          'UTILIA v0.6.0 inclui ferramentas, favoritos, histórico, seleção de idioma, modo escuro, uma compra Premium única e publicidade com consentimento.',
+          'UTILIA v0.7.0 incluye herramientas, favoritos, historial, selector de idioma, modo oscuro, Premium de compra única y publicidad con consentimiento.',
+          'UTILIA v0.7.0 includes tools, favorites, history, language selection, dark mode, a one-time Premium purchase and consent-based advertising.',
+          'UTILIA v0.7.0 inclut des outils, des favoris, un historique, le choix de la langue, le mode sombre, un achat Premium unique et des publicités avec consentement.',
+          'UTILIA v0.7.0 enthält Werkzeuge, Favoriten, Sprachauswahl, Dunkelmodus, einen einmaligen Premium-Kauf und zustimmungsbasierte Werbung.',
+          'UTILIA v0.7.0 include strumenti, preferiti, cronologia, selezione della lingua, modalità scura, un acquisto Premium una tantum e pubblicità con consenso.',
+          'UTILIA v0.7.0 inclui ferramentas, favoritos, histórico, seleção de idioma, modo escuro, uma compra Premium única e publicidade com consentimento.',
         ),
         icon: Icons.new_releases_outlined,
       ),
@@ -1699,7 +1637,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
     showAboutDialog(
       context: context,
       applicationName: 'UTILIA',
-      applicationVersion: '0.6.0',
+      applicationVersion: '0.7.0',
       applicationIcon: const UtiliaLogoMark(size: 56),
       applicationLegalese: '© 2026 UTILIA',
       children: [
