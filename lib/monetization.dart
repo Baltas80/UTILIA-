@@ -360,6 +360,8 @@ class _UtiliaBannerAdState extends State<UtiliaBannerAd> {
   BannerAd? _bannerAd;
   AdSize? _bannerSize;
   bool _loading = false;
+  int _retryAttempt = 0;
+  Timer? _retryTimer;
 
   @override
   void initState() {
@@ -383,6 +385,7 @@ class _UtiliaBannerAdState extends State<UtiliaBannerAd> {
     if (!mounted) return;
 
     if (widget.monetization.isPremium) {
+      _retryTimer?.cancel();
       _disposeAd();
       setState(() {});
       return;
@@ -402,6 +405,7 @@ class _UtiliaBannerAdState extends State<UtiliaBannerAd> {
     final size = await AdSize.getLargeAnchoredAdaptiveBannerAdSize(width);
     if (!mounted || size == null) {
       _loading = false;
+      _scheduleBannerRetry();
       return;
     }
 
@@ -419,6 +423,8 @@ class _UtiliaBannerAdState extends State<UtiliaBannerAd> {
             _bannerAd = ad as BannerAd;
             _bannerSize = size;
             _loading = false;
+            _retryAttempt = 0;
+            _retryTimer?.cancel();
           });
         },
         onAdFailedToLoad: (ad, error) {
@@ -427,13 +433,27 @@ class _UtiliaBannerAdState extends State<UtiliaBannerAd> {
             setState(() => _loading = false);
           }
           debugPrint('UTILIA banner load failed: ${error.code} ${error.message}');
+          _scheduleBannerRetry();
         },
       ),
     );
     ad.load();
   }
 
+  void _scheduleBannerRetry() {
+    if (!mounted || widget.monetization.isPremium || !widget.monetization.adsReady) {
+      return;
+    }
+    _retryTimer?.cancel();
+    final seconds = [5, 15, 30, 60][_retryAttempt.clamp(0, 3)];
+    _retryAttempt++;
+    _retryTimer = Timer(Duration(seconds: seconds), () {
+      if (mounted && _bannerAd == null && !_loading) _sync();
+    });
+  }
+
   void _disposeAd() {
+    _retryTimer?.cancel();
     _bannerAd?.dispose();
     _bannerAd = null;
     _bannerSize = null;
@@ -443,6 +463,7 @@ class _UtiliaBannerAdState extends State<UtiliaBannerAd> {
   @override
   void dispose() {
     widget.monetization.removeListener(_sync);
+    _retryTimer?.cancel();
     _disposeAd();
     super.dispose();
   }
@@ -450,15 +471,18 @@ class _UtiliaBannerAdState extends State<UtiliaBannerAd> {
   @override
   Widget build(BuildContext context) {
     if (widget.monetization.isPremium ||
-        _bannerAd == null ||
-        _bannerSize == null) {
+        defaultTargetPlatform != TargetPlatform.android) {
       return const SizedBox.shrink();
     }
 
+    // Keep a stable bottom slot while the banner loads or retries. The slot
+    // is not an ad and collapses for Premium users.
+    final height = _bannerSize?.height.toDouble() ?? 60.0;
+    final ad = _bannerAd;
     return SizedBox(
-      height: _bannerSize!.height.toDouble(),
+      height: height,
       width: double.infinity,
-      child: Center(child: AdWidget(ad: _bannerAd!)),
+      child: ad == null ? const SizedBox.shrink() : Center(child: AdWidget(ad: ad)),
     );
   }
 }
