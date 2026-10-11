@@ -313,31 +313,40 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 9),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 UtiliaSoftIcon(icon: tool.icon, color: accent, size: 48),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.s.toolName(tool.type.name, tool.name),
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        widget.s.toolDescription(
-                          tool.type.name,
-                          tool.description,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minWidth: 0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.s.toolName(tool.type.name, tool.name),
+                          softWrap: true,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ],
+                        const SizedBox(height: 3),
+                        Text(
+                          widget.s.toolDescription(
+                            tool.type.name,
+                            tool.description,
+                          ),
+                          softWrap: true,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 IconButton(
+                  constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                  padding: EdgeInsets.zero,
                   tooltip: favorite
                       ? text(
                           'Quitar de favoritos',
@@ -357,15 +366,12 @@ class _UtiliaCategoryPageState extends State<UtiliaCategoryPage> {
                         ),
                   onPressed: () => _toggleFavorite(tool.type),
                   icon: Icon(
-                    favorite
-                        ? Icons.favorite_rounded
-                        : Icons.favorite_border_rounded,
+                    favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
                     color: favorite
                         ? const Color(0xFFE83D69)
                         : Theme.of(context).colorScheme.outline,
                   ),
                 ),
-                const Icon(Icons.chevron_right_rounded, size: 20),
               ],
             ),
           ),
