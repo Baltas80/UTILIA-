@@ -232,8 +232,23 @@ class UtiliaMonetization extends ChangeNotifier {
           notifyListeners();
           if (!completer.isCompleted) completer.complete();
         },
-        (_) {
-          _adsReady = false;
+        (_) async {
+          // A consent-info refresh can fail transiently. UMP may still have a
+          // valid prior consent state, so check whether ads can legally be
+          // requested before disabling ads for the whole session.
+          try {
+            final canRequestAds =
+                await ConsentInformation.instance.canRequestAds();
+            if (canRequestAds && !isPremium) {
+              await MobileAds.instance.initialize();
+              _adsReady = true;
+              _loadInterstitial();
+            } else {
+              _adsReady = false;
+            }
+          } catch (_) {
+            _adsReady = false;
+          }
           notifyListeners();
           if (!completer.isCompleted) completer.complete();
         },
