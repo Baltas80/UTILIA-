@@ -406,11 +406,12 @@ class _UtiliaBannerAdState extends State<UtiliaBannerAd> {
             _loading = false;
           });
         },
-        onAdFailedToLoad: (ad, _) {
+        onAdFailedToLoad: (ad, error) {
           ad.dispose();
           if (mounted) {
             setState(() => _loading = false);
           }
+          debugPrint('UTILIA banner load failed: ${error.code} ${error.message}');
         },
       ),
     );
