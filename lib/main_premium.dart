@@ -1308,33 +1308,57 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
       Card(
         child: Padding(
           padding: const EdgeInsets.all(14),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              UtiliaSoftIcon(icon: icon, color: UtiliaBrand.blue, size: 48),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  UtiliaSoftIcon(icon: icon, color: UtiliaBrand.blue, size: 44),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(minWidth: 0),
+                      child: Text(
+                        title,
+                        softWrap: true,
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w800)),
-                    const SizedBox(height: 3),
-                    Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
-                    const SizedBox(height: 6),
-                    Text(price,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w900,
-                            color: const Color(0xFFB4871B))),
-                  ],
-                ),
+                              fontWeight: FontWeight.w800,
+                            ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 8),
-              FilledButton(
-                onPressed: onPressed,
-                child: Text(active
-                    ? text('Activo', 'Active', 'Actif', 'Aktiv', 'Attivo', 'Ativo')
-                    : buttonLabel),
+              const SizedBox(height: 8),
+              Text(
+                subtitle,
+                softWrap: true,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                price,
+                softWrap: true,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: const Color(0xFFB4871B),
+                    ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: onPressed,
+                  child: Text(
+                    active
+                        ? text('Activo', 'Active', 'Actif', 'Aktiv', 'Attivo', 'Ativo')
+                        : buttonLabel,
+                    textAlign: TextAlign.center,
+                    softWrap: true,
+                  ),
+                ),
               ),
             ],
           ),
