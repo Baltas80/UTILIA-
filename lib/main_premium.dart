@@ -1171,6 +1171,34 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
         ),
       );
 
+  Future<void> _attemptPremiumPurchase(
+    BuildContext sheetContext,
+    Future<bool> Function() startPurchase,
+  ) async {
+    var started = false;
+    try {
+      started = await startPurchase();
+    } catch (_) {
+      started = false;
+    }
+
+    if (!sheetContext.mounted || started) return;
+    ScaffoldMessenger.maybeOf(sheetContext)?.showSnackBar(
+      SnackBar(
+        content: Text(
+          text(
+            'No se ha podido iniciar la compra. Comprueba tu conexión y vuelve a intentarlo.',
+            'The purchase could not be started. Check your connection and try again.',
+            'L’achat n’a pas pu démarrer. Vérifiez votre connexion et réessayez.',
+            'Der Kauf konnte nicht gestartet werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.',
+            'Non è stato possibile avviare l’acquisto. Controlla la connessione e riprova.',
+            'Não foi possível iniciar a compra. Verifique a ligação e tente novamente.',
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _showPremium() async {
     await showModalBottomSheet<void>(
       context: context,
@@ -1219,7 +1247,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                 active: widget.monetization.isMonthly,
                 onPressed: widget.monetization.isMonthly
                     ? null
-                    : () => widget.monetization.buyMonthly(),
+                    : () => _attemptPremiumPurchase(sheetContext, widget.monetization.buyMonthly),
               ),
               const SizedBox(height: 10),
               _planCard(
@@ -1237,7 +1265,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                 active: widget.monetization.isAnnual,
                 onPressed: widget.monetization.isAnnual
                     ? null
-                    : () => widget.monetization.buyAnnual(),
+                    : () => _attemptPremiumPurchase(sheetContext, widget.monetization.buyAnnual),
               ),
               const SizedBox(height: 10),
               _planCard(
@@ -1257,7 +1285,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                 active: widget.monetization.isNoAds,
                 onPressed: widget.monetization.isNoAds
                     ? null
-                    : () => widget.monetization.buyNoAds(),
+                    : () => _attemptPremiumPurchase(sheetContext, widget.monetization.buyNoAds),
               ),
               const SizedBox(height: 10),
               OutlinedButton(
