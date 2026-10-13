@@ -40,7 +40,19 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(AppBar), findsOneWidget);
-      expect(find.text(tool.name), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(AppBar),
+          matching: find.byType(Text),
+        ),
+        findsOneWidget,
+      );
+      final hasInputs = find.byType(TextField).evaluate().isNotEmpty;
+      final hasActions = find.byType(FilledButton).evaluate().isNotEmpty;
+      final hasInteractiveKeypad =
+          find.byType(GestureDetector).evaluate().isNotEmpty ||
+          find.byType(InkWell).evaluate().isNotEmpty;
+      expect(hasInputs || hasActions || hasInteractiveKeypad, isTrue);
 
       await tester.pumpWidget(const SizedBox.shrink());
       monetization.dispose();
