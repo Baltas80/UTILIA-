@@ -13,7 +13,7 @@ class UtiliaMonetization extends ChangeNotifier {
   // Kept for users who bought the old one-time Premium product.
   static const legacyPremiumProductId = 'utilia_premium';
 
-  static const noAdsPriceLabel = '29,99 €';
+  static const noAdsPriceLabel = '';
   static const testAndroidBannerAdUnitId =
       'ca-app-pub-3940256099942544/6300978111';
   static const _androidBannerId = String.fromEnvironment(
@@ -69,11 +69,11 @@ class UtiliaMonetization extends ChangeNotifier {
   ProductDetails? get annualProduct => _annualProduct;
 
   String get noAdsPrice => _noAdsProduct?.price ?? noAdsPriceLabel;
-  String get monthlyPrice => _monthlyProduct?.price ?? '2,99 €';
-  String get annualPrice => _annualProduct?.price ?? '19,99 €';
+  String get monthlyPrice => _monthlyProduct?.price ?? '';
+  String get annualPrice => _annualProduct?.price ?? '';
 
   String get premiumSummary {
-    if (isNoAds) return 'Sin anuncios para siempre · 29,99 €';
+    if (isNoAds) return 'Sin anuncios para siempre';
     if (isMonthly) return 'Premium mensual · activo';
     if (isAnnual) return 'Premium anual · activo';
     return 'Premium mensual · anual · No Ads';
