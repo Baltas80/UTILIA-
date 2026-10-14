@@ -236,12 +236,12 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
             bottom: false,
             child: Column(
               children: [
-              Expanded(
-                child: IndexedStack(
-                  index: tab,
-                  children: [_home(), _favorites(), _history(), _more()],
+                Expanded(
+                  child: IndexedStack(
+                    index: tab,
+                    children: [_home(), _favorites(), _history(), _more()],
+                  ),
                 ),
-              ),
                 UtiliaBannerAd(monetization: widget.monetization),
               ],
             ),
@@ -1692,7 +1692,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
     showAboutDialog(
       context: context,
       applicationName: 'UTILIA',
-      applicationVersion: '0.7.0',
+      applicationVersion: '0.7.6',
       applicationIcon: const UtiliaLogoMark(size: 56),
       applicationLegalese: '© 2026 UTILIA',
       children: [
