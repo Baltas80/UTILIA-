@@ -1603,7 +1603,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
     await SharePlus.instance.share(
       ShareParams(
         text:
-            '$message\\n\\nhttps://play.google.com/store/apps/details?id=com.utilia.app.utilia',
+            '$message\n\nhttps://play.google.com/store/apps/details?id=com.utilia.app.utilia',
       ),
     );
   }
