@@ -232,16 +232,19 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
   Widget build(BuildContext context) => AnimatedBuilder(
         animation: widget.monetization,
         builder: (context, _) => Scaffold(
-          body: Column(
-            children: [
-              Expanded(
-                child: IndexedStack(
-                  index: tab,
-                  children: [_home(), _favorites(), _history(), _more()],
+          body: SafeArea(
+            bottom: false,
+            child: Column(
+              children: [
+                Expanded(
+                  child: IndexedStack(
+                    index: tab,
+                    children: [_home(), _favorites(), _history(), _more()],
+                  ),
                 ),
-              ),
-              UtiliaBannerAd(monetization: widget.monetization),
-            ],
+                UtiliaBannerAd(monetization: widget.monetization),
+              ],
+            ),
           ),
           bottomNavigationBar: NavigationBar(
           height: 64,
@@ -1171,6 +1174,34 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
         ),
       );
 
+  Future<void> _attemptPremiumPurchase(
+    BuildContext sheetContext,
+    Future<bool> Function() startPurchase,
+  ) async {
+    var started = false;
+    try {
+      started = await startPurchase();
+    } catch (_) {
+      started = false;
+    }
+
+    if (!sheetContext.mounted || started) return;
+    ScaffoldMessenger.maybeOf(sheetContext)?.showSnackBar(
+      SnackBar(
+        content: Text(
+          text(
+            'No se ha podido iniciar la compra. Comprueba tu conexión y vuelve a intentarlo.',
+            'The purchase could not be started. Check your connection and try again.',
+            'L’achat n’a pas pu démarrer. Vérifiez votre connexion et réessayez.',
+            'Der Kauf konnte nicht gestartet werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.',
+            'Non è stato possibile avviare l’acquisto. Controlla la connessione e riprova.',
+            'Não foi possível iniciar a compra. Verifique a ligação e tente novamente.',
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _showPremium() async {
     await showModalBottomSheet<void>(
       context: context,
@@ -1219,7 +1250,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                 active: widget.monetization.isMonthly,
                 onPressed: widget.monetization.isMonthly
                     ? null
-                    : () => widget.monetization.buyMonthly(),
+                    : () => _attemptPremiumPurchase(sheetContext, widget.monetization.buyMonthly),
               ),
               const SizedBox(height: 10),
               _planCard(
@@ -1237,7 +1268,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                 active: widget.monetization.isAnnual,
                 onPressed: widget.monetization.isAnnual
                     ? null
-                    : () => widget.monetization.buyAnnual(),
+                    : () => _attemptPremiumPurchase(sheetContext, widget.monetization.buyAnnual),
               ),
               const SizedBox(height: 10),
               _planCard(
@@ -1257,7 +1288,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
                 active: widget.monetization.isNoAds,
                 onPressed: widget.monetization.isNoAds
                     ? null
-                    : () => widget.monetization.buyNoAds(),
+                    : () => _attemptPremiumPurchase(sheetContext, widget.monetization.buyNoAds),
               ),
               const SizedBox(height: 10),
               OutlinedButton(
@@ -1515,12 +1546,12 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
           'Novidades',
         ),
         text(
-          'UTILIA v0.7.0 incluye herramientas, favoritos, historial, selector de idioma, modo oscuro, Premium de compra única y publicidad con consentimiento.',
-          'UTILIA v0.7.0 includes tools, favorites, history, language selection, dark mode, a one-time Premium purchase and consent-based advertising.',
-          'UTILIA v0.7.0 inclut des outils, des favoris, un historique, le choix de la langue, le mode sombre, un achat Premium unique et des publicités avec consentement.',
-          'UTILIA v0.7.0 enthält Werkzeuge, Favoriten, Sprachauswahl, Dunkelmodus, einen einmaligen Premium-Kauf und zustimmungsbasierte Werbung.',
-          'UTILIA v0.7.0 include strumenti, preferiti, cronologia, selezione della lingua, modalità scura, un acquisto Premium una tantum e pubblicità con consenso.',
-          'UTILIA v0.7.0 inclui ferramentas, favoritos, histórico, seleção de idioma, modo escuro, uma compra Premium única e publicidade com consentimento.',
+          'UTILIA v0.7.6 incluye herramientas, favoritos, historial, selector de idioma, modo oscuro, suscripciones Premium y compra No Ads de por vida, con publicidad basada en consentimiento.',
+          'UTILIA v0.7.6 includes tools, favorites, history, language selection, dark mode, Premium subscriptions, a lifetime No Ads purchase and consent-based advertising.',
+          'UTILIA v0.7.6 inclut des outils, des favoris, un historique, le choix de la langue, le mode sombre, des abonnements Premium, un achat No Ads à vie et des publicités avec consentement.',
+          'UTILIA v0.7.6 enthält Werkzeuge, Favoriten, Verlauf, Sprachauswahl, Dunkelmodus, Premium-Abos, einen einmaligen No-Ads-Kauf und zustimmungsbasierte Werbung.',
+          'UTILIA v0.7.6 include strumenti, preferiti, cronologia, selezione della lingua, modalità scura, abbonamenti Premium, un acquisto No Ads a vita e pubblicità con consenso.',
+          'UTILIA v0.7.6 inclui ferramentas, favoritos, histórico, seleção de idioma, modo escuro, subscrições Premium, uma compra No Ads vitalícia e publicidade com consentimento.',
         ),
         icon: Icons.new_releases_outlined,
       ),
@@ -1572,7 +1603,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
     await SharePlus.instance.share(
       ShareParams(
         text:
-            '$message\\n\\nhttps://play.google.com/store/apps/details?id=com.utilia.app.utilia',
+            '$message\n\nhttps://play.google.com/store/apps/details?id=com.utilia.app.utilia',
       ),
     );
   }
@@ -1661,7 +1692,7 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
     showAboutDialog(
       context: context,
       applicationName: 'UTILIA',
-      applicationVersion: '0.7.0',
+      applicationVersion: '0.7.6',
       applicationIcon: const UtiliaLogoMark(size: 56),
       applicationLegalese: '© 2026 UTILIA',
       children: [

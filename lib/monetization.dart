@@ -13,7 +13,7 @@ class UtiliaMonetization extends ChangeNotifier {
   // Kept for users who bought the old one-time Premium product.
   static const legacyPremiumProductId = 'utilia_premium';
 
-  static const noAdsPriceLabel = '2,99 €';
+  static const noAdsPriceLabel = '';
   static const testAndroidBannerAdUnitId =
       'ca-app-pub-3940256099942544/6300978111';
   static const _androidBannerId = String.fromEnvironment(
@@ -69,11 +69,11 @@ class UtiliaMonetization extends ChangeNotifier {
   ProductDetails? get annualProduct => _annualProduct;
 
   String get noAdsPrice => _noAdsProduct?.price ?? noAdsPriceLabel;
-  String get monthlyPrice => _monthlyProduct?.price ?? '—';
-  String get annualPrice => _annualProduct?.price ?? '—';
+  String get monthlyPrice => _monthlyProduct?.price ?? '';
+  String get annualPrice => _annualProduct?.price ?? '';
 
   String get premiumSummary {
-    if (isNoAds) return 'Sin anuncios para siempre · 2,99 €';
+    if (isNoAds) return 'Sin anuncios para siempre';
     if (isMonthly) return 'Premium mensual · activo';
     if (isAnnual) return 'Premium anual · activo';
     return 'Premium mensual · anual · No Ads';
@@ -107,6 +107,14 @@ class UtiliaMonetization extends ChangeNotifier {
 
   Future<void> _refreshProducts() async {
     final response = await _iap.queryProductDetails(_productIds);
+    if (response.notFoundIDs.isNotEmpty) {
+      debugPrint(
+        'UTILIA IAP: Google Play did not return product IDs: ${response.notFoundIDs.join(', ')}',
+      );
+    }
+    if (response.error != null) {
+      debugPrint('UTILIA IAP: product query failed: ${response.error!.code}');
+    }
     for (final product in response.productDetails) {
       switch (product.id) {
         case noAdsProductId:
@@ -162,23 +170,36 @@ class UtiliaMonetization extends ChangeNotifier {
       purchase.status == PurchaseStatus.purchased ||
       purchase.status == PurchaseStatus.restored;
 
-  Future<bool> buyNoAds() => _buy(() => _noAdsProduct);
-  Future<bool> buyMonthly() => _buy(() => _monthlyProduct);
-  Future<bool> buyAnnual() => _buy(() => _annualProduct);
+  Future<bool> buyNoAds() => _buy(noAdsProductId, () => _noAdsProduct);
+  Future<bool> buyMonthly() => _buy(monthlyProductId, () => _monthlyProduct);
+  Future<bool> buyAnnual() => _buy(annualProductId, () => _annualProduct);
 
-  Future<bool> _buy(ProductDetails? Function() getter) async {
+  Future<bool> _buy(
+    String productId,
+    ProductDetails? Function() getter,
+  ) async {
     if (!_storeAvailable || getter() == null) {
       await _refreshStore();
     }
 
     final selected = getter();
-    if (selected == null) return false;
+    if (selected == null) {
+      debugPrint(
+        'UTILIA IAP: cannot start purchase; Google Play did not return "$productId". Store available: $_storeAvailable.',
+      );
+      return false;
+    }
 
     try {
-      return await _iap.buyNonConsumable(
+      final started = await _iap.buyNonConsumable(
         purchaseParam: PurchaseParam(productDetails: selected),
       );
-    } catch (_) {
+      if (!started) {
+        debugPrint('UTILIA IAP: Google Play did not start purchase "$productId".');
+      }
+      return started;
+    } catch (error) {
+      debugPrint('UTILIA IAP: failed to launch "$productId": $error');
       return false;
     }
   }
