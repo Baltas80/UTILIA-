@@ -232,16 +232,19 @@ class _UtiliaHomePageState extends State<UtiliaHomePage> {
   Widget build(BuildContext context) => AnimatedBuilder(
         animation: widget.monetization,
         builder: (context, _) => Scaffold(
-          body: Column(
-            children: [
+          body: SafeArea(
+            bottom: false,
+            child: Column(
+              children: [
               Expanded(
                 child: IndexedStack(
                   index: tab,
                   children: [_home(), _favorites(), _history(), _more()],
                 ),
               ),
-              UtiliaBannerAd(monetization: widget.monetization),
-            ],
+                UtiliaBannerAd(monetization: widget.monetization),
+              ],
+            ),
           ),
           bottomNavigationBar: NavigationBar(
           height: 64,
