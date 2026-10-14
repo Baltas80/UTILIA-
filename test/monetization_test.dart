@@ -13,8 +13,8 @@ void main() {
     expect(UtiliaMonetization.legacyPremiumProductId, 'utilia_premium');
   });
 
-  test('Lifetime No Ads fallback price remains 2.99 EUR', () {
-    expect(UtiliaMonetization.noAdsPriceLabel, '2,99 €');
+  test('Premium prices are not hardcoded before Google Play responds', () {
+    expect(UtiliaMonetization.noAdsPriceLabel, isEmpty);
   });
 
   test('Production ad configuration exposes a test-safe fallback', () {
